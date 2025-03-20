@@ -19,10 +19,10 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            width: 98%; /* Majdnem teljes szélesség */
-            height: 98vh; /* Majdnem teljes magasság */
-            max-width: 2600px; /* Xiaomi Pad 6 Pro 2880px szélességének 90%-a */
-            max-height: 1620px; /* 1800px magasságának 90%-a */
+            width: 90%; /* Responszív szélesség */
+            max-width: 1000px; /* Xiaomi Pad 6 Pro képernyőméretéhez igazítva */
+            height: 90vh; /* Xiaomi Pad 6 Pro magassága */
+            max-height: 750px; /* 1800px felbontás alapján, 90%-os terület */
             border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
             border-radius: 10px; /* Lekerekített sarkok */
             position: relative;
@@ -31,6 +31,20 @@
             align-items: flex-start;
             padding: 10px;
             box-sizing: border-box;
+            transition: all 0.3s ease; /* Animáció a méretváltáshoz */
+        }
+        .container.fullscreen {
+            max-width: 100%; /* Teljes szélesség */
+            max-height: 100%; /* Teljes magasság */
+            width: 100%;
+            height: 100vh;
+            border-radius: 0; /* Nincs lekerekítés teljes képernyőn */
+        }
+        .container.minimized {
+            max-width: 800px; /* Összecsukott állapot */
+            max-height: 600px;
+            width: 80%;
+            height: 80vh;
         }
         .header {
             width: 100%;
@@ -43,6 +57,7 @@
         .header-left {
             display: flex;
             align-items: center;
+            gap: 10px;
         }
         .header img {
             width: 128px; /* Ikon mérete */
@@ -119,7 +134,7 @@
         @media (max-width: 820px) {
             .container {
                 width: 95%; /* Kisebb eszközökön még responzívabb */
-                height: 95vh;
+                height: 90vh;
                 max-height: none;
             }
             .header-right {
@@ -129,10 +144,13 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="appContainer">
         <div class="header">
             <div class="header-left">
                 <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+                <!-- Teljes képernyő és összecsukás ikonok -->
+                <i class="fas fa-expand" id="expandBtn" title="Teljes képernyő"></i>
+                <i class="fas fa-compress" id="minimizeBtn" title="Összecsukás"></i>
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
@@ -189,6 +207,21 @@
                 resultDiv.style.color = "#F44336";
             }
         }
+
+        // Teljes képernyő és összecsukás funkciók
+        const container = document.getElementById("appContainer");
+        const expandBtn = document.getElementById("expandBtn");
+        const minimizeBtn = document.getElementById("minimizeBtn");
+
+        expandBtn.addEventListener("click", () => {
+            container.classList.remove("minimized");
+            container.classList.add("fullscreen");
+        });
+
+        minimizeBtn.addEventListener("click", () => {
+            container.classList.remove("fullscreen");
+            container.classList.add("minimized");
+        });
     </script>
 </body>
 </html>
