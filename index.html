@@ -19,10 +19,8 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            width: 90%; /* Responszív szélesség */
-            max-width: 1000px; /* Xiaomi Pad 6 Pro képernyőméretéhez igazítva */
-            height: 90vh; /* Nagyobb magasság */
-            max-height: 750px; /* 2880x1800 felbontás alapján */
+            width: 100%; /* Teljes szélesség */
+            height: 100vh; /* Teljes magasság */
             border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
             border-radius: 10px; /* Lekerekített sarkok */
             position: relative;
@@ -126,24 +124,14 @@
         #result {
             margin-top: 10px;
         }
-        @media (max-width: 820px) {
-            .container {
-                width: 95%; /* Kisebb eszközökön még responzívabb */
-                height: 90vh;
-                max-height: none;
-            }
-            .header-right {
-                gap: 10px; /* Kisebb hely kisebb képernyőn */
-            }
-        }
     </style>
 </head>
-<body>
+<body onload="toggleFullscreen()">
     <div class="container">
         <div class="header">
             <div class="header-left">
                 <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
-                <button class="fullscreen-btn" onclick="toggleFullscreen()">Teljes képernyő</button>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">Kilépés a teljes képernyőből</button>
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
