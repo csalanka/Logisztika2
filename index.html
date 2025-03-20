@@ -41,7 +41,7 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
         }
         .header img {
             width: 128px; /* Ikon mérete */
@@ -57,17 +57,13 @@
             color: #e0e0e0;
             cursor: pointer;
         }
-        .header-right i:hover {
+        .header-right i:hover, .fullscreen-icon:hover {
             color: #621d8a; /* Energy lila hover hatás */
         }
-        .fullscreen-btn {
-            background-color: #621d8a;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
+        .fullscreen-icon {
+            font-size: 16px;
             color: #e0e0e0;
             cursor: pointer;
-            font-size: 14px;
         }
         .divider {
             width: 100%;
@@ -131,7 +127,7 @@
         <div class="header">
             <div class="header-left">
                 <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
-                <button class="fullscreen-btn" onclick="toggleFullscreen()">Kilépés a teljes képernyőből</button>
+                <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
@@ -191,12 +187,17 @@
 
         // Teljes képernyős mód váltása
         function toggleFullscreen() {
+            const fullscreenIcon = document.querySelector(".fullscreen-icon");
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
-                document.querySelector(".fullscreen-btn").textContent = "Kilépés a teljes képernyőből";
+                fullscreenIcon.classList.remove("fa-expand");
+                fullscreenIcon.classList.add("fa-compress");
+                fullscreenIcon.title = "Kilépés a teljes képernyőből";
             } else {
                 document.exitFullscreen();
-                document.querySelector(".fullscreen-btn").textContent = "Teljes képernyő";
+                fullscreenIcon.classList.remove("fa-compress");
+                fullscreenIcon.classList.add("fa-expand");
+                fullscreenIcon.title = "Teljes képernyő";
             }
         }
     </script>
