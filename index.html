@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siemens Energy Ikon</title>
+    <!-- Font Awesome ikonok betöltése -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             background-color: #000000; /* Fekete háttér */
@@ -18,9 +20,9 @@
         }
         .container {
             width: 90%; /* Responszív szélesség */
-            max-width: 820px; /* iPad Pro 12.9-inch szélessége pixelben */
-            height: 90vh; /* iPad Pro 12.9-inch magassága */
-            max-height: 614px; /* 2048px felbontás alapján, 90%-os terület */
+            max-width: 1000px; /* Nagyobb képernyőméret */
+            height: 90vh; /* Nagyobb magasság */
+            max-height: 750px; /* Nagyobb magasság */
             border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
             border-radius: 10px; /* Lekerekített sarkok */
             position: relative;
@@ -31,36 +33,70 @@
             box-sizing: border-box;
         }
         .header {
-            position: absolute;
-            top: 67px; /* Y=67 */
-            left: 147px; /* X=147 */
             width: 100%;
-            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
         }
         .header img {
             width: 128px; /* Ikon mérete */
             height: 70px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header-right span, .header-right i {
+            font-size: 14px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+        .header-right i:hover {
+            color: #621d8a; /* Energy lila hover hatás */
         }
         .divider {
             width: 100%;
             height: 2px;
             background-color: #621d8a; /* Energy lila */
             margin: 10px 0;
-            position: relative;
-            top: 150px; /* A logó alatt, igazítva */
+        }
+        /* Modal ablak stílusa */
+        .modal {
+            display: block; /* Alapértelmezetten látható */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Áttetsző háttér */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            border: 1px solid #621d8a;
         }
         .login-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 100%;
-            max-width: 300px; /* Űrlap szélessége */
-            position: relative;
-            top: 160px; /* A divider alatt */
-            left: 10px;
         }
         .login-form label {
             font-weight: bold;
+            text-align: left;
         }
         .login-form input {
             padding: 5px;
@@ -71,7 +107,7 @@
         }
         .login-form button {
             padding: 10px;
-            background-color: #621d8a; /* Energy lila a gombon */
+            background-color: #621d8a; /* Energy lila */
             border: none;
             border-radius: 5px;
             color: #e0e0e0;
@@ -86,8 +122,8 @@
                 height: 90vh;
                 max-height: none;
             }
-            .header {
-                left: 10px; /* Kis képernyőn balra igazítjuk */
+            .header-right {
+                gap: 10px; /* Kisebb hely kisebb képernyőn */
             }
         }
     </style>
@@ -95,16 +131,31 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+            <div class="header-left">
+                <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+            </div>
+            <div class="header-right">
+                <span id="userEmail"></span>
+                <i class="fas fa-envelope" title="Üzenetek"></i>
+                <i class="fas fa-user" title="Profiladatok"></i>
+                <i class="fas fa-question-circle" title="Segítség"></i>
+                <span>v1.0.0</span>
+            </div>
         </div>
         <div class="divider"></div>
-        <div class="login-form">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Jelszó:</label>
-            <input type="password" id="password" name="password" required>
-            <button onclick="checkLogin()">Belépés</button>
-            <div id="result"></div>
+    </div>
+
+    <!-- Modal ablak a belépéshez -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="login-form">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="password">Jelszó:</label>
+                <input type="password" id="password" name="password" required>
+                <button onclick="checkLogin()">Belépés</button>
+                <div id="result"></div>
+            </div>
         </div>
     </div>
 
@@ -113,6 +164,8 @@
         const savedEmail = localStorage.getItem("email");
         if (savedEmail) {
             document.getElementById("email").value = savedEmail;
+            document.getElementById("userEmail").textContent = savedEmail;
+            document.getElementById("loginModal").style.display = "none"; // Ha már be van jelentkezve
         }
 
         function checkLogin() {
@@ -127,6 +180,10 @@
             if (password === "3211") {
                 resultDiv.textContent = "kész";
                 resultDiv.style.color = "#4CAF50";
+                // Modal ablak bezárása
+                document.getElementById("loginModal").style.display = "none";
+                // Email megjelenítése a fejlécben
+                document.getElementById("userEmail").textContent = email;
             } else {
                 resultDiv.textContent = "Helytelen jelszó!";
                 resultDiv.style.color = "#F44336";
