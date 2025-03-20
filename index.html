@@ -2,6 +2,7 @@
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siemens Energy Ikon</title>
     <style>
         body {
@@ -10,27 +11,53 @@
             padding: 0;
             height: 100vh; /* Teljes képernyő magasság */
             display: flex;
-            justify-content: flex-start; /* Balra igazítás */
-            align-items: flex-start; /* Felső igazítás */
+            justify-content: center; /* Középre igazítás */
+            align-items: center; /* Középre igazítás */
             color: #e0e0e0; /* Világos szöveg a fekete háttéren */
             font-family: Arial, sans-serif;
         }
+        .container {
+            width: 90%; /* Responszív szélesség */
+            max-width: 820px; /* iPad Pro 12.9-inch szélessége pixelben */
+            height: 90vh; /* iPad Pro 12.9-inch magassága */
+            max-height: 614px; /* 2048px felbontás alapján, 90%-os terület */
+            border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
+            border-radius: 10px; /* Lekerekített sarkok */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+            box-sizing: border-box;
+        }
         .header {
             position: absolute;
-            top: 0px;
-            left: 10px;
+            top: 67px; /* Y=67 */
+            left: 147px; /* X=147 */
+            width: 100%;
+            text-align: left;
         }
         .header img {
             width: 128px; /* Ikon mérete */
             height: 70px;
         }
+        .divider {
+            width: 100%;
+            height: 2px;
+            background-color: #621d8a; /* Energy lila */
+            margin: 10px 0;
+            position: relative;
+            top: 150px; /* A logó alatt, igazítva */
+        }
         .login-form {
-            position: absolute;
-            top: 100px; /* A logó alatt */
-            left: 10px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            width: 100%;
+            max-width: 300px; /* Űrlap szélessége */
+            position: relative;
+            top: 160px; /* A divider alatt */
+            left: 10px;
         }
         .login-form label {
             font-weight: bold;
@@ -44,7 +71,7 @@
         }
         .login-form button {
             padding: 10px;
-            background-color: #4CAF50;
+            background-color: #621d8a; /* Energy lila a gombon */
             border: none;
             border-radius: 5px;
             color: #e0e0e0;
@@ -53,19 +80,32 @@
         #result {
             margin-top: 10px;
         }
+        @media (max-width: 820px) {
+            .container {
+                width: 95%; /* Kisebb eszközökön még responzívabb */
+                height: 90vh;
+                max-height: none;
+            }
+            .header {
+                left: 10px; /* Kis képernyőn balra igazítjuk */
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
-    </div>
-    <div class="login-form">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Jelszó:</label>
-        <input type="password" id="password" name="password" required>
-        <button onclick="checkLogin()">Belépés</button>
-        <div id="result"></div>
+    <div class="container">
+        <div class="header">
+            <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+        </div>
+        <div class="divider"></div>
+        <div class="login-form">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Jelszó:</label>
+            <input type="password" id="password" name="password" required>
+            <button onclick="checkLogin()">Belépés</button>
+            <div id="result"></div>
+        </div>
     </div>
 
     <script>
