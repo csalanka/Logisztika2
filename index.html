@@ -20,7 +20,7 @@
         }
         .container {
             width: 100%; /* Teljes szélesség */
-            height: 100vh; /* Teljes magasság */
+            height: 100vh; /* Alapértelmezett magasság */
             border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
             border-radius: 10px; /* Lekerekített sarkok */
             position: relative;
@@ -123,11 +123,10 @@
     </style>
 </head>
 <body onload="toggleFullscreen()">
-    <div class="container">
+    <div class="container" id="container">
         <div class="header">
             <div class="header-left">
                 <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
-                <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
@@ -135,6 +134,7 @@
                 <i class="fas fa-user" title="Profiladatok"></i>
                 <i class="fas fa-question-circle" title="Segítség"></i>
                 <span>v1.0.0</span>
+                <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
         <div class="divider"></div>
@@ -185,21 +185,38 @@
             }
         }
 
-        // Teljes képernyős mód váltása
+        // Teljes képernyős mód váltása és keret igazítása
         function toggleFullscreen() {
             const fullscreenIcon = document.querySelector(".fullscreen-icon");
+            const container = document.getElementById("container");
+
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
                 fullscreenIcon.classList.remove("fa-expand");
                 fullscreenIcon.classList.add("fa-compress");
                 fullscreenIcon.title = "Kilépés a teljes képernyőből";
+                container.style.height = "100vh"; // Teljes képernyős mód
             } else {
                 document.exitFullscreen();
                 fullscreenIcon.classList.remove("fa-compress");
                 fullscreenIcon.classList.add("fa-expand");
                 fullscreenIcon.title = "Teljes képernyő";
+                // Böngészősávos mód: a látható terület magasságát használjuk
+                const windowHeight = window.innerHeight;
+                container.style.height = `${windowHeight}px`;
             }
         }
+
+        // Képernyő méret változásának figyelése
+        window.addEventListener("resize", () => {
+            const container = document.getElementById("container");
+            if (!document.fullscreenElement) {
+                const windowHeight = window.innerHeight;
+                container.style.height = `${windowHeight}px`;
+            } else {
+                container.style.height = "100vh";
+            }
+        });
     </script>
 </body>
 </html>
