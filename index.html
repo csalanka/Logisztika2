@@ -12,6 +12,8 @@
             display: flex;
             justify-content: flex-start; /* Balra igazítás */
             align-items: flex-start; /* Felső igazítás */
+            color: #e0e0e0; /* Világos szöveg a fekete háttéren */
+            font-family: Arial, sans-serif;
         }
         .header {
             position: absolute;
@@ -22,11 +24,74 @@
             width: 128px; /* Ikon mérete */
             height: 70px;
         }
+        .login-form {
+            position: absolute;
+            top: 100px; /* A logó alatt */
+            left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .login-form label {
+            font-weight: bold;
+        }
+        .login-form input {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3c3c3c;
+            color: #e0e0e0;
+        }
+        .login-form button {
+            padding: 10px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
     </div>
+    <div class="login-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="password">Jelszó:</label>
+        <input type="password" id="password" name="password" required>
+        <button onclick="checkLogin()">Belépés</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Email betöltése localStorage-ból, ha létezik
+        const savedEmail = localStorage.getItem("email");
+        if (savedEmail) {
+            document.getElementById("email").value = savedEmail;
+        }
+
+        function checkLogin() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const resultDiv = document.getElementById("result");
+
+            // Email mentése localStorage-ba
+            localStorage.setItem("email", email);
+
+            // Jelszó ellenőrzése (most fix: 3211)
+            if (password === "3211") {
+                resultDiv.textContent = "kész";
+                resultDiv.style.color = "#4CAF50";
+            } else {
+                resultDiv.textContent = "Helytelen jelszó!";
+                resultDiv.style.color = "#F44336";
+            }
+        }
+    </script>
 </body>
 </html>
