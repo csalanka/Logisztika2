@@ -21,8 +21,8 @@
         .container {
             width: 90%; /* Responszív szélesség */
             max-width: 1000px; /* Xiaomi Pad 6 Pro képernyőméretéhez igazítva */
-            height: 90vh; /* Xiaomi Pad 6 Pro magassága */
-            max-height: 750px; /* 1800px felbontás alapján, 90%-os terület */
+            height: 90vh; /* Nagyobb magasság */
+            max-height: 750px; /* 2880x1800 felbontás alapján */
             border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
             border-radius: 10px; /* Lekerekített sarkok */
             position: relative;
@@ -31,20 +31,6 @@
             align-items: flex-start;
             padding: 10px;
             box-sizing: border-box;
-            transition: all 0.3s ease; /* Animáció a méretváltáshoz */
-        }
-        .container.fullscreen {
-            max-width: 100%; /* Teljes szélesség */
-            max-height: 100%; /* Teljes magasság */
-            width: 100%;
-            height: 100vh;
-            border-radius: 0; /* Nincs lekerekítés teljes képernyőn */
-        }
-        .container.minimized {
-            max-width: 800px; /* Összecsukott állapot */
-            max-height: 600px;
-            width: 80%;
-            height: 80vh;
         }
         .header {
             width: 100%;
@@ -75,6 +61,15 @@
         }
         .header-right i:hover {
             color: #621d8a; /* Energy lila hover hatás */
+        }
+        .fullscreen-btn {
+            background-color: #621d8a;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 14px;
         }
         .divider {
             width: 100%;
@@ -144,13 +139,11 @@
     </style>
 </head>
 <body>
-    <div class="container" id="appContainer">
+    <div class="container">
         <div class="header">
             <div class="header-left">
                 <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
-                <!-- Teljes képernyő és összecsukás ikonok -->
-                <i class="fas fa-expand" id="expandBtn" title="Teljes képernyő"></i>
-                <i class="fas fa-compress" id="minimizeBtn" title="Összecsukás"></i>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">Teljes képernyő</button>
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
@@ -208,20 +201,16 @@
             }
         }
 
-        // Teljes képernyő és összecsukás funkciók
-        const container = document.getElementById("appContainer");
-        const expandBtn = document.getElementById("expandBtn");
-        const minimizeBtn = document.getElementById("minimizeBtn");
-
-        expandBtn.addEventListener("click", () => {
-            container.classList.remove("minimized");
-            container.classList.add("fullscreen");
-        });
-
-        minimizeBtn.addEventListener("click", () => {
-            container.classList.remove("fullscreen");
-            container.classList.add("minimized");
-        });
+        // Teljes képernyős mód váltása
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                document.querySelector(".fullscreen-btn").textContent = "Kilépés a teljes képernyőből";
+            } else {
+                document.exitFullscreen();
+                document.querySelector(".fullscreen-btn").textContent = "Teljes képernyő";
+            }
+        }
     </script>
 </body>
 </html>
