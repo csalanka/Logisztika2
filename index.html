@@ -120,17 +120,34 @@
         }
         th {
             background-color: #2a2a2a;
+            position: relative;
         }
         tr:nth-child(even) {
             background-color: #222222;
         }
-        .edit-btn {
+        .edit-btn, .new-record-btn {
             padding: 5px 10px;
             background-color: #621d8a;
             border: none;
             border-radius: 5px;
             color: #e0e0e0;
             cursor: pointer;
+            margin-bottom: 10px;
+        }
+        /* Szűrő ikon és beviteli mező */
+        .filter-icon {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .filter-input {
+            display: none;
+            margin-top: 5px;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3c3c3c;
+            color: #e0e0e0;
+            width: 80%;
         }
         /* Modal ablak stílusa */
         .modal {
@@ -153,24 +170,24 @@
             text-align: center;
             border: 1px solid #621d8a;
         }
-        .login-form, .edit-form {
+        .login-form, .edit-form, .new-record-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 100%;
         }
-        .login-form label, .edit-form label {
+        .login-form label, .edit-form label, .new-record-form label {
             font-weight: bold;
             text-align: left;
         }
-        .login-form input, .edit-form input {
+        .login-form input, .edit-form input, .new-record-form input {
             padding: 5px;
             border: none;
             border-radius: 5px;
             background-color: #3c3c3c;
             color: #e0e0e0;
         }
-        .login-form button, .edit-form button {
+        .login-form button, .edit-form button, .new-record-form button {
             padding: 10px;
             background-color: #621d8a; /* Energy lila */
             border: none;
@@ -228,25 +245,26 @@
         </div>
         <div id="logisztikai-adatbazis" class="tab-content">
             <h2>Logisztikai adatbázis</h2>
-            <table>
+            <button class="new-record-btn" onclick="openNewRecordModal('logisztikai-adatbazis')">Új rekord</button>
+            <table id="logisztikai-table">
                 <thead>
                     <tr>
-                        <th>Sr.</th>
-                        <th>Felvéve</th>
-                        <th>Kontírozás</th>
-                        <th>Ak.</th>
-                        <th>Megnevezés</th>
-                        <th>Folyamat</th>
-                        <th>Szállító</th>
-                        <th>Sz.kód</th>
-                        <th>Ajánlatszám</th>
-                        <th>Mennyiség</th>
-                        <th>Egység</th>
-                        <th>Ár</th>
-                        <th>EUR/HUF</th>
-                        <th>BMIg.</th>
-                        <th>PO</th>
-                        <th>T.Szállítás</th>
+                        <th>Sr.<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 0, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 0, 'logisztikai-table')"></th>
+                        <th>Felvéve<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 1, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 1, 'logisztikai-table')"></th>
+                        <th>Kontírozás<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 2, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 2, 'logisztikai-table')"></th>
+                        <th>Ak.<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 3, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 3, 'logisztikai-table')"></th>
+                        <th>Megnevezés<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 4, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 4, 'logisztikai-table')"></th>
+                        <th>Folyamat<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 5, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 5, 'logisztikai-table')"></th>
+                        <th>Szállító<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 6, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 6, 'logisztikai-table')"></th>
+                        <th>Sz.kód<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 7, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 7, 'logisztikai-table')"></th>
+                        <th>Ajánlatszám<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 8, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 8, 'logisztikai-table')"></th>
+                        <th>Mennyiség<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 9, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 9, 'logisztikai-table')"></th>
+                        <th>Egység<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 10, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 10, 'logisztikai-table')"></th>
+                        <th>Ár<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 11, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 11, 'logisztikai-table')"></th>
+                        <th>EUR/HUF<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 12, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 12, 'logisztikai-table')"></th>
+                        <th>BMIg.<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 13, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 13, 'logisztikai-table')"></th>
+                        <th>PO<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 14, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 14, 'logisztikai-table')"></th>
+                        <th>T.Szállítás<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 15, 'logisztikai-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 15, 'logisztikai-table')"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -299,14 +317,15 @@
         </div>
         <div id="nyomonkövetési-listák" class="tab-content">
             <h2>Nyomonkövetési listák</h2>
+            <button class="new-record-btn" onclick="openNewRecordModal('nyomonkövetési-listák')">Új rekord</button>
             <table id="nyomonkovetesi-table">
                 <thead>
                     <tr>
-                        <th>Alkatrész neve</th>
-                        <th>Sorozatszám</th>
-                        <th>Helyzet</th>
-                        <th>Mozgás dátuma</th>
-                        <th>Érték (HUF)</th>
+                        <th>Alkatrész neve<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 0, 'nyomonkovetesi-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 0, 'nyomonkovetesi-table')"></th>
+                        <th>Sorozatszám<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 1, 'nyomonkovetesi-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 1, 'nyomonkovetesi-table')"></th>
+                        <th>Helyzet<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 2, 'nyomonkovetesi-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 2, 'nyomonkovetesi-table')"></th>
+                        <th>Mozgás dátuma<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 3, 'nyomonkovetesi-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 3, 'nyomonkovetesi-table')"></th>
+                        <th>Érték (HUF)<i class="fas fa-filter filter-icon" onclick="toggleFilter(this, 4, 'nyomonkovetesi-table')"></i><input type="text" class="filter-input" onkeyup="filterTable(this, 4, 'nyomonkovetesi-table')"></th>
                         <th>Műveletek</th>
                     </tr>
                 </thead>
@@ -394,6 +413,16 @@
                 <input type="number" id="editErtek" required>
                 <button onclick="saveEdit()">Mentés</button>
                 <button onclick="closeEditModal()">Mégse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ablak új rekord felvételéhez -->
+    <div class="modal" id="newRecordModal" style="display: none;">
+        <div class="modal-content">
+            <div class="new-record-form" id="newRecordForm">
+                <h2>Új rekord</h2>
+                <!-- A mezők dinamikusan töltődnek be -->
             </div>
         </div>
     </div>
@@ -529,6 +558,117 @@
                 openTab('profil');
                 profilTab.style.display = "block";
             }
+        }
+
+        // Szűrő mező megjelenítése/elrejtése
+        function toggleFilter(icon, columnIndex, tableId) {
+            const input = icon.nextElementSibling;
+            input.style.display = input.style.display === "block" ? "none" : "block";
+        }
+
+        // Táblázat szűrése
+        function filterTable(input, columnIndex, tableId) {
+            const filterValue = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+            for (let i = 0; i < rows.length; i++) {
+                const cell = rows[i].getElementsByTagName("td")[columnIndex];
+                if (cell) {
+                    const cellText = cell.textContent.toLowerCase();
+                    rows[i].style.display = cellText.includes(filterValue) ? "" : "none";
+                }
+            }
+        }
+
+        // Új rekord modal megnyitása
+        function openNewRecordModal(tabName) {
+            const modal = document.getElementById("newRecordModal");
+            const form = document.getElementById("newRecordForm");
+            form.innerHTML = "<h2>Új rekord</h2>"; // Reset form
+
+            if (tabName === "logisztikai-adatbazis") {
+                const fields = [
+                    "Sr.", "Felvéve", "Kontírozás", "Ak.", "Megnevezés", "Folyamat", "Szállító", 
+                    "Sz.kód", "Ajánlatszám", "Mennyiség", "Egység", "Ár", "EUR/HUF", "BMIg.", "PO", "T.Szállítás"
+                ];
+                fields.forEach((field) => {
+                    const label = document.createElement("label");
+                    label.textContent = field + ":";
+                    const input = document.createElement("input");
+                    input.type = field.includes("Felvéve") || field.includes("BMIg.") || field.includes("T.Szállítás") ? "date" : 
+                                 field.includes("Mennyiség") || field.includes("Ár") ? "number" : "text";
+                    input.id = `new-${field.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+                    input.required = true;
+                    form.appendChild(label);
+                    form.appendChild(input);
+                });
+            } else if (tabName === "nyomonkövetési-listák") {
+                const fields = [
+                    "Alkatrész neve", "Sorozatszám", "Helyzet", "Mozgás dátuma", "Érték (HUF)"
+                ];
+                fields.forEach((field) => {
+                    const label = document.createElement("label");
+                    label.textContent = field + ":";
+                    const input = document.createElement("input");
+                    input.type = field.includes("Mozgás dátuma") ? "date" : 
+                                 field.includes("Érték (HUF)") ? "number" : "text";
+                    input.id = `new-${field.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+                    input.required = true;
+                    form.appendChild(label);
+                    form.appendChild(input);
+                });
+            }
+
+            // Mentés és Mégse gombok
+            const saveButton = document.createElement("button");
+            saveButton.textContent = "Mentés";
+            saveButton.onclick = () => saveNewRecord(tabName);
+            const cancelButton = document.createElement("button");
+            cancelButton.textContent = "Mégse";
+            cancelButton.onclick = closeNewRecordModal;
+            form.appendChild(saveButton);
+            form.appendChild(cancelButton);
+
+            modal.style.display = "flex";
+        }
+
+        // Új rekord modal bezárása
+        function closeNewRecordModal() {
+            document.getElementById("newRecordModal").style.display = "none";
+        }
+
+        // Új rekord mentése
+        function saveNewRecord(tabName) {
+            if (tabName === "logisztikai-adatbazis") {
+                const table = document.getElementById("logisztikai-table").getElementsByTagName("tbody")[0];
+                const newRow = table.insertRow();
+                const fields = [
+                    "Sr.", "Felvéve", "Kontírozás", "Ak.", "Megnevezés", "Folyamat", "Szállító", 
+                    "Sz.kód", "Ajánlatszám", "Mennyiség", "Egység", "Ár", "EUR/HUF", "BMIg.", "PO", "T.Szállítás"
+                ];
+                fields.forEach((field) => {
+                    const cell = newRow.insertCell();
+                    const input = document.getElementById(`new-${field.toLowerCase().replace(/[^a-z0-9]/g, '-')}`);
+                    cell.textContent = input.value;
+                });
+            } else if (tabName === "nyomonkövetési-listák") {
+                const table = document.getElementById("nyomonkovetesi-table").getElementsByTagName("tbody")[0];
+                const newRow = table.insertRow();
+                const rowCount = table.rows.length + 1;
+                newRow.setAttribute("data-id", rowCount);
+                const fields = [
+                    "Alkatrész neve", "Sorozatszám", "Helyzet", "Mozgás dátuma", "Érték (HUF)"
+                ];
+                fields.forEach((field) => {
+                    const cell = newRow.insertCell();
+                    const input = document.getElementById(`new-${field.toLowerCase().replace(/[^a-z0-9]/g, '-')}`);
+                    cell.textContent = field.includes("Érték (HUF)") ? `${parseInt(input.value).toLocaleString()} HUF` : input.value;
+                });
+                const actionCell = newRow.insertCell();
+                actionCell.innerHTML = `<button class="edit-btn" onclick="openEditModal(${rowCount})">Szerkesztés</button>`;
+            }
+            closeNewRecordModal();
         }
 
         // Szerkesztési modal megnyitása
