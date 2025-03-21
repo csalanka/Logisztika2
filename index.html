@@ -124,6 +124,14 @@
         tr:nth-child(even) {
             background-color: #222222;
         }
+        .edit-btn {
+            padding: 5px 10px;
+            background-color: #621d8a;
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
         /* Modal ablak stílusa */
         .modal {
             display: block; /* Alapértelmezetten látható */
@@ -141,28 +149,28 @@
             background-color: #1a1a1a;
             padding: 20px;
             border-radius: 10px;
-            width: 300px;
+            width: 400px;
             text-align: center;
             border: 1px solid #621d8a;
         }
-        .login-form {
+        .login-form, .edit-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 100%;
         }
-        .login-form label {
+        .login-form label, .edit-form label {
             font-weight: bold;
             text-align: left;
         }
-        .login-form input {
+        .login-form input, .edit-form input {
             padding: 5px;
             border: none;
             border-radius: 5px;
             background-color: #3c3c3c;
             color: #e0e0e0;
         }
-        .login-form button {
+        .login-form button, .edit-form button {
             padding: 10px;
             background-color: #621d8a; /* Energy lila */
             border: none;
@@ -275,7 +283,36 @@
         </div>
         <div id="nyomonkövetési-listák" class="tab-content">
             <h2>Nyomonkövetési listák</h2>
-            <p>Itt követheted nyomon a rendeléseket...</p>
+            <table id="nyomonkovetesi-table">
+                <thead>
+                    <tr>
+                        <th>Alkatrész neve</th>
+                        <th>Sorozatszám</th>
+                        <th>Helyzet</th>
+                        <th>Mozgás dátuma</th>
+                        <th>Érték (HUF)</th>
+                        <th>Műveletek</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-id="1">
+                        <td>Motor</td>
+                        <td>SN12345</td>
+                        <td>Raktár A</td>
+                        <td>2025.03.20</td>
+                        <td>1,500,000 HUF</td>
+                        <td><button class="edit-btn" onclick="openEditModal(1)">Szerkesztés</button></td>
+                    </tr>
+                    <tr data-id="2">
+                        <td>Szivattyú</td>
+                        <td>SN67890</td>
+                        <td>Raktár B</td>
+                        <td>2025.03.19</td>
+                        <td>2,000,000 HUF</td>
+                        <td><button class="edit-btn" onclick="openEditModal(2)">Szerkesztés</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div id="szállítói-címjegyzék" class="tab-content">
             <h2>Szállítói címjegyzék</h2>
@@ -315,6 +352,28 @@
                 <input type="password" id="password" name="password" required>
                 <button onclick="checkLogin()">Belépés</button>
                 <div id="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ablak a szerkesztéshez -->
+    <div class="modal" id="editModal" style="display: none;">
+        <div class="modal-content">
+            <div class="edit-form">
+                <h2>Alkatrész szerkesztése</h2>
+                <input type="hidden" id="editId">
+                <label for="editNev">Alkatrész neve:</label>
+                <input type="text" id="editNev" required>
+                <label for="editSorozatszam">Sorozatszám:</label>
+                <input type="text" id="editSorozatszam" required>
+                <label for="editHelyzet">Helyzet:</label>
+                <input type="text" id="editHelyzet" required>
+                <label for="editMozgasDatum">Mozgás dátuma:</label>
+                <input type="date" id="editMozgasDatum" required>
+                <label for="editErtek">Érték (HUF):</label>
+                <input type="number" id="editErtek" required>
+                <button onclick="saveEdit()">Mentés</button>
+                <button onclick="closeEditModal()">Mégse</button>
             </div>
         </div>
     </div>
@@ -410,6 +469,41 @@
             if (tabElement) {
                 tabElement.classList.add("active");
             }
+        }
+
+        // Szerkesztési modal megnyitása
+        function openEditModal(id) {
+            const row = document.querySelector(`#nyomonkovetesi-table tr[data-id="${id}"]`);
+            const cells = row.getElementsByTagName("td");
+
+            document.getElementById("editId").value = id;
+            document.getElementById("editNev").value = cells[0].textContent;
+            document.getElementById("editSorozatszam").value = cells[1].textContent;
+            document.getElementById("editHelyzet").value = cells[2].textContent;
+            document.getElementById("editMozgasDatum").value = cells[3].textContent;
+            document.getElementById("editErtek").value = parseInt(cells[4].textContent.replace(/[^0-9]/g, ''));
+
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        // Szerkesztési modal bezárása
+        function closeEditModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+
+        // Szerkesztés mentése
+        function saveEdit() {
+            const id = document.getElementById("editId").value;
+            const row = document.querySelector(`#nyomonkovetesi-table tr[data-id="${id}"]`);
+            const cells = row.getElementsByTagName("td");
+
+            cells[0].textContent = document.getElementById("editNev").value;
+            cells[1].textContent = document.getElementById("editSorozatszam").value;
+            cells[2].textContent = document.getElementById("editHelyzet").value;
+            cells[3].textContent = document.getElementById("editMozgasDatum").value;
+            cells[4].textContent = `${parseInt(document.getElementById("editErtek").value).toLocaleString()} HUF`;
+
+            closeEditModal();
         }
     </script>
 </body>
