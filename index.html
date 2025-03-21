@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
@@ -110,6 +109,10 @@
             background-color: #3c3c3c;
             color: #e0e0e0;
         }
+        .login-form input[type="email"], .login-form input[type="password"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
         .login-form button {
             padding: 10px;
             background-color: #621d8a; /* Energy lila */
@@ -136,6 +139,7 @@
                 <i class="fas fa-question-circle" title="Segítség"></i>
                 <span>v1.0.0</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
+                <i class="fas fa-sign-out-alt" onclick="logout()" title="Kilépés"></i>
             </div>
         </div>
         <div class="divider"></div>
@@ -184,6 +188,20 @@
                 resultDiv.textContent = "Helytelen jelszó!";
                 resultDiv.style.color = "#F44336";
             }
+        }
+
+        // Kilépés funkció
+        function logout() {
+            // Email törlése a localStorage-ból
+            localStorage.removeItem("email");
+            // Email eltávolítása a fejlécből
+            document.getElementById("userEmail").textContent = "";
+            // Belépési modal ablak újbóli megjelenítése
+            document.getElementById("loginModal").style.display = "flex";
+            // Űrlap mezők törlése
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("result").textContent = "";
         }
 
         // Teljes képernyős mód váltása és keret igazítása
