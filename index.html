@@ -102,9 +102,27 @@
             background-color: #1a1a1a;
             border-radius: 5px;
             display: none;
+            overflow-y: auto; /* Görgethető tartalom */
         }
         .tab-content.active {
             display: block;
+        }
+        /* Táblázat stílusa */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #621d8a;
+            text-align: left;
+        }
+        th {
+            background-color: #2a2a2a;
+        }
+        tr:nth-child(even) {
+            background-color: #222222;
         }
         /* Modal ablak stílusa */
         .modal {
@@ -182,7 +200,7 @@
                 <span id="userEmail"></span>
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="openTab('profil')"></i>
-                <i class="fas fa-question-circle" title="Segítség" onclick="openTab('segítseg')"></i>
+                <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
                 <span>v1.0.0</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
@@ -201,7 +219,51 @@
         </div>
         <div id="logisztikai-adatbazis" class="tab-content active">
             <h2>Logisztikai adatbázis</h2>
-            <p>Itt jelennek meg a logisztikai adatok...</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Megnevezés</th>
+                        <th>Anyagszám</th>
+                        <th>Felvive</th>
+                        <th>Költséghely</th>
+                        <th>Belső megrendelési szám</th>
+                        <th>Szállító</th>
+                        <th>Gép/Terület</th>
+                        <th>Mennyiség</th>
+                        <th>Érték (HUF/EUR)</th>
+                        <th>PO szám</th>
+                        <th>Szállítási idő</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Csavar M8</td>
+                        <td>123456</td>
+                        <td>Felvive</td>
+                        <td>060</td>
+                        <td>1001083173</td>
+                        <td>Szállító 1</td>
+                        <td>MFC</td>
+                        <td>100 db</td>
+                        <td>5000 HUF</td>
+                        <td>PO12345</td>
+                        <td>2025.04.01</td>
+                    </tr>
+                    <tr>
+                        <td>Alátét M8</td>
+                        <td>654321</td>
+                        <td>Felvive</td>
+                        <td>050</td>
+                        <td>1001083174</td>
+                        <td>Szállító 2</td>
+                        <td>MFH</td>
+                        <td>200 db</td>
+                        <td>3000 HUF</td>
+                        <td>PO12346</td>
+                        <td>2025.04.02</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div id="anyagtörzs" class="tab-content">
             <h2>Anyagtörzs</h2>
@@ -344,7 +406,10 @@
 
             // Kiválasztott tab és tartalom aktiválása
             document.getElementById(tabName).classList.add("active");
-            document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add("active");
+            const tabElement = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
+            if (tabElement) {
+                tabElement.classList.add("active");
+            }
         }
     </script>
 </body>
