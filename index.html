@@ -422,142 +422,149 @@
         function checkLogin() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
-            const resultDiv = document.getElementBy彼此: "kész";
-            resultDiv.style.color = "#4CAF50";
-            // Modal ablak bezárása
-            document.getElementById("loginModal").style.display = "none";
-            // Email megjelenítése a fejlécben és a profilban
-            document.getElementById("userEmail").textContent = email;
-            document.getElementById("profilEmail").textContent = email;
-            openTab('logisztikai-adatbazis'); // Belépés után az alapértelmezett fül
-        } else {
-            resultDiv.textContent = "Helytelen jelszó!";
-            resultDiv.style.color = "#F44336";
-        }
-    }
+            const resultDiv = document.getElementById("result");
 
-    // Kijelentkezés
-    function logout() {
-        localStorage.removeItem("email");
-        hideAllTabs(); // Összes tab tartalom elrejtése
-        location.reload(); // Oldal újratöltése
-    }
+            // Email mentése localStorage-ba
+            localStorage.setItem("email", email);
 
-    // Teljes képernyős mód váltása és keret igazítása
-    function toggleFullscreen() {
-        const fullscreenIcon = document.querySelector(".fullscreen-icon");
-        const container = document.getElementById("container");
-
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-            fullscreenIcon.classList.remove("fa-expand");
-            fullscreenIcon.classList.add("fa-compress");
-            fullscreenIcon.title = "Kilépés a teljes képernyőből";
-            container.style.height = "100vh"; // Teljes képernyős mód
-        } else {
-            document.exitFullscreen();
-            fullscreenIcon.classList.remove("fa-compress");
-            fullscreenIcon.classList.add("fa-expand");
-            fullscreenIcon.title = "Teljes képernyő";
-            // Böngészősávos mód: a látható terület magasságát használjuk
-            const windowHeight = window.innerHeight;
-            container.style.height = `${windowHeight}px`;
-        }
-    }
-
-    // Képernyő méret változásának figyelése
-    window.addEventListener("resize", () => {
-        const container = document.getElementById("container");
-        if (!document.fullscreenElement) {
-            const windowHeight = window.innerHeight;
-            container.style.height = `${windowHeight}px`;
-        } else {
-            container.style.height = "100vh";
-        }
-    });
-
-    // Lapfülek kezelése
-    function openTab(tabName) {
-        // Ha nincs bejelentkezve, ne nyisson meg semmit
-        if (!localStorage.getItem("email")) {
-            return;
+            // Jelszó ellenőrzése (most fix: 3211)
+            if (password === "3211") {
+                resultDiv.textContent = "kész";
+                resultDiv.style.color = "#4CAF50";
+                // Modal ablak bezárása
+                document.getElementById("loginModal").style.display = "none";
+                // Email megjelenítése a fejlécben és a profilban
+                document.getElementById("userEmail").textContent = email;
+                document.getElementById("profilEmail").textContent = email;
+                openTab('logisztikai-adatbazis'); // Belépés után az alapértelmezett fül
+            } else {
+                resultDiv.textContent = "Helytelen jelszó!";
+                resultDiv.style.color = "#F44336";
+            }
         }
 
-        // Összes tab és tartalom inaktiválása
-        const tabs = document.getElementsByClassName("tab");
-        const tabContents = document.getElementsByClassName("tab-content");
-
-        for (let i = 0; i < tabs.length; i++) {
-            tabs[i].classList.remove("active");
-        }
-        for (let i = 0; i < tabContents.length; i++) {
-            tabContents[i].classList.remove("active");
+        // Kijelentkezés
+        function logout() {
+            localStorage.removeItem("email");
+            hideAllTabs(); // Összes tab tartalom elrejtése
+            location.reload(); // Oldal újratöltése
         }
 
-        // Kiválasztott tab és tartalom aktiválása
-        document.getElementById(tabName).classList.add("active");
-        const tabElement = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
-        if (tabElement) {
-            tabElement.classList.add("active");
+        // Teljes képernyős mód váltása és keret igazítása
+        function toggleFullscreen() {
+            const fullscreenIcon = document.querySelector(".fullscreen-icon");
+            const container = document.getElementById("container");
+
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                fullscreenIcon.classList.remove("fa-expand");
+                fullscreenIcon.classList.add("fa-compress");
+                fullscreenIcon.title = "Kilépés a teljes képernyőből";
+                container.style.height = "100vh"; // Teljes képernyős mód
+            } else {
+                document.exitFullscreen();
+                fullscreenIcon.classList.remove("fa-compress");
+                fullscreenIcon.classList.add("fa-expand");
+                fullscreenIcon.title = "Teljes képernyő";
+                // Böngészősávos mód: a látható terület magasságát használjuk
+                const windowHeight = window.innerHeight;
+                container.style.height = `${windowHeight}px`;
+            }
         }
 
-        // Ha nem a profil tabot nyitjuk, akkor a profil elrejtése
-        if (tabName !== 'profil') {
-            document.getElementById("profil").style.display = "none";
+        // Képernyő méret változásának figyelése
+        window.addEventListener("resize", () => {
+            const container = document.getElementById("container");
+            if (!document.fullscreenElement) {
+                const windowHeight = window.innerHeight;
+                container.style.height = `${windowHeight}px`;
+            } else {
+                container.style.height = "100vh";
+            }
+        });
+
+        // Lapfülek kezelése
+        function openTab(tabName) {
+            // Ha nincs bejelentkezve, ne nyisson meg semmit
+            if (!localStorage.getItem("email")) {
+                return;
+            }
+
+            // Összes tab és tartalom inaktiválása
+            const tabs = document.getElementsByClassName("tab");
+            const tabContents = document.getElementsByClassName("tab-content");
+
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            // Kiválasztott tab és tartalom aktiválása
+            document.getElementById(tabName).classList.add("active");
+            const tabElement = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
+            if (tabElement) {
+                tabElement.classList.add("active");
+            }
+
+            // Ha nem a profil tabot nyitjuk, akkor a profil elrejtése
+            if (tabName !== 'profil') {
+                document.getElementById("profil").style.display = "none";
+            }
         }
-    }
 
-    // Profil toggle
-    function toggleProfile() {
-        // Ha nincs bejelentkezve, ne nyisson meg semmit
-        if (!localStorage.getItem("email")) {
-            return;
+        // Profil toggle
+        function toggleProfile() {
+            // Ha nincs bejelentkezve, ne nyisson meg semmit
+            if (!localStorage.getItem("email")) {
+                return;
+            }
+
+            const profilTab = document.getElementById("profil");
+            if (profilTab.style.display === "block") {
+                profilTab.style.display = "none";
+                openTab('logisztikai-adatbazis'); // Vissza az alapértelmezett fülre
+            } else {
+                openTab('profil');
+                profilTab.style.display = "block";
+            }
         }
 
-        const profilTab = document.getElementById("profil");
-        if (profilTab.style.display === "block") {
-            profilTab.style.display = "none";
-            openTab('logisztikai-adatbazis'); // Vissza az alapértelmezett fülre
-        } else {
-            openTab('profil');
-            profilTab.style.display = "block";
+        // Szerkesztési modal megnyitása
+        function openEditModal(id) {
+            const row = document.querySelector(`#nyomonkovetesi-table tr[data-id="${id}"]`);
+            const cells = row.getElementsByTagName("td");
+
+            document.getElementById("editId").value = id;
+            document.getElementById("editNev").value = cells[0].textContent;
+            document.getElementById("editSorozatszam").value = cells[1].textContent;
+            document.getElementById("editHelyzet").value = cells[2].textContent;
+            document.getElementById("editMozgasDatum").value = cells[3].textContent;
+            document.getElementById("editErtek").value = parseInt(cells[4].textContent.replace(/[^0-9]/g, ''));
+
+            document.getElementById("editModal").style.display = "flex";
         }
-    }
 
-    // Szerkesztési modal megnyitása
-    function openEditModal(id) {
-        const row = document.querySelector(`#nyomonkovetesi-table tr[data-id="${id}"]`);
-        const cells = row.getElementsByTagName("td");
+        // Szerkesztési modal bezárása
+        function closeEditModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
 
-        document.getElementById("editId").value = id;
-        document.getElementById("editNev").value = cells[0].textContent;
-        document.getElementById("editSorozatszam").value = cells[1].textContent;
-        document.getElementById("editHelyzet").value = cells[2].textContent;
-        document.getElementById("editMozgasDatum").value = cells[3].textContent;
-        document.getElementById("editErtek").value = parseInt(cells[4].textContent.replace(/[^0-9]/g, ''));
+        // Szerkesztés mentése
+        function saveEdit() {
+            const id = document.getElementById("editId").value;
+            const row = document.querySelector(`#nyomonkovetesi-table tr[data-id="${id}"]`);
+            const cells = row.getElementsByTagName("td");
 
-        document.getElementById("editModal").style.display = "flex";
-    }
+            cells[0].textContent = document.getElementById("editNev").value;
+            cells[1].textContent = document.getElementById("editSorozatszam").value;
+            cells[2].textContent = document.getElementById("editHelyzet").value;
+            cells[3].textContent = document.getElementById("editMozgasDatum").value;
+            cells[4].textContent = `${parseInt(document.getElementById("editErtek").value).toLocaleString()} HUF`;
 
-    // Szerkesztési modal bezárása
-    function closeEditModal() {
-        document.getElementById("editModal").style.display = "none";
-    }
-
-    // Szerkesztés mentése
-    function saveEdit() {
-        const id = document.getElementById("editId").value;
-        const row = document.querySelector(`#nyomonkovetesi-table tr[data-id="${id}"]`);
-        const cells = row.getElementsByTagName("td");
-
-        cells[0].textContent = document.getElementById("editNev").value;
-        cells[1].textContent = document.getElementById("editSorozatszam").value;
-        cells[2].textContent = document.getElementById("editHelyzet").value;
-        cells[3].textContent = document.getElementById("editMozgasDatum").value;
-        cells[4].textContent = `${parseInt(document.getElementById("editErtek").value).toLocaleString()} HUF`;
-
-        closeEditModal();
-    }
-</script>
+            closeEditModal();
+        }
+    </script>
 </body>
 </html>
