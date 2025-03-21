@@ -71,6 +71,41 @@
             background-color: #621d8a; /* Energy lila */
             margin: 10px 0;
         }
+        /* Lapfülek stílusa */
+        .tabs {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto; /* Ha sok a fül, görgethető legyen */
+            white-space: nowrap;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #1a1a1a;
+            border: 1px solid #621d8a;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tab:hover {
+            background-color: #2a2a2a;
+        }
+        .tab.active {
+            background-color: #621d8a;
+            color: #e0e0e0;
+        }
+        .tab-content {
+            width: 100%;
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
         /* Modal ablak stílusa */
         .modal {
             display: block; /* Alapértelmezetten látható */
@@ -120,6 +155,21 @@
         #result {
             margin-top: 10px;
         }
+        /* Profil tartalom stílusa */
+        #profil {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #F44336; /* Piros a kijelentkezéshez */
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body onload="toggleFullscreen()">
@@ -130,14 +180,67 @@
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
-                <i class="fas fa-envelope" title="Üzenetek"></i>
-                <i class="fas fa-user" title="Profiladatok"></i>
-                <i class="fas fa-question-circle" title="Segítség"></i>
+                <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
+                <i class="fas fa-user" title="Profiladatok" onclick="openTab('profil')"></i>
+                <i class="fas fa-question-circle" title="Segítség" onclick="openTab('segítseg')"></i>
                 <span>v1.0.0</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
         <div class="divider"></div>
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('logisztikai-adatbazis')">Logisztikai adatbázis</div>
+            <div class="tab" onclick="openTab('anyagtörzs')">Anyagtörzs</div>
+            <div class="tab" onclick="openTab('belső-megrendelési-számok')">Belső megrendelési számok</div>
+            <div class="tab" onclick="openTab('nyomonkövetési-listák')">Nyomonkövetési listák</div>
+            <div class="tab" onclick="openTab('szállítói-címjegyzék')">Szállítói címjegyzék</div>
+            <div class="tab" onclick="openTab('foglalások')">Foglalások</div>
+            <div class="tab" onclick="openTab('statisztika')">Statisztika</div>
+            <div class="tab" onclick="openTab('chat-lista')">Chat Lista</div>
+            <div class="tab" onclick="openTab('felhasználó-kezelés')">Felhasználó kezelés</div>
+        </div>
+        <div id="logisztikai-adatbazis" class="tab-content active">
+            <h2>Logisztikai adatbázis</h2>
+            <p>Itt jelennek meg a logisztikai adatok...</p>
+        </div>
+        <div id="anyagtörzs" class="tab-content">
+            <h2>Anyagtörzs</h2>
+            <p>Itt láthatod az anyagtörzs adatokat...</p>
+        </div>
+        <div id="belső-megrendelési-számok" class="tab-content">
+            <h2>Belső megrendelési számok</h2>
+            <p>Itt találod a belső megrendelési számokat...</p>
+        </div>
+        <div id="nyomonkövetési-listák" class="tab-content">
+            <h2>Nyomonkövetési listák</h2>
+            <p>Itt követheted nyomon a rendeléseket...</p>
+        </div>
+        <div id="szállítói-címjegyzék" class="tab-content">
+            <h2>Szállítói címjegyzék</h2>
+            <p>Itt találod a szállítók adatait...</p>
+        </div>
+        <div id="foglalások" class="tab-content">
+            <h2>Foglalások</h2>
+            <p>Itt láthatod a foglalásokat...</p>
+        </div>
+        <div id="statisztika" class="tab-content">
+            <h2>Statisztika</h2>
+            <p>Itt találod a statisztikai adatokat...</p>
+        </div>
+        <div id="chat-lista" class="tab-content">
+            <h2>Chat Lista</h2>
+            <p>Itt láthatod az üzeneteidet...</p>
+        </div>
+        <div id="felhasználó-kezelés" class="tab-content">
+            <h2>Felhasználó kezelés</h2>
+            <p>Itt kezelheted a felhasználókat...</p>
+        </div>
+        <div id="profil" class="tab-content">
+            <h2>Saját profil</h2>
+            <p>Email: <span id="profilEmail"></span></p>
+            <p>Utolsó belépés: 2025.03.21</p>
+            <button class="logout-btn" onclick="logout()">Kijelentkezés</button>
+        </div>
     </div>
 
     <!-- Modal ablak a belépéshez -->
@@ -160,6 +263,7 @@
         if (savedEmail) {
             document.getElementById("email").value = savedEmail;
             document.getElementById("userEmail").textContent = savedEmail;
+            document.getElementById("profilEmail").textContent = savedEmail;
             document.getElementById("loginModal").style.display = "none"; // Ha már be van jelentkezve
         }
 
@@ -177,12 +281,19 @@
                 resultDiv.style.color = "#4CAF50";
                 // Modal ablak bezárása
                 document.getElementById("loginModal").style.display = "none";
-                // Email megjelenítése a fejlécben
+                // Email megjelenítése a fejlécben és a profilban
                 document.getElementById("userEmail").textContent = email;
+                document.getElementById("profilEmail").textContent = email;
             } else {
                 resultDiv.textContent = "Helytelen jelszó!";
                 resultDiv.style.color = "#F44336";
             }
+        }
+
+        // Kijelentkezés
+        function logout() {
+            localStorage.removeItem("email");
+            location.reload(); // Oldal újratöltése
         }
 
         // Teljes képernyős mód váltása és keret igazítása
@@ -217,6 +328,24 @@
                 container.style.height = "100vh";
             }
         });
+
+        // Lapfülek kezelése
+        function openTab(tabName) {
+            // Összes tab és tartalom inaktiválása
+            const tabs = document.getElementsByClassName("tab");
+            const tabContents = document.getElementsByClassName("tab-content");
+
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            // Kiválasztott tab és tartalom aktiválása
+            document.getElementById(tabName).classList.add("active");
+            document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add("active");
+        }
     </script>
 </body>
 </html>
