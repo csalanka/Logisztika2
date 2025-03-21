@@ -207,7 +207,7 @@
             <div class="header-right">
                 <span id="userEmail"></span>
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
-                <i class="fas fa-user" title="Profiladatok" onclick="openTab('profil')"></i>
+                <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
                 <span>v1.0.0</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
@@ -334,7 +334,7 @@
             <h2>Felhasználó kezelés</h2>
             <p>Itt kezelheted a felhasználókat...</p>
         </div>
-        <div id="profil" class="tab-content">
+        <div id="profil" class="tab-content" style="display: none;">
             <h2>Saját profil</h2>
             <p>Email: <span id="profilEmail"></span></p>
             <p>Utolsó belépés: 2025.03.21</p>
@@ -386,6 +386,7 @@
             document.getElementById("userEmail").textContent = savedEmail;
             document.getElementById("profilEmail").textContent = savedEmail;
             document.getElementById("loginModal").style.display = "none"; // Ha már be van jelentkezve
+            openTab('logisztikai-adatbazis'); // Alapértelmezett fül
         }
 
         function checkLogin() {
@@ -405,6 +406,7 @@
                 // Email megjelenítése a fejlécben és a profilban
                 document.getElementById("userEmail").textContent = email;
                 document.getElementById("profilEmail").textContent = email;
+                openTab('logisztikai-adatbazis'); // Belépés után az alapértelmezett fül
             } else {
                 resultDiv.textContent = "Helytelen jelszó!";
                 resultDiv.style.color = "#F44336";
@@ -468,6 +470,23 @@
             const tabElement = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
             if (tabElement) {
                 tabElement.classList.add("active");
+            }
+
+            // Ha nem a profil tabot nyitjuk, akkor a profil elrejtése
+            if (tabName !== 'profil') {
+                document.getElementById("profil").style.display = "none";
+            }
+        }
+
+        // Profil toggle
+        function toggleProfile() {
+            const profilTab = document.getElementById("profil");
+            if (profilTab.style.display === "block") {
+                profilTab.style.display = "none";
+                openTab('logisztikai-adatbazis'); // Vissza az alapértelmezett fülre
+            } else {
+                openTab('profil');
+                profilTab.style.display = "block";
             }
         }
 
