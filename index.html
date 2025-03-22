@@ -158,7 +158,7 @@
         #nyomonkovetesi-table th:nth-child(4), #nyomonkovetesi-table td:nth-child(4) { width: 120px; }
         #nyomonkovetesi-table th:nth-child(5), #nyomonkovetesi-table td:nth-child(5) { width: 120px; }
         #nyomonkovetesi-table th:nth-child(6), #nyomonkovetesi-table td:nth-child(6) { width: 100px; }
-        .edit-btn, .new-record-btn, .filter-action-btn {
+        .edit-btn, .new-record-btn {
             padding: 5px 10px;
             background-color: #621d8a;
             border: none;
@@ -166,61 +166,6 @@
             color: #e0e0e0;
             cursor: pointer;
             margin: 2px;
-        }
-        .filter-action-btn.clear {
-            background-color: #F44336;
-        }
-        .filter-container {
-            position: relative;
-            display: inline-block;
-        }
-        .filter-arrow {
-            margin-left: 5px;
-            cursor: pointer;
-        }
-        .filter-dropdown {
-            display: none;
-            position: absolute;
-            background-color: #1a1a1a;
-            border: 1px solid #621d8a;
-            border-radius: 5px;
-            z-index: 10;
-            max-height: 250px;
-            overflow-y: auto;
-            min-width: 200px;
-            padding: 10px;
-            box-sizing: border-box;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-        .filter-search-container {
-            margin-bottom: 10px;
-        }
-        .filter-search-container input[type="text"] {
-            width: 100%;
-            padding: 5px;
-            background-color: #3c3c3c;
-            color: #e0e0e0;
-            border: none;
-            border-radius: 5px;
-        }
-        .filter-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .filter-options {
-            max-height: 150px;
-            overflow-y: auto;
-        }
-        .filter-options label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px;
-            cursor: pointer;
-        }
-        .filter-options label:hover {
-            background-color: #2a2a2a;
         }
         .modal {
             display: block;
@@ -278,7 +223,7 @@
         }
         .logout-btn {
             padding: 10px 20px;
-            background: #F44336;
+            background-color: #F44336;
             border: none;
             border-radius: 5px;
             color: #e0e0e0;
@@ -298,7 +243,7 @@
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.1.2</span>
+                <span>v1.2.0</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -322,22 +267,22 @@
                 <table id="logisztikai-table">
                     <thead>
                         <tr>
-                            <th><div class="filter-container">Sr.<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 0, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="0" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Felvéve<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 1, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="1" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Kontírozás<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 2, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="2" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Ak.<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 3, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="3" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Megnevezés<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 4, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="4" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Folyamat<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 5, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="5" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Szállító<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 6, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="6" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Sz.kód<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 7, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="7" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Ajánlatszám<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 8, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="8" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Mennyiség<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 9, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="9" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Egység<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 10, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="10" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">Ár<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 11, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="11" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">EUR/HUF<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 12, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="12" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">BMIg.<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 13, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="13" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">PO<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 14, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="14" data-table="logisztikai-table"></div></div></th>
-                            <th><div class="filter-container">T.Szállítás<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 15, 'logisztikai-table')"></i><div class="filter-dropdown" data-column="15" data-table="logisztikai-table"></div></div></th>
+                            <th>Sr.</th>
+                            <th>Felvéve</th>
+                            <th>Kontírozás</th>
+                            <th>Ak.</th>
+                            <th>Megnevezés</th>
+                            <th>Folyamat</th>
+                            <th>Szállító</th>
+                            <th>Sz.kód</th>
+                            <th>Ajánlatszám</th>
+                            <th>Mennyiség</th>
+                            <th>Egység</th>
+                            <th>Ár</th>
+                            <th>EUR/HUF</th>
+                            <th>BMIg.</th>
+                            <th>PO</th>
+                            <th>T.Szállítás</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -393,11 +338,11 @@
                 <table id="nyomonkovetesi-table">
                     <thead>
                         <tr>
-                            <th><div class="filter-container">Alkatrész neve<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 0, 'nyomonkovetesi-table')"></i><div class="filter-dropdown" data-column="0" data-table="nyomonkovetesi-table"></div></div></th>
-                            <th><div class="filter-container">Sorozatszám<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 1, 'nyomonkovetesi-table')"></i><div class="filter-dropdown" data-column="1" data-table="nyomonkovetesi-table"></div></div></th>
-                            <th><div class="filter-container">Helyzet<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 2, 'nyomonkovetesi-table')"></i><div class="filter-dropdown" data-column="2" data-table="nyomonkovetesi-table"></div></div></th>
-                            <th><div class="filter-container">Mozgás dátuma<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 3, 'nyomonkovetesi-table')"></i><div class="filter-dropdown" data-column="3" data-table="nyomonkovetesi-table"></div></div></th>
-                            <th><div class="filter-container">Érték (HUF)<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 4, 'nyomonkovetesi-table')"></i><div class="filter-dropdown" data-column="4" data-table="nyomonkovetesi-table"></div></div></th>
+                            <th>Alkatrész neve</th>
+                            <th>Sorozatszám</th>
+                            <th>Helyzet</th>
+                            <th>Mozgás dátuma</th>
+                            <th>Érték (HUF)</th>
                             <th>Műveletek</th>
                         </tr>
                     </thead>
@@ -538,8 +483,6 @@
             document.getElementById("profilEmail").textContent = savedEmail;
             document.getElementById("loginModal").style.display = "none";
             openTab('logisztikai-adatbazis');
-            initializeFilters('logisztikai-table');
-            initializeFilters('nyomonkovetesi-table');
         } else {
             hideAllTabs();
         }
@@ -558,8 +501,6 @@
                 document.getElementById("userEmail").textContent = email;
                 document.getElementById("profilEmail").textContent = email;
                 openTab('logisztikai-adatbazis');
-                initializeFilters('logisztikai-table');
-                initializeFilters('nyomonkovetesi-table');
             } else {
                 resultDiv.textContent = "Helytelen jelszó!";
                 resultDiv.style.color = "#F44336";
@@ -629,124 +570,6 @@
             }
         }
 
-        function initializeFilters(tableId) {
-            const table = document.getElementById(tableId);
-            const headers = table.getElementsByTagName("th");
-            const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
-
-            for (let col = 0; col < headers.length; col++) {
-                if (headers[col].textContent === "Műveletek") continue;
-
-                const values = new Set();
-                for (let i = 0; i < rows.length; i++) {
-                    const cell = rows[i].getElementsByTagName("td")[col];
-                    if (cell && cell.textContent.trim()) {
-                        values.add(cell.textContent.trim());
-                    }
-                }
-
-                const dropdown = headers[col].querySelector(".filter-dropdown");
-                dropdown.innerHTML = `
-                    <div class="filter-search-container">
-                        <input type="text" placeholder="Keresés..." oninput="filterOptions(this, ${col}, '${tableId}')">
-                    </div>
-                    <div class="filter-actions">
-                        <button class="filter-action-btn" onclick="selectAllOptions(${col}, '${tableId}')">Összes kijelölése</button>
-                        <button class="filter-action-btn clear" onclick="clearAllOptions(${col}, '${tableId}')">Összes törlése</button>
-                    </div>
-                    <div class="filter-options" id="filter-options-${tableId}-${col}"></div>
-                `;
-
-                const optionsContainer = document.getElementById(`filter-options-${tableId}-${col}`);
-                optionsContainer.innerHTML = '';
-                values.forEach(value => {
-                    const option = document.createElement("label");
-                    option.innerHTML = `
-                        <input type="checkbox" value="${value}" checked onchange="applyFilters('${tableId}')">
-                        ${value}
-                    `;
-                    optionsContainer.appendChild(option);
-                });
-            }
-        }
-
-        function selectAllOptions(columnIndex, tableId) {
-            const optionsContainer = document.getElementById(`filter-options-${tableId}-${columnIndex}`);
-            const checkboxes = optionsContainer.querySelectorAll("input[type='checkbox']");
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = true;
-            });
-            applyFilters(tableId);
-        }
-
-        function clearAllOptions(columnIndex, tableId) {
-            const optionsContainer = document.getElementById(`filter-options-${tableId}-${columnIndex}`);
-            const checkboxes = optionsContainer.querySelectorAll("input[type='checkbox']");
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            applyFilters(tableId);
-        }
-
-        function toggleFilterDropdown(arrow, columnIndex, tableId, event) {
-            const dropdown = arrow.nextElementSibling;
-            const isVisible = dropdown.style.display === "block";
-            document.querySelectorAll(".filter-dropdown").forEach(d => d.style.display = "none");
-            dropdown.style.display = isVisible ? "none" : "block";
-            if (event) {
-                event.stopPropagation();
-            }
-        }
-
-        document.addEventListener('click', function(event) {
-            const dropdowns = document.querySelectorAll(".filter-dropdown");
-            dropdowns.forEach(dropdown => {
-                if (!dropdown.contains(event.target) && !event.target.classList.contains('filter-arrow')) {
-                    dropdown.style.display = "none";
-                }
-            });
-        });
-
-        function filterOptions(input, columnIndex, tableId) {
-            const searchText = input.value.toLowerCase();
-            const optionsContainer = document.getElementById(`filter-options-${tableId}-${columnIndex}`);
-            const options = optionsContainer.getElementsByTagName("label");
-
-            for (let i = 0; i < options.length; i++) {
-                const value = options[i].textContent.trim().toLowerCase();
-                options[i].style.display = value.includes(searchText) || searchText === "" ? "" : "none";
-            }
-        }
-
-        function applyFilters(tableId) {
-            const table = document.getElementById(tableId);
-            const headers = table.getElementsByTagName("th");
-            const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
-
-            for (let i = 0; i < rows.length; i++) {
-                let showRow = true;
-
-                for (let col = 0; col < headers.length; col++) {
-                    if (headers[col].textContent === "Műveletek") continue;
-
-                    const optionsContainer = document.getElementById(`filter-options-${tableId}-${col}`);
-                    if (!optionsContainer) continue;
-
-                    const selectedValues = Array.from(optionsContainer.querySelectorAll("input:checked")).map(input => input.value);
-                    const cell = rows[i].getElementsByTagName("td")[col];
-                    if (cell) {
-                        const cellText = cell.textContent.trim();
-                        if (selectedValues.length > 0 && !selectedValues.includes(cellText)) {
-                            showRow = false;
-                            break;
-                        }
-                    }
-                }
-
-                rows[i].style.display = showRow ? "" : "none";
-            }
-        }
-
         function openNewRecordModal(tabName) {
             const modal = document.getElementById("newRecordModal");
             modal.style.display = "block";
@@ -813,8 +636,6 @@
             `;
 
             closeModal('newRecordModal');
-            initializeFilters('logisztikai-table');
-            applyFilters('logisztikai-table');
         }
 
         function saveEdit() {
@@ -841,8 +662,6 @@
             }
 
             closeModal('editModal');
-            initializeFilters('nyomonkovetesi-table');
-            applyFilters('nyomonkovetesi-table');
         }
     </script>
 </body>
