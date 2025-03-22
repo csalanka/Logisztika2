@@ -41,10 +41,18 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-direction: column; /* Logó és megjegyzés egymás alatt */
         }
         .header img {
             width: 128px;
             height: 70px;
+        }
+        .logo-note {
+            font-size: 12px;
+            color: #e0e0e0;
+            margin-top: 5px;
+            display: block;
+            text-align: center;
         }
         .header-right {
             display: flex;
@@ -283,13 +291,14 @@
         <div class="header">
             <div class="header-left">
                 <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+                <span class="logo-note">Ideiglenes logó, hamarosan változik</span>
             </div>
             <div class="header-right">
                 <span id="userEmail"></span>
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.1.0</span>
+                <span>v1.1.1</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
