@@ -4,9 +4,257 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Siemens Energy Ikon</title>
+    <!-- Font Awesome ikonok betöltése -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* A korábbi stílusok változatlanok, nem ismétlem */
+        body {
+            background-color: #000000; /* Fekete háttér */
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Teljes képernyő magasság */
+            display: flex;
+            justify-content: center; /* Középre igazítás */
+            align-items: center; /* Középre igazítás */
+            color: #e0e0e0; /* Világos szöveg a fekete háttéren */
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 100%; /* Teljes szélesség */
+            height: 100vh; /* Alapértelmezett magasság */
+            border: 2px solid #621d8a; /* Vékony, folyamatos vonal, Energy lila */
+            border-radius: 10px; /* Lekerekített sarkok */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header img {
+            width: 128px; /* Ikon mérete */
+            height: 70px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .header-right span, .header-right i {
+            font-size: 14px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+        .header-right i:hover, .fullscreen-icon:hover {
+            color: #621d8a; /* Energy lila hover hatás */
+        }
+        .fullscreen-icon {
+            font-size: 16px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+        .divider {
+            width: 100%;
+            height: 2px;
+            background-color: #621d8a; /* Energy lila */
+            margin: 10px 0;
+        }
+        /* Lapfülek stílusa */
+        .tabs {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto; /* Ha sok a fül, görgethető legyen */
+            white-space: nowrap;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #1a1a1a;
+            border: 1px solid #621d8a;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tab:hover {
+            background-color: #2a2a2a;
+        }
+        .tab.active {
+            background-color: #621d8a;
+            color: #e0e0e0;
+        }
+        .tab-content {
+            width: 100%;
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            display: none;
+            overflow-y: auto; /* Görgethető tartalom */
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Táblázat stílusa */
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* Vízszintes görgetés, ha túl sok oszlop van */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #621d8a;
+            text-align: left;
+            white-space: nowrap; /* Szöveg ne törjön sorba */
+        }
+        th {
+            background-color: #2a2a2a;
+            position: sticky;
+            top: 0; /* Fejléc rögzítése görgetés közben */
+        }
+        tr:nth-child(even) {
+            background-color: #222222;
+        }
+        /* Oszlopok szélességének beállítása */
+        #logisztikai-table th:nth-child(1), #logisztikai-table td:nth-child(1) { width: 50px; } /* Sr. */
+        #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 100px; } /* Felvéve */
+        #logisztikai-table th:nth-child(3), #logisztikai-table td:nth-child(3) { width: 100px; } /* Kontírozás */
+        #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 80px; } /* Ak. */
+        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 150px; } /* Megnevezés */
+        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 100px; } /* Folyamat */
+        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 120px; } /* Szállító */
+        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 80px; } /* Sz.kód */
+        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 100px; } /* Ajánlatszám */
+        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 80px; } /* Mennyiség */
+        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 60px; } /* Egység */
+        #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 60px; } /* Ár */
+        #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 80px; } /* EUR/HUF */
+        #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 100px; } /* BMIg. */
+        #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 100px; } /* PO */
+        #logisztikai-table th:nth-child(16), #logisztikai-table td:nth-child(16) { width: 100px; } /* T.Szállítás */
+        #nyomonkovetesi-table th:nth-child(1), #nyomonkovetesi-table td:nth-child(1) { width: 150px; } /* Alkatrész neve */
+        #nyomonkovetesi-table th:nth-child(2), #nyomonkovetesi-table td:nth-child(2) { width: 100px; } /* Sorozatszám */
+        #nyomonkovetesi-table th:nth-child(3), #nyomonkovetesi-table td:nth-child(3) { width: 100px; } /* Helyzet */
+        #nyomonkovetesi-table th:nth-child(4), #nyomonkovetesi-table td:nth-child(4) { width: 120px; } /* Mozgás dátuma */
+        #nyomonkovetesi-table th:nth-child(5), #nyomonkovetesi-table td:nth-child(5) { width: 120px; } /* Érték (HUF) */
+        #nyomonkovetesi-table th:nth-child(6), #nyomonkovetesi-table td:nth-child(6) { width: 100px; } /* Műveletek */
+        .edit-btn, .new-record-btn {
+            padding: 5px 10px;
+            background-color: #621d8a;
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        /* Szűrő legördülő stílus */
+        .filter-container {
+            position: relative;
+            display: inline-block;
+        }
+        .filter-arrow {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .filter-dropdown {
+            display: none;
+            position: absolute;
+            background-color: #1a1a1a;
+            border: 1px solid #621d8a;
+            border-radius: 5px;
+            z-index: 1;
+            max-height: 200px;
+            overflow-y: auto;
+            min-width: 150px;
+        }
+        .filter-dropdown select {
+            width: 100%;
+            padding: 5px;
+            background-color: #3c3c3c;
+            color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+        }
+        /* Modal ablak stílusa */
+        .modal {
+            display: block; /* Alapértelmezetten látható */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Áttetsző háttér */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            border: 1px solid #621d8a;
+        }
+        .login-form, .edit-form, .new-record-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        .login-form label, .edit-form label, .new-record-form label {
+            font-weight: bold;
+            text-align: left;
+        }
+        .login-form input, .edit-form input, .new-record-form input {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background-color: #3c3c3c;
+            color: #e0e0e0;
+        }
+        .login-form button, .edit-form button, .new-record-form button {
+            padding: 10px;
+            background-color: #621d8a; /* Energy lila */
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 10px;
+        }
+        /* Profil tartalom stílusa */
+        #profil {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        .logout-btn {
+            padding: 10px 20px;
+            background-color: #F44336; /* Piros a kijelentkezéshez */
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body onload="toggleFullscreen(); hideAllTabs();">
@@ -20,146 +268,42 @@
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.0.1</span> <!-- Verziószám növelve -->
+                <span>v1.0.0</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
         <div class="divider"></div>
         <div class="tabs">
-            <!-- A lapfülek változatlanok -->
+            <div class="tab active" onclick="openTab('logisztikai-adatbazis')">Logisztikai adatbázis</div>
+            <div class="tab" onclick="openTab('anyagtörzs')">Anyagtörzs</div>
+            <div class="tab" onclick="openTab('belső-megrendelési-számok')">Belső megrendelési számok</div>
+            <div class="tab" onclick="openTab('nyomonkövetési-listák')">Nyomonkövetési listák</div>
+            <div class="tab" onclick="openTab('szállítói-címjegyzék')">Szállítói címjegyzék</div>
+            <div class="tab" onclick="openTab('foglalások')">Foglalások</div>
+            <div class="tab" onclick="openTab('statisztika')">Statisztika</div>
+            <div class="tab" onclick="openTab('chat-lista')">Chat Lista</div>
+            <div class="tab" onclick="openTab('felhasználó-kezelés')">Felhasználó kezelés</div>
+            <div class="tab" onclick="openTab('hibajelentés-fejlesztési-javaslat')">Hibajelentés Fejlesztési javaslat</div>
         </div>
         <div id="logisztikai-adatbazis" class="tab-content">
-            <!-- A táblázat változatlan -->
-        </div>
-        <!-- További tabok változatlanok -->
-        <div id="profil" class="tab-content" style="display: none;">
-            <h2>Saját profil</h2>
-            <p>Email: <span id="profilEmail"></span></p>
-            <p>Utolsó belépés: 2025.03.21</p>
-            <button class="logout-btn" onclick="logout()">Kijelentkezés</button>
-        </div>
-    </div>
-
-    <!-- Modal ablak a belépéshez -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <div class="login-form">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="password">Jelszó:</label>
-                <input type="password" id="password" name="password" required>
-                <button onclick="checkLogin()">Belépés</button>
-                <div id="result"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal ablakok új rekordhoz és szerkesztéshez változatlanok -->
-
-    <script>
-        // Összes tab tartalom elrejtése
-        function hideAllTabs() {
-            const tabContents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove("active");
-            }
-        }
-
-        // Email betöltése localStorage-ból
-        const savedEmail = localStorage.getItem("email");
-        if (savedEmail) {
-            document.getElementById("email").value = savedEmail;
-            document.getElementById("userEmail").textContent = savedEmail;
-            document.getElementById("profilEmail").textContent = savedEmail;
-            document.getElementById("loginModal").style.display = "none";
-            openTab('logisztikai-adatbazis');
-        } else {
-            hideAllTabs();
-        }
-
-        // Belépés ellenőrzése
-        function checkLogin() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const resultDiv = document.getElementById("result");
-
-            localStorage.setItem("email", email);
-
-            if (password === "3211") {
-                resultDiv.textContent = "kész";
-                resultDiv.style.color = "#4CAF50";
-                document.getElementById("loginModal").style.display = "none";
-                document.getElementById("userEmail").textContent = email;
-                document.getElementById("profilEmail").textContent = email;
-                openTab('logisztikai-adatbazis');
-                initializeFilters('logisztikai-table');
-                initializeFilters('nyomonkovetesi-table');
-            } else {
-                resultDiv.textContent = "Helytelen jelszó!";
-                resultDiv.style.color = "#F44336";
-            }
-        }
-
-        // Kijelentkezés
-        function logout() {
-            localStorage.removeItem("email");
-            hideAllTabs();
-            location.reload();
-        }
-
-        // Teljes képernyős mód váltása
-        function toggleFullscreen() {
-            const fullscreenIcon = document.querySelector(".fullscreen-icon");
-            const container = document.getElementById("container");
-
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                fullscreenIcon.classList.remove("fa-expand");
-                fullscreenIcon.classList.add("fa-compress");
-                fullscreenIcon.title = "Kilépés a teljes képernyőből";
-                container.style.height = "100vh";
-            } else {
-                document.exitFullscreen();
-                fullscreenIcon.classList.remove("fa-compress");
-                fullscreenIcon.classList.add("fa-expand");
-                fullscreenIcon.title = "Teljes képernyő";
-                const windowHeight = window.innerHeight;
-                container.style.height = `${windowHeight}px`;
-            }
-        }
-
-        // Lapfülek kezelése
-        function openTab(tabName) {
-            if (!localStorage.getItem("email")) return;
-
-            const tabs = document.getElementsByClassName("tab");
-            const tabContents = document.getElementsByClassName("tab-content");
-
-            for (let i = 0; i < tabs.length; i++) tabs[i].classList.remove("active");
-            for (let i = 0; i < tabContents.length; i++) tabContents[i].classList.remove("active");
-
-            document.getElementById(tabName).classList.add("active");
-            const tabElement = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
-            if (tabElement) tabElement.classList.add("active");
-
-            if (tabName !== 'profil') document.getElementById("profil").style.display = "none";
-        }
-
-        // Profil toggle
-        function toggleProfile() {
-            if (!localStorage.getItem("email")) return;
-
-            const profilTab = document.getElementById("profil");
-            if (profilTab.style.display === "block") {
-                profilTab.style.display = "none";
-                openTab('logisztikai-adatbazis');
-            } else {
-                openTab('profil');
-                profilTab.style.display = "block";
-            }
-        }
-
-        // Szűrőlista inicializálása és egyéb függvények változatlanok
-    </script>
-</body>
-</html>
+            <h2>Logisztikai adatbázis</h2>
+            <button class="new-record-btn" onclick="openNewRecordModal('logisztikai-adatbazis')">Új rekord</button>
+            <div class="table-container">
+                <table id="logisztikai-table">
+                    <thead>
+                        <tr>
+                            <th><div class="filter-container">Sr.<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 0, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 0, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Felvéve<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 1, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 1, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Kontírozás<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 2, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 2, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Ak.<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 3, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 3, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Megnevezés<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 4, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 4, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Folyamat<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 5, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 5, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Szállító<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 6, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 6, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Sz.kód<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 7, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 7, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Ajánlatszám<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 8, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 8, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Mennyiség<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 9, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 9, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Egység<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 10, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 10, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">Ár<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 11, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 11, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">EUR/HUF<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 12, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 12, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">BMIg.<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 13, 'logisztikai-table')"></i><div class="filter-dropdown"><select onchange="filterTable(this, 13, 'logisztikai-table')"></select></div></div></th>
+                            <th><div class="filter-container">PO<i class="fas fa-chevron-down filter-arrow" onclick="toggleFilterDropdown(this, 14, 'logisztikai
