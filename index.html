@@ -39,20 +39,28 @@
         }
         .header-left {
             display: flex;
+            flex-direction: column; /* Logó és szerzői jog egymás mellett, megjegyzés alattuk */
+            align-items: flex-start;
+            gap: 5px;
+        }
+        .header-left-logo {
+            display: flex;
             align-items: center;
-            gap: 15px;
-            flex-direction: column; /* Logó és megjegyzés egymás alatt */
+            gap: 10px; /* Logó és szerzői jog közötti távolság */
         }
         .header img {
             width: 128px;
             height: 70px;
         }
         .logo-note {
-            font-size: 12px;
+            font-size: 10px; /* Csökkentett betűméret */
             color: #e0e0e0;
-            margin-top: 5px;
-            display: block;
             text-align: center;
+            width: 100%;
+        }
+        .copyright-note {
+            font-size: 10px; /* Csökkentett betűméret */
+            color: #e0e0e0;
         }
         .header-right {
             display: flex;
@@ -235,7 +243,10 @@
     <div class="container" id="container">
         <div class="header">
             <div class="header-left">
-                <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+                <div class="header-left-logo">
+                    <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
+                    <span class="copyright-note">© 2025 Siemens Energy. Minden jog fenntartva.</span>
+                </div>
                 <span class="logo-note">Ideiglenes logó, hamarosan változik</span>
             </div>
             <div class="header-right">
@@ -243,7 +254,7 @@
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.0</span>
+                <span>v1.2.1</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
