@@ -150,14 +150,17 @@
         #nyomonkovetesi-table th:nth-child(4), #nyomonkovetesi-table td:nth-child(4) { width: 120px; }
         #nyomonkovetesi-table th:nth-child(5), #nyomonkovetesi-table td:nth-child(5) { width: 120px; }
         #nyomonkovetesi-table th:nth-child(6), #nyomonkovetesi-table td:nth-child(6) { width: 100px; }
-        .edit-btn, .new-record-btn {
+        .edit-btn, .new-record-btn, .filter-action-btn {
             padding: 5px 10px;
             background-color: #621d8a;
             border: none;
             border-radius: 5px;
             color: #e0e0e0;
             cursor: pointer;
-            margin-bottom: 10px;
+            margin: 2px;
+        }
+        .filter-action-btn.clear {
+            background-color: #F44336;
         }
         .filter-container {
             position: relative;
@@ -196,6 +199,11 @@
             color: #e0e0e0;
             border: none;
             border-radius: 5px;
+        }
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
         .filter-history {
             margin-bottom: 10px;
@@ -298,7 +306,7 @@
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.0.7</span>
+                <span>v1.0.8</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -651,14 +659,18 @@
                         <input type="checkbox" id="partial-match-${tableId}-${col}" onchange="filterOptions(this, ${col}, '${tableId}')">
                         <input type="text" placeholder="Keresés..." oninput="filterOptions(this, ${col}, '${tableId}')" onkeydown="if(event.key === 'Enter') saveSearch(this.value, ${col}, '${tableId}')">
                     </div>
+                    <div class="filter-actions">
+                        <button class="filter-action-btn" onclick="selectAllOptions(${col}, '${tableId}')">Összes kijelölése</button>
+                        <button class="filter-action-btn clear" onclick="clearAllOptions(${col}, '${tableId}')">Összes törlése</button>
+                    </div>
                     <div class="filter-history" id="filter-history-${tableId}-${col}"></div>
                     <div class="filter-options" id="filter-options-${tableId}-${col}"></div>
                 `;
 
                 const optionsContainer = document.getElementById(`filter-options-${tableId}-${col}`);
-                optionsContainer.innerHTML = ''; // Biztosítjuk, hogy üres legyen a konténer
+                optionsContainer.innerHTML = '';
                 values.forEach(value => {
-                    if (value) { // Csak nem üres értékeket adjunk hozzá
+                    if (value) {
                         const option = document.createElement("label");
                         option.innerHTML = `
                             <input type="checkbox" value="${value}" onchange="filterTable(${col}, '${tableId}')">
@@ -670,6 +682,24 @@
 
                 loadSearchHistory(col, tableId);
             }
+        }
+
+        function selectAllOptions(columnIndex, tableId) {
+            const optionsContainer = document.getElementById(`filter-options-${tableId}-${columnIndex}`);
+            const checkboxes = optionsContainer.querySelectorAll("input[type='checkbox']");
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            filterTable(columnIndex, tableId);
+        }
+
+        function clearAllOptions(columnIndex, tableId) {
+            const optionsContainer = document.getElementById(`filter-options-${tableId}-${columnIndex}`);
+            const checkboxes = optionsContainer.querySelectorAll("input[type='checkbox']");
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            filterTable(columnIndex, tableId);
         }
 
         function toggleFilterDropdown(arrow, columnIndex, tableId) {
