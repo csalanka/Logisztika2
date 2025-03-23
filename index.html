@@ -164,19 +164,20 @@
         #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 100px; }
         #logisztikai-table th:nth-child(3), #logisztikai-table td:nth-child(3) { width: 100px; }
         #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 100px; }
-        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 80px; }
-        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 150px; }
-        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 100px; }
-        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 120px; }
-        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 80px; }
-        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 100px; }
-        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 80px; }
-        #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 60px; }
+        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 150px; } /* Új oszlop: Kontírozási név */
+        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 80px; }
+        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 150px; }
+        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 100px; }
+        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 120px; }
+        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 80px; }
+        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 100px; }
+        #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 80px; }
         #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 60px; }
-        #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 80px; }
-        #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 100px; }
+        #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 60px; }
+        #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 80px; }
         #logisztikai-table th:nth-child(16), #logisztikai-table td:nth-child(16) { width: 100px; }
         #logisztikai-table th:nth-child(17), #logisztikai-table td:nth-child(17) { width: 100px; }
+        #logisztikai-table th:nth-child(18), #logisztikai-table td:nth-child(18) { width: 100px; }
         #nyomonkovetesi-table th:nth-child(1), #nyomonkovetesi-table td:nth-child(1) { width: 150px; }
         #nyomonkovetesi-table th:nth-child(2), #nyomonkovetesi-table td:nth-child(2) { width: 100px; }
         #nyomonkovetesi-table th:nth-child(3), #nyomonkovetesi-table td:nth-child(3) { width: 100px; }
@@ -266,7 +267,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.5</span>
+                <span>v1.2.6</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -294,6 +295,7 @@
                             <th>Felvéve</th>
                             <th>Raktár</th>
                             <th>Kontírozás</th>
+                            <th>Kontírozási név</th> <!-- Új oszlop -->
                             <th>Ak.</th>
                             <th>Megnevezés</th>
                             <th>Folyamat</th>
@@ -315,6 +317,7 @@
                             <td>2025.03.01</td>
                             <td>0060</td>
                             <td>2025.03.02</td>
+                            <td>-</td> <!-- Üres, mert nem gépre kontírozott -->
                             <td>-</td>
                             <td>Csavar M8</td>
                             <td>Beszerzés</td>
@@ -334,6 +337,7 @@
                             <td>2025.03.02</td>
                             <td>0350</td>
                             <td>2025.03.03</td>
+                            <td>-</td> <!-- Üres, mert nem gépre kontírozott -->
                             <td>-</td>
                             <td>Alátét M8</td>
                             <td>Gyártás</td>
@@ -759,6 +763,16 @@
             const po = document.getElementById('new-po').value;
             const tSzallitas = document.getElementById('new-t-szallitas').value;
 
+            // Ha a rendeléstípus "Gépre kontírozott rendelés" (3), akkor kiolvassuk a gép nevét
+            let kontirozasiNev = '-';
+            if (rendelesTipus === '3') {
+                const terulet = document.getElementById('new-terulet').value;
+                const gep = document.getElementById('new-gep').value;
+                if (terulet && gep) {
+                    kontirozasiNev = gep; // A kiválasztott gép neve
+                }
+            }
+
             const table = document.querySelector('#logisztikai-table tbody');
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -766,6 +780,7 @@
                 <td>${new Date().toISOString().split('T')[0]}</td>
                 <td>${raktar}</td>
                 <td>${kontirozas}</td>
+                <td>${kontirozasiNev}</td> <!-- Új oszlop: Kontírozási név -->
                 <td>-</td>
                 <td>${megnevezes}</td>
                 <td>${folyamat}</td>
