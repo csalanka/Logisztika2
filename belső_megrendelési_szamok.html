@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Belső Megrendelési Számok - Siemens Energy Ikon</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 20px;
+            color: #e0e0e0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border: 2px solid #621d8a;
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #e0e0e0;
+        }
+        h2 {
+            color: #621d8a;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #621d8a;
+            text-align: left;
+        }
+        th {
+            background-color: #2a2a2a;
+        }
+        tr:nth-child(even) {
+            background-color: #222222;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .export-btn, .back-btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #621d8a;
+            color: #e0e0e0;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .export-btn:hover, .back-btn:hover {
+            background-color: #8a2be2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Belső Megrendelési Számok</h1>
+        <div id="belső-megrendelési-számok-container"></div>
+        <div class="button-container">
+            <button class="export-btn" onclick="exportToCSV()">Exportálás CSV-be</button>
+            <a href="https://csalanka.github.io/Logisztika2/adatbazisok.html" class="back-btn">Vissza az adatbázisok listájához</a>
+        </div>
+    </div>
+
+    <script>
+        let teruletekGepek = {};
+
+        // Adatok betöltése a CSV-ből
+        Papa.parse('data/belső_megrendelések_adatbazis.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const data = results.data;
+                teruletekGepek = {};
+
+                // Területek és gépek csoportosítása
+                data.forEach(item => {
+                    const terulet = item['Terület'];
+                    if (!teruletekGepek[terulet]) {
+                        teruletekGepek[terulet] = [];
+                    }
+                    teruletekGepek[terulet].push({
+                        nev: item['Gép neve'],
+                        rendelesiSzam: item['Belső rendelési szám'],
+                        koltseghelySzam: item['SAP költséghely szám']
+                    });
+                });
+
+                // Táblázatok generálása
+                const container = document.getElementById('belső-megrendelési-számok-container');
+                Object.keys(teruletekGepek).forEach(terulet => {
+                    const h2 = document.createElement('h2');
+                    h2.textContent = terület;
+                    container.appendChild(h2);
+
+                    const table = document.createElement('table');
+                    const thead = document.createElement('thead');
+                    const tbody = document.createElement('tbody');
+
+                    const headerRow = document.createElement('tr');
+                    const headers = ['Gép neve', 'Belső rendelési szám', 'SAP költséghely szám'];
+                    headers.forEach(headerText => {
+                        const th = document.createElement('th');
+                        th.textContent = headerText;
+                        headerRow.appendChild(th);
+                    });
+                    thead.appendChild(headerRow);
+
+                    teruletekGepek[terulet].forEach(gep => {
+                        const row = document.createElement('tr');
+                        const nevCell = document.createElement('td');
+                        nevCell.textContent = gep.nev || '-';
+                        const rendelesiSzamCell = document.createElement('td');
+                        rendelesiSzamCell.textContent = gep.rendelesiSzam || '-';
+                        const koltseghelySzamCell = document.createElement('td');
+                        koltseghelySzamCell.textContent = gep.koltseghelySzam || '-';
+                        row.appendChild(nevCell);
+                        row.appendChild(rendelesiSzamCell);
+                        row.appendChild(koltseghelySzamCell);
+                        tbody.appendChild(row);
+                    });
+
+                    table.appendChild(thead);
+                    table.appendChild(tbody);
+                    container.appendChild(table);
+                });
+            },
+            error: function(error) {
+                console.error('Hiba a CSV betöltésekor:', error);
+                const container = document.getElementById('belső-megrendelési-számok-container');
+                container.innerHTML = '<p>Hiba az adatok betöltésekor.</p>';
+            }
+        });
+
+        // CSV export funkció
+        function exportToCSV() {
+            let csvContent = "Terület,Gép neve,Belső rendelési szám,SAP költséghely szám\n";
+
+            Object.keys(teruletekGepek).forEach(terulet => {
+                teruletekGepek[terulet].forEach(gep => {
+                    const row = [
+                        `"${terulet}"`,
+                        `"${gep.nev || '-'}"`,
+                        `"${gep.rendelesiSzam || '-'}"`,
+                        `"${gep.koltseghelySzam || '-'}"`
+                    ].join(",");
+                    csvContent += row + "\n";
+                });
+            });
+
+            const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "belső_megrendelési_számok.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
