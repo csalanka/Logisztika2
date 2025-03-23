@@ -164,7 +164,7 @@
         #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 100px; }
         #logisztikai-table th:nth-child(3), #logisztikai-table td:nth-child(3) { width: 100px; }
         #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 100px; }
-        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 150px; } /* Új oszlop: Kontírozási név */
+        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 150px; } /* Kontírozási név */
         #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 80px; }
         #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 150px; }
         #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 100px; }
@@ -254,7 +254,7 @@
         }
     </style>
 </head>
-<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis'); loadBelsőMegrendelésiSzámok();">
+<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis'); loadBelsőMegrendelésiSzámok(); initializeSorszamCounter();">
     <div class="container" id="container">
         <div class="header">
             <div class="header-left">
@@ -267,7 +267,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.6</span>
+                <span>v1.2.7</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -295,7 +295,7 @@
                             <th>Felvéve</th>
                             <th>Raktár</th>
                             <th>Kontírozás</th>
-                            <th>Kontírozási név</th> <!-- Új oszlop -->
+                            <th>Kontírozási név</th>
                             <th>Ak.</th>
                             <th>Megnevezés</th>
                             <th>Folyamat</th>
@@ -317,7 +317,7 @@
                             <td>2025.03.01</td>
                             <td>0060</td>
                             <td>2025.03.02</td>
-                            <td>-</td> <!-- Üres, mert nem gépre kontírozott -->
+                            <td>-</td>
                             <td>-</td>
                             <td>Csavar M8</td>
                             <td>Beszerzés</td>
@@ -337,7 +337,7 @@
                             <td>2025.03.02</td>
                             <td>0350</td>
                             <td>2025.03.03</td>
-                            <td>-</td> <!-- Üres, mert nem gépre kontírozott -->
+                            <td>-</td>
                             <td>-</td>
                             <td>Alátét M8</td>
                             <td>Gyártás</td>
@@ -516,6 +516,24 @@
 
     <script>
         let teruletekGepek = {};
+        let sorszamCounter = 0; // Globális számláló a sorszámokhoz
+
+        // Sorszám számláló inicializálása az oldal betöltésekor
+        function initializeSorszamCounter() {
+            const table = document.querySelector('#logisztikai-table tbody');
+            const rows = table.querySelectorAll('tr');
+            let maxSorszam = 0;
+
+            rows.forEach(row => {
+                const sorszamText = row.cells[0].textContent; // Pl. "FR25#0001"
+                const sorszam = parseInt(sorszamText.replace('FR25#', '')); // Kivesszük a számot
+                if (!isNaN(sorszam) && sorszam > maxSorszam) {
+                    maxSorszam = sorszam;
+                }
+            });
+
+            sorszamCounter = maxSorszam; // A legnagyobb sorszám alapján állítjuk be a számlálót
+        }
 
         // Területek és gépek betöltése a CSV fájlból
         Papa.parse('data/belső_megrendelések_adatbazis.csv', {
@@ -608,7 +626,7 @@
             } else if (rendelesTipus === '2') {
                 options = ['0060', '0350', '0110', '0590'];
             } else if (rendelesTipus === '3') {
-                options = ['0060', '0350', '0110', '0590'];
+                options = ['0060', '0350', "0110", '0590'];
             } else if (rendelesTipus === '4') {
                 options = ['0060', '0350', '0110', '0590'];
             } else if (rendelesTipus === '5') {
@@ -773,14 +791,18 @@
                 }
             }
 
+            // Sorszám növelése és formázása
+            sorszamCounter++;
+            const formattedSorszam = `FR25#${sorszamCounter.toString().padStart(4, '0')}`; // Pl. FR25#0003
+
             const table = document.querySelector('#logisztikai-table tbody');
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>FR25#${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}</td>
+                <td>${formattedSorszam}</td>
                 <td>${new Date().toISOString().split('T')[0]}</td>
                 <td>${raktar}</td>
                 <td>${kontirozas}</td>
-                <td>${kontirozasiNev}</td> <!-- Új oszlop: Kontírozási név -->
+                <td>${kontirozasiNev}</td>
                 <td>-</td>
                 <td>${megnevezes}</td>
                 <td>${folyamat}</td>
