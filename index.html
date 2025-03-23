@@ -221,6 +221,13 @@
             color: #e0e0e0;
             cursor: pointer;
         }
+        .send-email-btn {
+            background-color: #4CAF50;
+        }
+        #email-result {
+            margin-top: 10px;
+            color: #4CAF50;
+        }
         #result {
             margin-top: 10px;
         }
@@ -459,15 +466,20 @@
                 <label for="new-ar">Ár:</label>
                 <input type="text" id="new-ar" name="new-ar">
                 <label for="new-eur-huf">EUR/HUF:</label>
-                <input type="text" id="new-eur-huf" name="new-eur-huf">
+                <select id="new-eur-huf" name="new-eur-huf">
+                    <option value="EUR">EUR</option>
+                    <option value="HUF">HUF</option>
+                </select>
                 <label for="new-bmig">BMIg.:</label>
                 <input type="text" id="new-bmig" name="new-bmig">
                 <label for="new-po">PO:</label>
                 <input type="text" id="new-po" name="new-po">
                 <label for="new-t-szallitas">T.Szállítás:</label>
-                <input type="text" id="new-t-szallitas" name="new-t-szallitas">
+                <input type="date" id="new-t-szallitas" name="new-t-szallitas">
                 <button onclick="saveNewRecord()">Mentés</button>
+                <button class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
                 <button onclick="closeModal('newRecordModal')">Mégsem</button>
+                <div id="email-result"></div>
             </div>
         </div>
     </div>
@@ -600,6 +612,7 @@
             const modal = document.getElementById("newRecordModal");
             modal.style.display = "block";
             updateRaktarField(); // Inicializáljuk a Raktár mezőt
+            document.getElementById("email-result").textContent = ""; // Töröljük az előző üzenetet
         }
 
         function updateRaktarField() {
@@ -607,10 +620,8 @@
             const raktarContainer = document.getElementById("raktar-container");
 
             if (rendelesTipus === "4" || rendelesTipus === "5") {
-                // Területre kontírozott rendelés vagy Beruházás esetén fix érték
                 raktarContainer.innerHTML = `<input type="text" id="new-raktar" name="new-raktar" value="15009126" readonly>`;
             } else {
-                // Keretrendelés, Anyagszámos rendelés, Gépre kontírozott rendelés esetén legördülő menü
                 raktarContainer.innerHTML = `
                     <select id="new-raktar" name="new-raktar" required>
                         <option value="0060">0060</option>
@@ -646,7 +657,7 @@
             const mennyiseg = document.getElementById("new-mennyiseg").value;
             const egyseg = document.getElementById("new-egyseg").value;
             const ar = document.getElementById("new-ar").value || "-";
-            const eurHuf = document.getElementById("new-eur-huf").value || "-";
+            const eurHuf = document.getElementById("new-eur-huf").value;
             const bmig = document.getElementById("new-bmig").value || "-";
             const po = document.getElementById("new-po").value || "-";
             const tSzallitas = document.getElementById("new-t-szallitas").value || "-";
@@ -677,6 +688,26 @@
             `;
 
             closeModal('newRecordModal');
+        }
+
+        function sendEmail() {
+            const rendelesTipus = document.getElementById("rendeles-tipus").value;
+            const emailResult = document.getElementById("email-result");
+
+            // Ha nem webes rendelés (most feltételezzük, hogy a "Keretrendelés" nem webes)
+            if (rendelesTipus === "1") {
+                emailResult.textContent = "Elküldve";
+
+                // Boríték ikon hozzáadása az utolsó rekord "Ak." oszlopához
+                const table = document.getElementById("logisztikai-table");
+                const tbody = table.getElementsByTagName("tbody")[0];
+                const lastRow = tbody.rows[tbody.rows.length - 1];
+                const akCell = lastRow.cells[4]; // Ak. oszlop (5. oszlop, 0-tól számozva)
+                akCell.innerHTML = '<i class="fas fa-envelope" style="color: yellow;"></i>';
+            } else {
+                emailResult.textContent = "Csak nem webes rendelés esetén küldhető levél.";
+                emailResult.style.color = "#F44336";
+            }
         }
 
         function saveEdit() {
