@@ -29,6 +29,7 @@
             align-items: flex-start;
             padding: 10px;
             box-sizing: border-box;
+            padding-top: 180px; /* Hely a fix fejléc, elválasztó és lapfülek számára */
         }
         .header {
             width: 100%;
@@ -37,7 +38,7 @@
             justify-content: space-between;
             padding: 10px;
             box-sizing: border-box;
-            position: sticky; /* Fix pozíció a fejlécnek */
+            position: fixed; /* Fix pozíció a fejlécnek */
             top: 0;
             background-color: #000000; /* Háttérszín, hogy ne legyen átlátszó */
             z-index: 10; /* Előrébb hozzuk, hogy ne takarja a tartalom */
@@ -89,8 +90,8 @@
             width: 100%;
             height: 2px;
             background-color: #621d8a;
-            margin: 10px 0;
-            position: sticky; /* Fix pozíció az elválasztónak */
+            margin: 0;
+            position: fixed; /* Fix pozíció az elválasztónak */
             top: 110px; /* A fejléc magassága után */
             z-index: 9;
         }
@@ -101,11 +102,11 @@
             margin-bottom: 20px;
             overflow-x: auto;
             white-space: nowrap;
-            position: sticky; /* Fix pozíció a lapfüleknek */
+            position: fixed; /* Fix pozíció a lapfüleknek */
             top: 112px; /* A fejléc és az elválasztó után */
             background-color: #000000; /* Háttérszín, hogy ne legyen átlátszó */
             z-index: 9; /* Előrébb hozzuk, hogy ne takarja a tartalom */
-            padding-top: 5px;
+            padding: 5px 0;
         }
         .tab {
             padding: 10px 20px;
@@ -130,7 +131,8 @@
             border-radius: 5px;
             display: none;
             overflow-y: auto;
-            margin-top: 10px; /* Hely a fix lapfülek alatt */
+            height: calc(100vh - 180px); /* A fix elemek magassága után a maradék hely */
+            box-sizing: border-box;
         }
         .tab-content.active {
             display: block;
@@ -264,7 +266,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.4</span>
+                <span>v1.2.5</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
