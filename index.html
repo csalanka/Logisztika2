@@ -39,27 +39,27 @@
         }
         .header-left {
             display: flex;
-            flex-direction: column; /* Logó és szerzői jog egymás mellett, megjegyzés alattuk */
+            flex-direction: column;
             align-items: flex-start;
             gap: 5px;
         }
         .header-left-logo {
             display: flex;
             align-items: center;
-            gap: 10px; /* Logó és szerzői jog közötti távolság */
+            gap: 10px;
         }
         .header img {
             width: 128px;
             height: 70px;
         }
         .logo-note {
-            font-size: 10px; /* Csökkentett betűméret */
+            font-size: 10px;
             color: #e0e0e0;
             text-align: center;
             width: 100%;
         }
         .copyright-note {
-            font-size: 10px; /* Csökkentett betűméret */
+            font-size: 10px;
             color: #e0e0e0;
         }
         .header-right {
@@ -147,19 +147,20 @@
         #logisztikai-table th:nth-child(1), #logisztikai-table td:nth-child(1) { width: 50px; }
         #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 100px; }
         #logisztikai-table th:nth-child(3), #logisztikai-table td:nth-child(3) { width: 100px; }
-        #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 80px; }
-        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 150px; }
-        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 100px; }
-        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 120px; }
-        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 80px; }
-        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 100px; }
-        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 80px; }
-        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 60px; }
+        #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 100px; }
+        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 80px; }
+        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 150px; }
+        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 100px; }
+        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 120px; }
+        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 80px; }
+        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 100px; }
+        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 80px; }
         #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 60px; }
-        #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 80px; }
-        #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 100px; }
+        #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 60px; }
+        #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 80px; }
         #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 100px; }
         #logisztikai-table th:nth-child(16), #logisztikai-table td:nth-child(16) { width: 100px; }
+        #logisztikai-table th:nth-child(17), #logisztikai-table td:nth-child(17) { width: 100px; }
         #nyomonkovetesi-table th:nth-child(1), #nyomonkovetesi-table td:nth-child(1) { width: 150px; }
         #nyomonkovetesi-table th:nth-child(2), #nyomonkovetesi-table td:nth-child(2) { width: 100px; }
         #nyomonkovetesi-table th:nth-child(3), #nyomonkovetesi-table td:nth-child(3) { width: 100px; }
@@ -195,24 +196,24 @@
             text-align: center;
             border: 1px solid #621d8a;
         }
-        .login-form, .edit-form, .new-record-form {
+        .new-record-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 100%;
         }
-        .login-form label, .edit-form label, .new-record-form label {
+        .new-record-form label {
             font-weight: bold;
             text-align: left;
         }
-        .login-form input, .edit-form input, .new-record-form input {
+        .new-record-form input, .new-record-form select {
             padding: 5px;
             border: none;
             border-radius: 5px;
             background-color: #3c3c3c;
             color: #e0e0e0;
         }
-        .login-form button, .edit-form button, .new-record-form button {
+        .new-record-form button {
             padding: 10px;
             background-color: #621d8a;
             border: none;
@@ -245,7 +246,7 @@
             <div class="header-left">
                 <div class="header-left-logo">
                     <img src="siemens-energy-logo.png" alt="Siemens Energy Logo">
-                    <span class="copyright-note">© 2025 Siemens Energy. Minden jog fenntartva.</span>
+                    <span class="copyright-note">© 2025 [A Neved]. Minden jog fenntartva. Engedély nélküli felhasználás tilos.</span>
                 </div>
                 <span class="logo-note">Ideiglenes logó, hamarosan változik</span>
             </div>
@@ -254,7 +255,7 @@
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.1</span>
+                <span>v1.2.2</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -280,6 +281,7 @@
                         <tr>
                             <th>Sr.</th>
                             <th>Felvéve</th>
+                            <th>Raktár</th>
                             <th>Kontírozás</th>
                             <th>Ak.</th>
                             <th>Megnevezés</th>
@@ -298,10 +300,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td>
+                            <td>FR25#0001</td>
                             <td>2025.03.01</td>
+                            <td>0060</td>
                             <td>2025.03.02</td>
-                            <td>Igen</td>
+                            <td>-</td>
                             <td>Csavar M8</td>
                             <td>Beszerzés</td>
                             <td>Szállító 1</td>
@@ -316,10 +319,11 @@
                             <td>2025.03.15</td>
                         </tr>
                         <tr>
-                            <td>2</td>
+                            <td>FR25#0002</td>
                             <td>2025.03.02</td>
+                            <td>0350</td>
                             <td>2025.03.03</td>
-                            <td>Nem</td>
+                            <td>-</td>
                             <td>Alátét M8</td>
                             <td>Gyártás</td>
                             <td>Szállító 2</td>
@@ -421,28 +425,37 @@
         <div class="modal-content">
             <div class="new-record-form" id="newRecordForm">
                 <h2>Új rekord</h2>
-                <label for="new-sr">Sr.:</label>
-                <input type="text" id="new-sr" name="new-sr">
-                <label for="new-felveve">Felvéve:</label>
-                <input type="text" id="new-felveve" name="new-felveve">
+                <label for="rendeles-tipus">Rendeléstípus:</label>
+                <select id="rendeles-tipus" onchange="updateRaktarField()">
+                    <option value="1">Keretrendelés</option>
+                    <option value="2">Anyagszámos rendelés</option>
+                    <option value="3">Gépre kontírozott rendelés</option>
+                    <option value="4">Területre kontírozott rendelés</option>
+                    <option value="5">Beruházás</option>
+                </select>
+                <label for="new-raktar">Raktár:</label>
+                <div id="raktar-container">
+                    <select id="new-raktar" name="new-raktar" required>
+                        <option value="0060">0060</option>
+                        <option value="0350">0350</option>
+                        <option value="0110">0110</option>
+                        <option value="0590">0590</option>
+                    </select>
+                </div>
                 <label for="new-kontirozas">Kontírozás:</label>
-                <input type="text" id="new-kontirozas" name="new-kontirozas">
-                <label for="new-ak">Ak.:</label>
-                <input type="text" id="new-ak" name="new-ak">
+                <input type="text" id="new-kontirozas" name="new-kontirozas" required>
                 <label for="new-megnevezes">Megnevezés:</label>
-                <input type="text" id="new-megnevezes" name="new-megnevezes">
+                <input type="text" id="new-megnevezes" name="new-megnevezes" required>
                 <label for="new-folyamat">Folyamat:</label>
-                <input type="text" id="new-folyamat" name="new-folyamat">
+                <input type="text" id="new-folyamat" name="new-folyamat" required>
                 <label for="new-szallito">Szállító:</label>
-                <input type="text" id="new-szallito" name="new-szallito">
-                <label for="new-sz-kod">Sz.kód:</label>
-                <input type="text" id="new-sz-kod" name="new-sz-kod">
+                <input type="text" id="new-szallito" name="new-szallito" required>
                 <label for="new-ajanlatszam">Ajánlatszám:</label>
                 <input type="text" id="new-ajanlatszam" name="new-ajanlatszam">
                 <label for="new-mennyiseg">Mennyiség:</label>
-                <input type="text" id="new-mennyiseg" name="new-mennyiseg">
+                <input type="text" id="new-mennyiseg" name="new-mennyiseg" required>
                 <label for="new-egyseg">Egység:</label>
-                <input type="text" id="new-egyseg" name="new-egyseg">
+                <input type="text" id="new-egyseg" name="new-egyseg" required>
                 <label for="new-ar">Ár:</label>
                 <input type="text" id="new-ar" name="new-ar">
                 <label for="new-eur-huf">EUR/HUF:</label>
@@ -480,6 +493,8 @@
     </div>
 
     <script>
+        let recordCounter = 2; // Kezdő sorszám (már van 2 rekord)
+
         function hideAllTabs() {
             const tabContents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabContents.length; i++) {
@@ -584,20 +599,26 @@
         function openNewRecordModal(tabName) {
             const modal = document.getElementById("newRecordModal");
             modal.style.display = "block";
+            updateRaktarField(); // Inicializáljuk a Raktár mezőt
         }
 
-        function openEditModal(button) {
-            const modal = document.getElementById("editModal");
-            const row = button.parentElement.parentElement;
-            const cells = row.getElementsByTagName("td");
+        function updateRaktarField() {
+            const rendelesTipus = document.getElementById("rendeles-tipus").value;
+            const raktarContainer = document.getElementById("raktar-container");
 
-            document.getElementById("edit-alkatresz-neve").value = cells[0].textContent;
-            document.getElementById("edit-sorozatszam").value = cells[1].textContent;
-            document.getElementById("edit-helyzet").value = cells[2].textContent;
-            document.getElementById("edit-mozgas-datuma").value = cells[3].textContent;
-            document.getElementById("edit-ertek-huf").value = cells[4].textContent;
-
-            modal.style.display = "block";
+            if (rendelesTipus === "4" || rendelesTipus === "5") {
+                // Területre kontírozott rendelés vagy Beruházás esetén fix érték
+                raktarContainer.innerHTML = `<input type="text" id="new-raktar" name="new-raktar" value="15009126" readonly>`;
+            } else {
+                // Keretrendelés, Anyagszámos rendelés, Gépre kontírozott rendelés esetén legördülő menü
+                raktarContainer.innerHTML = `
+                    <select id="new-raktar" name="new-raktar" required>
+                        <option value="0060">0060</option>
+                        <option value="0350">0350</option>
+                        <option value="0110">0110</option>
+                        <option value="0590">0590</option>
+                    </select>`;
+            }
         }
 
         function closeModal(modalId) {
@@ -606,23 +627,31 @@
         }
 
         function saveNewRecord() {
-            const sr = document.getElementById("new-sr").value;
-            const felveve = document.getElementById("new-felveve").value;
+            // Sr. generálása
+            recordCounter++;
+            const sr = `FR25#${String(recordCounter).padStart(4, '0')}`;
+
+            // Felvéve generálása (aktuális dátum)
+            const today = new Date();
+            const felveve = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+
+            // Űrlap adatainak lekérése
+            const raktar = document.getElementById("new-raktar").value;
             const kontirozas = document.getElementById("new-kontirozas").value;
-            const ak = document.getElementById("new-ak").value;
             const megnevezes = document.getElementById("new-megnevezes").value;
             const folyamat = document.getElementById("new-folyamat").value;
             const szallito = document.getElementById("new-szallito").value;
-            const szKod = document.getElementById("new-sz-kod").value;
-            const ajanlatszam = document.getElementById("new-ajanlatszam").value;
+            const szKod = "TBD"; // Ideiglenesen TBD, később táblázatból
+            const ajanlatszam = document.getElementById("new-ajanlatszam").value || "-";
             const mennyiseg = document.getElementById("new-mennyiseg").value;
             const egyseg = document.getElementById("new-egyseg").value;
-            const ar = document.getElementById("new-ar").value;
-            const eurHuf = document.getElementById("new-eur-huf").value;
-            const bmig = document.getElementById("new-bmig").value;
-            const po = document.getElementById("new-po").value;
-            const tSzallitas = document.getElementById("new-t-szallitas").value;
+            const ar = document.getElementById("new-ar").value || "-";
+            const eurHuf = document.getElementById("new-eur-huf").value || "-";
+            const bmig = document.getElementById("new-bmig").value || "-";
+            const po = document.getElementById("new-po").value || "-";
+            const tSzallitas = document.getElementById("new-t-szallitas").value || "-";
 
+            // Új sor hozzáadása a táblázathoz
             const table = document.getElementById("logisztikai-table");
             const tbody = table.getElementsByTagName("tbody")[0];
             const newRow = tbody.insertRow();
@@ -630,8 +659,9 @@
             newRow.innerHTML = `
                 <td>${sr}</td>
                 <td>${felveve}</td>
+                <td>${raktar}</td>
                 <td>${kontirozas}</td>
-                <td>${ak}</td>
+                <td>-</td>
                 <td>${megnevezes}</td>
                 <td>${folyamat}</td>
                 <td>${szallito}</td>
