@@ -267,7 +267,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.7</span>
+                <span>v1.2.8</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -460,7 +460,13 @@
                 <label for="new-megnevezes">Megnevezés:</label>
                 <input type="text" id="new-megnevezes" name="new-megnevezes" required>
                 <label for="new-folyamat">Folyamat:</label>
-                <input type="text" id="new-folyamat" name="new-folyamat" required>
+                <select id="new-folyamat" name="new-folyamat" required>
+                    <option value="Beszerzés" selected>Beszerzés</option>
+                    <option value="Gyártás">Gyártás</option>
+                    <option value="Javítás">Javítás</option>
+                    <option value="Cserejavítás">Cserejavítás</option>
+                    <option value="Szolgáltatás">Szolgáltatás</option>
+                </select>
                 <label for="new-szallito">Szállító:</label>
                 <input type="text" id="new-szallito" name="new-szallito" required>
                 <label for="new-ajanlatszam">Ajánlatszám:</label>
@@ -626,7 +632,7 @@
             } else if (rendelesTipus === '2') {
                 options = ['0060', '0350', '0110', '0590'];
             } else if (rendelesTipus === '3') {
-                options = ['0060', '0350', "0110", '0590'];
+                options = ['0060', '0350', '0110', '0590'];
             } else if (rendelesTipus === '4') {
                 options = ['0060', '0350', '0110', '0590'];
             } else if (rendelesTipus === '5') {
