@@ -1,0 +1,4 @@
+Anyag azonosító,Leírás,Mennyiség,Mértékegység,Raktár hely,Mozgás dátuma,Státusz
+MAT001,Acéllemez 5mm,150,db,Raktár A,2025-03-20,Raktáron
+MAT002,Csavar M10,5000,db,Raktár B,2025-03-21,Kiszállítás alatt
+MAT003,Hidraulikus olaj,200,liter,Raktár C,2025-03-22,Raktáron
