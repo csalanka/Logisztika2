@@ -232,26 +232,9 @@
             margin-top: 10px;
             color: #4CAF50;
         }
-        #result {
-            margin-top: 10px;
-        }
-        #profil {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-        .logout-btn {
-            padding: 10px 20px;
-            background-color: #F44336;
-            border: none;
-            border-radius: 5px;
-            color: #e0e0e0;
-            cursor: pointer;
-        }
     </style>
 </head>
-<body onload="toggleFullscreen(); hideAllTabs();">
+<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis');">
     <div class="container" id="container">
         <div class="header">
             <div class="header-left">
@@ -262,9 +245,7 @@
                 <span class="logo-note">Ideiglenes logó, hamarosan változik</span>
             </div>
             <div class="header-right">
-                <span id="userEmail"></span>
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
-                <i class="fas fa-user" title="Profiladatok" onclick="toggleProfile()"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
                 <span>v1.2.2</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
@@ -283,7 +264,7 @@
             <div class="tab" onclick="openTab('felhasználó-kezelés')">Felhasználó kezelés</div>
             <div class="tab" onclick="openTab('hibajelentés-fejlesztési-javaslat')">Hibajelentés Fejlesztési javaslat</div>
         </div>
-        <div id="logisztikai-adatbazis" class="tab-content">
+        <div id="logisztikai-adatbazis" class="tab-content active">
             <h2>Logisztikai adatbázis</h2>
             <button class="new-record-btn" onclick="openNewRecordModal('logisztikai-adatbazis')">Új rekord</button>
             <div class="table-container">
@@ -411,25 +392,6 @@
         <div id="hibajelentés-fejlesztési-javaslat" class="tab-content">
             <h2>Hibajelentés Fejlesztési javaslat</h2>
         </div>
-        <div id="profil" class="tab-content" style="display: none;">
-            <h2>Saját profil</h2>
-            <p>Email: <span id="profilEmail"></span></p>
-            <p>Utolsó belépés: 2025.03.21</p>
-            <button class="logout-btn" onclick="logout()">Kijelentkezés</button>
-        </div>
-    </div>
-
-    <div class="modal" id="loginModal">
-        <div class="modal-content">
-            <div class="login-form">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" autocomplete="off" required>
-                <label for="password">Jelszó:</label>
-                <input type="password" id="password" name="password" autocomplete="off" required>
-                <button onclick="checkLogin()">Belépés</button>
-                <div id="result"></div>
-            </div>
-        </div>
     </div>
 
     <div class="modal" id="newRecordModal" style="display: none;">
@@ -542,21 +504,6 @@
             }
         });
 
-        function checkLogin() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            console.log('Email:', email, 'Jelszó:', password); // Hibakereséshez
-            if (email === "teszt@teszt.com" && password === "teszt123") {
-                document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('userEmail').textContent = email;
-                document.getElementById('profilEmail').textContent = email;
-                document.getElementById('logisztikai-adatbazis').classList.add('active');
-            } else {
-                document.getElementById('result').textContent = 'Hibás email vagy jelszó!';
-                document.getElementById('result').style.color = '#F44336';
-            }
-        }
-
         function toggleFullscreen() {
             const container = document.getElementById('container');
             if (!document.fullscreenElement) {
@@ -568,35 +515,17 @@
             }
         }
 
-        function hideAllTabs() {
+        function openTab(tabName) {
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => {
                 tab.classList.remove('active');
             });
-        }
-
-        function openTab(tabName) {
-            hideAllTabs();
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
+            const tabButtons = document.querySelectorAll('.tab');
+            tabButtons.forEach(tab => {
                 tab.classList.remove('active');
             });
             document.getElementById(tabName).classList.add('active');
             document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
-            document.getElementById('profil').style.display = 'none';
-        }
-
-        function toggleProfile() {
-            hideAllTabs();
-            const profilTab = document.getElementById('profil');
-            profilTab.style.display = profilTab.style.display === 'none' ? 'flex' : 'none';
-        }
-
-        function logout() {
-            document.getElementById('loginModal').style.display = 'flex';
-            document.getElementById('userEmail').textContent = '';
-            document.getElementById('profilEmail').textContent = '';
-            hideAllTabs();
         }
 
         function openNewRecordModal(tabName) {
