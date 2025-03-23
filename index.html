@@ -37,6 +37,10 @@
             justify-content: space-between;
             padding: 10px;
             box-sizing: border-box;
+            position: sticky; /* Fix pozíció a fejlécnek */
+            top: 0;
+            background-color: #000000; /* Háttérszín, hogy ne legyen átlátszó */
+            z-index: 10; /* Előrébb hozzuk, hogy ne takarja a tartalom */
         }
         .header-left {
             display: flex;
@@ -86,6 +90,9 @@
             height: 2px;
             background-color: #621d8a;
             margin: 10px 0;
+            position: sticky; /* Fix pozíció az elválasztónak */
+            top: 110px; /* A fejléc magassága után */
+            z-index: 9;
         }
         .tabs {
             width: 100%;
@@ -94,6 +101,11 @@
             margin-bottom: 20px;
             overflow-x: auto;
             white-space: nowrap;
+            position: sticky; /* Fix pozíció a lapfüleknek */
+            top: 112px; /* A fejléc és az elválasztó után */
+            background-color: #000000; /* Háttérszín, hogy ne legyen átlátszó */
+            z-index: 9; /* Előrébb hozzuk, hogy ne takarja a tartalom */
+            padding-top: 5px;
         }
         .tab {
             padding: 10px 20px;
@@ -118,6 +130,7 @@
             border-radius: 5px;
             display: none;
             overflow-y: auto;
+            margin-top: 10px; /* Hely a fix lapfülek alatt */
         }
         .tab-content.active {
             display: block;
@@ -251,7 +264,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.3</span>
+                <span>v1.2.4</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
