@@ -168,6 +168,10 @@
         #nyomonkovetesi-table th:nth-child(4), #nyomonkovetesi-table td:nth-child(4) { width: 120px; }
         #nyomonkovetesi-table th:nth-child(5), #nyomonkovetesi-table td:nth-child(5) { width: 120px; }
         #nyomonkovetesi-table th:nth-child(6), #nyomonkovetesi-table td:nth-child(6) { width: 100px; }
+        #belső-megrendelési-table th:nth-child(1), #belső-megrendelési-table td:nth-child(1) { width: 150px; }
+        #belső-megrendelési-table th:nth-child(2), #belső-megrendelési-table td:nth-child(2) { width: 150px; }
+        #belső-megrendelési-table th:nth-child(3), #belső-megrendelési-table td:nth-child(3) { width: 150px; }
+        #belső-megrendelési-table th:nth-child(4), #belső-megrendelési-table td:nth-child(4) { width: 150px; }
         .edit-btn, .new-record-btn {
             padding: 5px 10px;
             background-color: #621d8a;
@@ -234,7 +238,7 @@
         }
     </style>
 </head>
-<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis');">
+<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis'); loadBelsőMegrendelésiSzámok();">
     <div class="container" id="container">
         <div class="header">
             <div class="header-left">
@@ -247,7 +251,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.2</span>
+                <span>v1.2.3</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -338,6 +342,21 @@
         </div>
         <div id="belső-megrendelési-számok" class="tab-content">
             <h2>Belső megrendelési számok</h2>
+            <div class="table-container">
+                <table id="belső-megrendelési-table">
+                    <thead>
+                        <tr>
+                            <th>Terület</th>
+                            <th>Gép neve</th>
+                            <th>Belső rendelési szám</th>
+                            <th>SAP költséghely szám</th>
+                        </tr>
+                    </thead>
+                    <tbody id="belső-megrendelési-tbody">
+                        <!-- A sorok dinamikusan töltődnek be JavaScripttel -->
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="nyomonkövetési-listák" class="tab-content">
             <h2>Nyomonkövetési listák</h2>
@@ -498,11 +517,33 @@
                         koltseghelySzam: item['SAP költséghely szám']
                     });
                 });
+
+                // A betöltés után frissítjük a táblázatot
+                loadBelsőMegrendelésiSzámok();
             },
             error: function(error) {
                 console.error('Hiba a belső megrendelések adatbázis betöltésekor:', error);
             }
         });
+
+        function loadBelsőMegrendelésiSzámok() {
+            const tbody = document.getElementById('belső-megrendelési-tbody');
+            tbody.innerHTML = ''; // Töröljük a korábbi tartalmat, ha van
+
+            // Végigiterálunk a teruletekGepek objektumon
+            for (const terulet in teruletekGepek) {
+                teruletekGepek[terulet].forEach(gep => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${terulet}</td>
+                        <td>${gep.nev}</td>
+                        <td>${gep.rendelesiSzam}</td>
+                        <td>${gep.koltseghelySzam}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        }
 
         function toggleFullscreen() {
             const container = document.getElementById('container');
