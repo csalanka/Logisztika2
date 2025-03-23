@@ -267,7 +267,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.8</span>
+                <span>v1.2.9</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -439,7 +439,7 @@
                 <label for="rendeles-tipus">Rendeléstípus:</label>
                 <select id="rendeles-tipus" onchange="updateRaktarField(); updateKontirozasField();">
                     <option value="1">Keretrendelés</option>
-                    <option value="2">Anyagszámos rendelés</option>
+                    <option value="2" selected>Anyagszámos rendelés</option>
                     <option value="3">Gépre kontírozott rendelés</option>
                     <option value="4">Területre kontírozott rendelés</option>
                     <option value="5">Beruházás</option>
@@ -615,6 +615,7 @@
         function openNewRecordModal(tabName) {
             document.getElementById('newRecordModal').style.display = 'flex';
             updateKontirozasField();
+            updateRaktarField(); // Biztosítjuk, hogy a Raktár mező is frissüljön az alapértelmezett "Anyagszámos rendelés" alapján
         }
 
         function closeModal(modalId) {
