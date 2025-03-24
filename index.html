@@ -267,7 +267,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.9</span>
+                <span>v1.2.10</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -450,7 +450,7 @@
                         <option value="0060">0060</option>
                         <option value="0350">0350</option>
                         <option value="0110">0110</option>
-                        <option value="0590">0590</option>
+                        <option value="0560">0560</option>
                     </select>
                 </div>
                 <label for="new-kontirozas">Kontírozás:</label>
@@ -631,13 +631,13 @@
             if (rendelesTipus === '1') {
                 options = ['0060', '0350'];
             } else if (rendelesTipus === '2') {
-                options = ['0060', '0350', '0110', '0590'];
+                options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '3') {
-                options = ['0060', '0350', '0110', '0590'];
+                options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '4') {
-                options = ['0060', '0350', '0110', '0590'];
+                options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '5') {
-                options = ['0060', '0350', '0110', '0590'];
+                options = ['0060', '0350', '0110', '0560'];
             }
 
             const select = document.createElement('select');
@@ -758,7 +758,12 @@
                 const gep = document.getElementById('new-gep').value;
                 if (terulet && gep) {
                     const selectedGep = teruletekGepek[terulet].find(g => g.nev === gep);
-                    kontirozasInput.value = selectedGep ? selectedGep.rendelesiSzam : '';
+                    if (selectedGep) {
+                        // Ha van belső rendelési szám, azt használjuk, különben a SAP költséghely számot
+                        kontirozasInput.value = selectedGep.rendelesiSzam ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
+                    } else {
+                        kontirozasInput.value = '';
+                    }
                 } else {
                     kontirozasInput.value = '';
                 }
@@ -845,12 +850,35 @@
             row.cells[2].textContent = document.getElementById('edit-helyzet').value;
             row.cells[3].textContent = document.getElementById('edit-mozgas-datuma').value;
             row.cells[4].textContent = document.getElementById('edit-ertek-huf').value;
-            closeModal('editModal');
-        }
+ **Truncated as the "Folyamat" dropdown list in the "Új rekord" form on the "Logisztikai adatbázis" tab.
+- Set the default selection for the "Rendeléstípus" dropdown list to "Anyagszámos rendelés" in the "Új rekord" form.
+- Fixed a bug where, for "Gépre kontírozott rendelés", if a machine lacks a "Belső rendelési szám", the "Kontírozás" field now uses the machine's "SAP költséghely szám" (e.g., for MFH terület, ELB 30/290, it uses 15009450).
+- Corrected the "Raktár" dropdown list by replacing the incorrect "0590" with the correct "0560".
 
-        function sendEmail() {
-            document.getElementById('email-result').textContent = 'Levél elküldve!';
-        }
-    </script>
-</body>
-</html>
+---
+
+### **Hogyan frissítsd?**
+1. Lépj be a `https://github.com/csalanka/Logisztika2` repository-ba.
+2. Kattints az `index.html` fájlra.
+3. Kattints a ceruza ikonra ("Edit this file").
+4. Másold be a fenti kódot (teljesen cseréld ki a meglévő tartalmat).
+5. Commit-old (pl. "Fix kontírozás for Gépre kontírozott rendelés and update raktár code - v1.2.10").
+
+---
+
+### **Ellenőrzés**
+- Nyisd meg a `https://csalanka.github.io/Logisztika2/index.html` oldalt (frissítsd: Ctrl + F5).
+- "Logisztikai adatbázis" → "Új rekord".
+- **Rendeléstípus**: Válaszd a "Gépre kontírozott rendelést".
+- Válassz területet (pl. MFH) és gépet (pl. ELB 30/290). Ellenőrizd, hogy a "Kontírozás" mezőbe a helyes SAP költséghely szám (pl. 15009450) kerül-e, ha nincs belső rendelési szám.
+- **Raktár**: Ellenőrizd, hogy a legördülő listában "0560" szerepel "0590" helyett.
+
+---
+
+### **Mi a következő lépés?**
+- Van még hiba vagy módosítás az "Új rekord" űrlapon?
+- Folytassuk egy másik lapfüllel (pl. "Anyagtörzs")?
+- Szeretnél szerkesztési/törlési lehetőséget a táblázatokhoz?
+- Adatok tartós mentése (pl. localStorage)?
+
+Várom a visszajelzésedet! 😊
