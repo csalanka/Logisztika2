@@ -130,7 +130,7 @@
             background-color: #1a1a1a;
             border-radius: 5px;
             display: none;
-            height: calc(100vh - 180px); /* A fix elemek magassága után a maradék hely */
+            height: calc(100vh - 160px); /* Korrigált magasság a táblázat számára */
             box-sizing: border-box;
         }
         .tab-content.active {
@@ -138,12 +138,25 @@
         }
         .table-container {
             width: 100%;
-            max-height: calc(11vh - 250px); /* A fejléc, lapfülek és padding figyelembevételével */
+            max-height: calc(100vh - 200px); /* Több hely a táblázatnak, hogy a csúszka mérete növekedjen */
             overflow-x: auto;
             overflow-y: auto; /* Függőleges görgetés a táblázaton belül */
             scroll-behavior: smooth; /* Simább görgetés */
             will-change: transform; /* Optimalizálja a görgetést a böngészőben */
             padding-top: 5px; /* Kis padding a tetején, hogy a fejléc és a csúszka teteje egy vonalban legyen */
+            padding-right: 17px; /* A csúszka szélességének megfelelő padding, hogy a tartalom ne kerüljön alá */
+        }
+        /* Csúszka testreszabása */
+        .table-container::-webkit-scrollbar {
+            width: 10px; /* Csúszka szélessége */
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #621d8a; /* Csúszka fogantyújának színe */
+            border-radius: 5px;
+            min-height: 20px; /* Minimális magasság a csúszka fogantyújának */
+        }
+        .table-container::-webkit-scrollbar-track {
+            background-color: #2a2a2a; /* Csúszka sínjének színe */
         }
         table {
             width: 100%;
@@ -284,7 +297,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.16</span>
+                <span>v1.2.18</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -602,6 +615,18 @@
                     `;
                     tbody.appendChild(row);
                 });
+            }
+
+            // Tesztadatok hozzáadása a csúszka méretének növeléséhez
+            for (let i = 1; i <= 20; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>Teszt Terület ${i}</td>
+                    <td>Teszt Gép ${i}</td>
+                    <td>TESZT${i.toString().padStart(4, '0')}</td>
+                    <td>15000${i.toString().padStart(3, '0')}</td>
+                `;
+                tbody.appendChild(row);
             }
         }
 
