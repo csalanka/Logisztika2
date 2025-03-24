@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
+        :root {
+            --table-container-padding-top: 5px; /* Kezdeti érték a .table-container padding-top-hoz */
+            --th-top: 0px; /* Kezdeti érték a th elemek top-hoz */
+        }
         body {
             background-color: #000000;
             margin: 0;
@@ -143,7 +147,7 @@
             overflow-y: auto; /* Függőleges görgetés a táblázaton belül */
             scroll-behavior: smooth; /* Simább görgetés */
             will-change: transform; /* Optimalizálja a görgetést a böngészőben */
-            padding-top: 0px; /* Kis padding a tetején, hogy a fejléc és a csúszka teteje egy vonalban legyen */
+            padding-top: var(--table-container-padding-top); /* Dinamikus padding-top */
             padding-right: 17px; /* A csúszka szélességének megfelelő padding, hogy a tartalom ne kerüljön alá */
         }
         /* Csúszka testreszabása */
@@ -172,7 +176,7 @@
         th {
             background-color: #2a2a2a;
             position: sticky;
-            top: 0; /* Pontosan a .table-container tetejéhez igazítjuk */
+            top: var(--th-top); /* Dinamikus top érték */
             z-index: 2; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         }
         tr:nth-child(even) {
@@ -198,7 +202,7 @@
         #logisztikai-table th:nth-child(18), #logisztikai-table td:nth-child(18) { width: 100px; }
         #logisztikai-table th {
             position: sticky;
-            top: 0; /* Pontosan a .table-container tetejéhez igazítjuk */
+            top: var(--th-top); /* Dinamikus top érték */
             background-color: #2a2a2a; /* Biztosítjuk, hogy a háttér átlátszatlan legyen */
             z-index: 2; /* Magasabb z-index a tartalom elrejtéséhez */
         }
@@ -214,7 +218,7 @@
         #belső-megrendelési-table th:nth-child(4), #belső-megrendelési-table td:nth-child(4) { width: 150px; }
         #belső-megrendelési-table th {
             position: sticky;
-            top: 0; /* Pontosan a .table-container tetejéhez igazítjuk */
+            top: var(--th-top); /* Dinamikus top érték */
             background-color: #2a2a2a; /* Biztosítjuk, hogy a háttér átlátszatlan legyen */
             z-index: 2; /* Magasabb z-index a tartalom elrejtéséhez */
         }
@@ -282,6 +286,38 @@
             margin-top: 10px;
             color: #4CAF50;
         }
+        /* Finomhangoló panel stílusa */
+        #tuning-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1a1a1a;
+            border: 1px solid #621d8a;
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+        #tuning-panel label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #tuning-panel input[type="range"] {
+            width: 100%;
+        }
+        #tuning-panel button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #621d8a;
+            border: none;
+            border-radius: 5px;
+            color: #e0e0e0;
+            cursor: pointer;
+        }
+        #tuning-panel button:hover {
+            background-color: #7a2aa8;
+        }
     </style>
 </head>
 <body onload="toggleFullscreen(); openTab('logisztikai-adatbazis'); loadBelsőMegrendelésiSzámok(); initializeSorszamCounter();">
@@ -297,7 +333,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.18</span>
+                <span>v1.2.19</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -460,6 +496,19 @@
         <div id="hibajelentés-fejlesztési-javaslat" class="tab-content">
             <h2>Hibajelentés Fejlesztési javaslat</h2>
         </div>
+    </div>
+
+    <!-- Finomhangoló panel -->
+    <div id="tuning-panel">
+        <label for="padding-top-slider">Padding-top (.table-container):</label>
+        <input type="range" id="padding-top-slider" min="0" max="50" value="5" oninput="updatePaddingTop(this.value)">
+        <span id="padding-top-value">5px</span>
+
+        <label for="top-slider">Top (th):</label>
+        <input type="range" id="top-slider" min="0" max="50" value="0" oninput="updateTop(this.value)">
+        <span id="top-value">0px</span>
+
+        <button onclick="resetTuning()">Alapértelmezett értékek</button>
     </div>
 
     <div class="modal" id="newRecordModal" style="display: none;">
@@ -897,6 +946,24 @@
 
         function sendEmail() {
             document.getElementById('email-result').textContent = 'Levél elküldve!';
+        }
+
+        // Finomhangoló panel függvényei
+        function updatePaddingTop(value) {
+            document.documentElement.style.setProperty('--table-container-padding-top', `${value}px`);
+            document.getElementById('padding-top-value').textContent = `${value}px`;
+        }
+
+        function updateTop(value) {
+            document.documentElement.style.setProperty('--th-top', `${value}px`);
+            document.getElementById('top-value').textContent = `${value}px`;
+        }
+
+        function resetTuning() {
+            document.getElementById('padding-top-slider').value = 5;
+            document.getElementById('top-slider').value = 0;
+            updatePaddingTop(5);
+            updateTop(0);
         }
     </script>
 </body>
