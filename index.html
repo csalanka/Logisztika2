@@ -172,7 +172,7 @@
         #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 80px; }
         #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 100px; }
         #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 80px; }
-        #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 60px; }
+        #logisztikai-table th:nth-child        (13), #logisztikai-table td:nth-child(13) { width: 60px; }
         #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 60px; }
         #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 80px; }
         #logisztikai-table th:nth-child(16), #logisztikai-table td:nth-child(16) { width: 100px; }
@@ -267,7 +267,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.10</span>
+                <span>v1.2.11</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -635,7 +635,7 @@
             } else if (rendelesTipus === '3') {
                 options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '4') {
-                options = ['0060', '0350', '0110', '0560'];
+                options = ['0060', "0350", '0110', '0560'];
             } else if (rendelesTipus === '5') {
                 options = ['0060', '0350', '0110', '0560'];
             }
@@ -850,35 +850,12 @@
             row.cells[2].textContent = document.getElementById('edit-helyzet').value;
             row.cells[3].textContent = document.getElementById('edit-mozgas-datuma').value;
             row.cells[4].textContent = document.getElementById('edit-ertek-huf').value;
- **Truncated as the "Folyamat" dropdown list in the "Új rekord" form on the "Logisztikai adatbázis" tab.
-- Set the default selection for the "Rendeléstípus" dropdown list to "Anyagszámos rendelés" in the "Új rekord" form.
-- Fixed a bug where, for "Gépre kontírozott rendelés", if a machine lacks a "Belső rendelési szám", the "Kontírozás" field now uses the machine's "SAP költséghely szám" (e.g., for MFH terület, ELB 30/290, it uses 15009450).
-- Corrected the "Raktár" dropdown list by replacing the incorrect "0590" with the correct "0560".
+            closeModal('editModal');
+        }
 
----
-
-### **Hogyan frissítsd?**
-1. Lépj be a `https://github.com/csalanka/Logisztika2` repository-ba.
-2. Kattints az `index.html` fájlra.
-3. Kattints a ceruza ikonra ("Edit this file").
-4. Másold be a fenti kódot (teljesen cseréld ki a meglévő tartalmat).
-5. Commit-old (pl. "Fix kontírozás for Gépre kontírozott rendelés and update raktár code - v1.2.10").
-
----
-
-### **Ellenőrzés**
-- Nyisd meg a `https://csalanka.github.io/Logisztika2/index.html` oldalt (frissítsd: Ctrl + F5).
-- "Logisztikai adatbázis" → "Új rekord".
-- **Rendeléstípus**: Válaszd a "Gépre kontírozott rendelést".
-- Válassz területet (pl. MFH) és gépet (pl. ELB 30/290). Ellenőrizd, hogy a "Kontírozás" mezőbe a helyes SAP költséghely szám (pl. 15009450) kerül-e, ha nincs belső rendelési szám.
-- **Raktár**: Ellenőrizd, hogy a legördülő listában "0560" szerepel "0590" helyett.
-
----
-
-### **Mi a következő lépés?**
-- Van még hiba vagy módosítás az "Új rekord" űrlapon?
-- Folytassuk egy másik lapfüllel (pl. "Anyagtörzs")?
-- Szeretnél szerkesztési/törlési lehetőséget a táblázatokhoz?
-- Adatok tartós mentése (pl. localStorage)?
-
-Várom a visszajelzésedet! 😊
+        function sendEmail() {
+            document.getElementById('email-result').textContent = 'Levél elküldve!';
+        }
+    </script>
+</body>
+</html>
