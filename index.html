@@ -141,6 +141,8 @@
             max-height: calc(100vh - 250px); /* A fejléc, lapfülek és padding figyelembevételével */
             overflow-x: auto;
             overflow-y: auto; /* Függőleges görgetés a táblázaton belül */
+            scroll-behavior: smooth; /* Simább görgetés */
+            will-change: transform; /* Optimalizálja a görgetést a böngészőben */
         }
         table {
             width: 100%;
@@ -156,8 +158,8 @@
         th {
             background-color: #2a2a2a;
             position: sticky;
-            top: 0;
-            z-index: 1; /* Biztosítjuk, hogy a fejléc a tartalom felett maradjon */
+            top: -1px; /* Finomhangolás a pontos illeszkedéshez */
+            z-index: 2; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         }
         tr:nth-child(even) {
             background-color: #222222;
@@ -192,9 +194,9 @@
         #belső-megrendelési-table th:nth-child(4), #belső-megrendelési-table td:nth-child(4) { width: 150px; }
         #belső-megrendelési-table th {
             position: sticky;
-            top: 0;
-            background-color: #2a2a2a;
-            z-index: 1; /* Biztosítjuk, hogy a fejléc a tartalom felett maradjon */
+            top: -1px; /* Finomhangolás a pontos illeszkedéshez */
+            background-color: #2a2a2a; /* Biztosítjuk, hogy a háttér átlátszatlan legyen */
+            z-index: 2; /* Magasabb z-index a tartalom elrejtéséhez */
         }
         .edit-btn, .new-record-btn {
             padding: 5px 10px;
@@ -275,7 +277,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.14</span>
+                <span>v1.2.15</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
