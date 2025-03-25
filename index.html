@@ -78,6 +78,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            margin-right: 20px; /* Ikonok balra mozgatása */
         }
         .header-right span, .header-right i {
             font-size: 14px;
@@ -253,7 +254,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 10000; /* Növelt z-index a teljes képernyős módhoz */
         }
         .modal-content {
             background-color: #1a1a1a;
@@ -312,7 +313,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.22</span>
+                <span>v1.2.23</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -532,12 +533,15 @@
         </div>
     </div>
 
-    <!-- Szerkesztési űrlap (teljes, az összes mezővel) -->
+    <!-- Szerkesztési űrlap (csoportosítva) -->
     <div class="modal" id="editModal" style="display: none;">
         <div class="modal-content">
             <div class="edit-form" id="editForm">
                 <h2>Szerkesztés</h2>
                 <input type="hidden" id="edit-row-index">
+                
+                <!-- Már megadott adatok csoport -->
+                <h3 style="margin-top: 10px; border-bottom: 1px solid #621d8a; padding-bottom: 5px;">Már megadott adatok</h3>
                 <label for="edit-rendeles-tipus">Rendeléstípus:</label>
                 <select id="edit-rendeles-tipus" onchange="updateEditRaktarField(); updateEditKontirozasField();">
                     <option value="1">Keretrendelés</option>
@@ -571,8 +575,6 @@
                 </select>
                 <label for="edit-szallito">Szállító:</label>
                 <input type="text" id="edit-szallito" name="edit-szallito" required>
-                <label for="edit-ajanlatszam">Ajánlatszám:</label>
-                <input type="text" id="edit-ajanlatszam" name="edit-ajanlatszam">
                 <label for="edit-mennyiseg">Mennyiség:</label>
                 <input type="text" id="edit-mennyiseg" name="edit-mennyiseg" required>
                 <label for="edit-egyseg">Egység:</label>
@@ -581,6 +583,11 @@
                     <option value="CSM.">CSM.</option>
                     <option value="M.">M.</option>
                 </select>
+
+                <!-- Később megadható adatok csoport -->
+                <h3 style="margin-top: 20px; border-bottom: 1px solid #621d8a; padding-bottom: 5px;">Később megadható adatok</h3>
+                <label for="edit-ajanlatszam">Ajánlatszám:</label>
+                <input type="text" id="edit-ajanlatszam" name="edit-ajanlatszam">
                 <label for="edit-ar">Ár:</label>
                 <input type="text" id="edit-ar" name="edit-ar">
                 <label for="edit-eur-huf">EUR/HUF:</label>
@@ -594,6 +601,7 @@
                 <input type="text" id="edit-po" name="edit-po">
                 <label for="edit-t-szallitas">T.Szállítás:</label>
                 <input type="date" id="edit-t-szallitas" name="edit-t-szallitas">
+                
                 <button onclick="saveEdit()">Mentés</button>
                 <button class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
                 <button onclick="closeModal('editModal')">Mégsem</button>
