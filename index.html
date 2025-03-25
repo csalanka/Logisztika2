@@ -182,7 +182,8 @@
             background-color: #2a2a2a;
             position: sticky;
             top: var(--th-top); /* Végleges top érték */
-            z-index: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
+            z-inde
+x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             height: 40px; /* Magasabb fejléc a jobb takarás érdekében */
             line-height: 40px; /* Szöveg vertikális középre igazítása */
         }
@@ -242,6 +243,8 @@
             color: #e0e0e0;
             cursor: pointer;
             margin: 2px;
+            position: relative;
+            z-index: 10001; /* Magasabb z-index a gombok számára */
         }
         .modal {
             display: block;
@@ -254,14 +257,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000; /* Növelt z-index a teljes képernyős módhoz */
+            z-index: 10000; /* Magas z-index a modális ablak számára */
         }
         .modal-content {
             background-color: #1a1a1a;
             padding: 20px;
             border-radius: 10px;
             width: 90%;
-            max-width: 400px;
+            max-width: 800px; /* Szélesebb modális ablak a két oszlophoz */
+            max-height: 80vh; /* Maximális magasság a képernyő 80%-a */
+            overflow-y: auto; /* Görgethető, ha a tartalom túl hosszú */
             text-align: center;
             border: 1px solid #621d8a;
             box-sizing: border-box;
@@ -271,6 +276,25 @@
             flex-direction: column;
             gap: 10px;
             width: 100%;
+        }
+        .edit-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Két oszlop egyenlő szélességgel */
+            gap: 20px; /* Oszlopok közötti távolság */
+            width: 100%;
+        }
+        .edit-form h3 {
+            grid-column: 1 / 3; /* A címsorok mindkét oszlopot elfoglalják */
+            margin-top: 10px;
+            border-bottom: 1px solid #621d8a;
+            padding-bottom: 5px;
+        }
+        .edit-form label, .edit-form input, .edit-form select {
+            display: block;
+            width: 100%;
+        }
+        .edit-form button {
+            grid-column: 1 / 3; /* A gombok mindkét oszlopot elfoglalják */
         }
         .new-record-form label, .edit-form label {
             font-weight: bold;
@@ -313,7 +337,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.23</span>
+                <span>v1.2.24</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -533,15 +557,15 @@
         </div>
     </div>
 
-    <!-- Szerkesztési űrlap (csoportosítva) -->
+    <!-- Szerkesztési űrlap (két oszlopra bontva) -->
     <div class="modal" id="editModal" style="display: none;">
         <div class="modal-content">
             <div class="edit-form" id="editForm">
-                <h2>Szerkesztés</h2>
+                <h2 style="grid-column: 1 / 3;">Szerkesztés</h2>
                 <input type="hidden" id="edit-row-index">
                 
-                <!-- Már megadott adatok csoport -->
-                <h3 style="margin-top: 10px; border-bottom: 1px solid #621d8a; padding-bottom: 5px;">Már megadott adatok</h3>
+                <!-- Már megadott adatok csoport (bal oszlop) -->
+                <h3>Már megadott adatok</h3>
                 <label for="edit-rendeles-tipus">Rendeléstípus:</label>
                 <select id="edit-rendeles-tipus" onchange="updateEditRaktarField(); updateEditKontirozasField();">
                     <option value="1">Keretrendelés</option>
@@ -584,8 +608,8 @@
                     <option value="M.">M.</option>
                 </select>
 
-                <!-- Később megadható adatok csoport -->
-                <h3 style="margin-top: 20px; border-bottom: 1px solid #621d8a; padding-bottom: 5px;">Később megadható adatok</h3>
+                <!-- További adatok csoport (jobb oszlop) -->
+                <h3>További adatok</h3>
                 <label for="edit-ajanlatszam">Ajánlatszám:</label>
                 <input type="text" id="edit-ajanlatszam" name="edit-ajanlatszam">
                 <label for="edit-ar">Ár:</label>
@@ -699,6 +723,21 @@
             } else {
                 document.exitFullscreen();
             }
+
+            // Eseménykezelők újraregisztrálása a teljes képernyős mód váltása után
+            setTimeout(() => {
+                const newRecordBtn = document.querySelector('.new-record-btn');
+                if (newRecordBtn) {
+                    newRecordBtn.removeEventListener('click', openNewRecordModal); // Előző eseménykezelő eltávolítása
+                    newRecordBtn.addEventListener('click', () => openNewRecordModal('logisztikai-adatbazis')); // Új eseménykezelő hozzáadása
+                }
+
+                const editButtons = document.querySelectorAll('.edit-btn');
+                editButtons.forEach(btn => {
+                    btn.removeEventListener('click', openEditModal); // Előző eseménykezelő eltávolítása
+                    btn.addEventListener('click', () => openEditModal(btn)); // Új eseménykezelő hozzáadása
+                });
+            }, 100); // Kis késleltetés, hogy a teljes képernyős mód biztosan aktiválódjon
         }
 
         function openTab(tabName) {
@@ -967,7 +1006,7 @@
             } else if (rendelesTipus === '3') {
                 options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '4') {
-                options = ['0060', "0350", '0110', '0560'];
+                options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '5') {
                 options = ['0060', '0350', '0110', '0560'];
             }
@@ -1116,21 +1155,22 @@
             const megnevezes = document.getElementById('edit-megnevezes').value;
             const folyamat = document.getElementById('edit-folyamat').value;
             const szallito = document.getElementById('edit-szallito').value;
-            const ajanlatszam = document.getElementById('edit-ajanlatszam').value;
+            const ajanlatszam = document.getElementById('edit-ajanlatszam').value || '-';
             const mennyiseg = document.getElementById('edit-mennyiseg').value;
             const egyseg = document.getElementById('edit-egyseg').value;
-            const ar = document.getElementById('edit-ar').value;
-            const eurHuf = document.getElementById('edit-eur-huf').value;
-            const bmig = document.getElementById('edit-bmig').value;
-            const po = document.getElementById('edit-po').value;
-            const tSzallitas = document.getElementById('edit-t-szallitas').value;
+            const ar = document.getElementById('edit-ar').value || '-';
+            const eurHuf = document.getElementById('edit-eur-huf').value || '-';
+            const bmig = document.getElementById('edit-bmig').value || '-';
+            const po = document.getElementById('edit-po').value || '-';
+            const tSzallitas = document.getElementById('edit-t-szallitas').value || '-';
 
+            // Ha a rendeléstípus "Gépre kontírozott rendelés" (3), akkor kiolvassuk a gép nevét
             let kontirozasiNev = '-';
             if (rendelesTipus === '3') {
                 const terulet = document.getElementById('edit-terulet').value;
                 const gep = document.getElementById('edit-gep').value;
                 if (terulet && gep) {
-                    kontirozasiNev = gep;
+                    kontirozasiNev = gep; // A kiválasztott gép neve
                 }
             }
 
@@ -1142,20 +1182,24 @@
             row.cells[7].textContent = megnevezes;
             row.cells[8].textContent = folyamat;
             row.cells[9].textContent = szallito;
-            row.cells[11].textContent = ajanlatszam || '-';
+            row.cells[11].textContent = ajanlatszam;
             row.cells[12].textContent = mennyiseg;
             row.cells[13].textContent = egyseg;
-            row.cells[14].textContent = ar || '-';
-            row.cells[15].textContent = eurHuf || '-';
-            row.cells[16].textContent = bmig || '-';
-            row.cells[17].textContent = po || '-';
-            row.cells[18].textContent = tSzallitas || '-';
+            row.cells[14].textContent = ar;
+            row.cells[15].textContent = eurHuf;
+            row.cells[16].textContent = bmig;
+            row.cells[17].textContent = po;
+            row.cells[18].textContent = tSzallitas;
 
             closeModal('editModal');
         }
 
         function sendEmail() {
-            document.getElementById('email-result').textContent = 'Levél elküldve!';
+            const emailResult = document.getElementById('email-result');
+            emailResult.textContent = 'Levél elküldve!';
+            setTimeout(() => {
+                emailResult.textContent = '';
+            }, 3000);
         }
     </script>
 </body>
