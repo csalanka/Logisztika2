@@ -188,24 +188,25 @@
         tr:nth-child(even) {
             background-color: #222222;
         }
-        #logisztikai-table th:nth-child(1), #logisztikai-table td:nth-child(1) { width: 50px; }
-        #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 100px; }
+        #logisztikai-table th:nth-child(1), #logisztikai-table td:nth-child(1) { width: 100px; } /* Műveleti oszlop */
+        #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 50px; } /* Sr. */
         #logisztikai-table th:nth-child(3), #logisztikai-table td:nth-child(3) { width: 100px; }
         #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 100px; }
-        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 150px; } /* Kontírozási név */
-        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 80px; }
-        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 150px; }
-        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 100px; }
-        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 120px; }
-        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 80px; }
-        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 100px; }
-        #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 80px; }
-        #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 60px; }
+        #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 100px; }
+        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 150px; } /* Kontírozási név */
+        #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 80px; }
+        #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 150px; }
+        #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 100px; }
+        #logisztikai-table th:nth-child(10), #logisztikai-table td:nth-child(10) { width: 120px; }
+        #logisztikai-table th:nth-child(11), #logisztikai-table td:nth-child(11) { width: 80px; }
+        #logisztikai-table th:nth-child(12), #logisztikai-table td:nth-child(12) { width: 100px; }
+        #logisztikai-table th:nth-child(13), #logisztikai-table td:nth-child(13) { width: 80px; }
         #logisztikai-table th:nth-child(14), #logisztikai-table td:nth-child(14) { width: 60px; }
-        #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 80px; }
-        #logisztikai-table th:nth-child(16), #logisztikai-table td:nth-child(16) { width: 100px; }
+        #logisztikai-table th:nth-child(15), #logisztikai-table td:nth-child(15) { width: 60px; }
+        #logisztikai-table th:nth-child(16), #logisztikai-table td:nth-child(16) { width: 80px; }
         #logisztikai-table th:nth-child(17), #logisztikai-table td:nth-child(17) { width: 100px; }
         #logisztikai-table th:nth-child(18), #logisztikai-table td:nth-child(18) { width: 100px; }
+        #logisztikai-table th:nth-child(19), #logisztikai-table td:nth-child(19) { width: 100px; }
         #logisztikai-table th {
             position: sticky;
             top: var(--th-top); /* Végleges top érték */
@@ -264,24 +265,24 @@
             border: 1px solid #621d8a;
             box-sizing: border-box;
         }
-        .new-record-form {
+        .new-record-form, .edit-form {
             display: flex;
             flex-direction: column;
             gap: 10px;
             width: 100%;
         }
-        .new-record-form label {
+        .new-record-form label, .edit-form label {
             font-weight: bold;
             text-align: left;
         }
-        .new-record-form input, .new-record-form select {
+        .new-record-form input, .new-record-form select, .edit-form input, .edit-form select {
             padding: 5px;
             border: none;
             border-radius: 5px;
             background-color: #3c3c3c;
             color: #e0e0e0;
         }
-        .new-record-form button {
+        .new-record-form button, .edit-form button {
             padding: 10px;
             background-color: #621d8a;
             border: none;
@@ -311,7 +312,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.21</span>
+                <span>v1.2.22</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -335,6 +336,7 @@
                 <table id="logisztikai-table">
                     <thead>
                         <tr>
+                            <th>Műveleti</th>
                             <th>Sr.</th>
                             <th>Felvéve</th>
                             <th>Raktár</th>
@@ -357,6 +359,7 @@
                     </thead>
                     <tbody>
                         <tr>
+                            <td><button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button></td>
                             <td>FR25#0001</td>
                             <td>2025.03.01</td>
                             <td>0060</td>
@@ -377,6 +380,7 @@
                             <td>2025.03.15</td>
                         </tr>
                         <tr>
+                            <td><button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button></td>
                             <td>FR25#0002</td>
                             <td>2025.03.02</td>
                             <td>0350</td>
@@ -476,6 +480,7 @@
         </div>
     </div>
 
+    <!-- Új rekord űrlap (egyszerűsített) -->
     <div class="modal" id="newRecordModal" style="display: none;">
         <div class="modal-content">
             <div class="new-record-form" id="newRecordForm">
@@ -513,10 +518,7 @@
                 </select>
                 <label for="new-szallito">Szállító:</label>
                 <input type="text" id="new-szallito" name="new-szallito" required>
-                <label for="new-ajanlatszam">Ajánlatszám:</label>
-                <input type="text" id="new-ajanlatszam" name="new-ajanlatszam">
                 <label for="new-mennyiseg">Mennyiség:</label>
-                <input type="text"也好: true
                 <input type="text" id="new-mennyiseg" name="new-mennyiseg" required>
                 <label for="new-egyseg">Egység:</label>
                 <select id="new-egyseg" name="new-egyseg" required>
@@ -524,43 +526,78 @@
                     <option value="CSM.">CSM.</option>
                     <option value="M.">M.</option>
                 </select>
-                <label for="new-ar">Ár:</label>
-                <input type="text" id="new-ar" name="new-ar">
-                <label for="new-eur-huf">EUR/HUF:</label>
-                <select id="new-eur-huf" name="new-eur-huf">
-                    <option value="EUR">EUR</option>
-                    <option value="HUF">HUF</option>
-                </select>
-                <label for="new-bmig">BMIg.:</label>
-                <input type="text" id="new-bmig" name="new-bmig">
-                <label for="new-po">PO:</label>
-                <input type="text" id="new-po" name="new-po">
-                <label for="new-t-szallitas">T.Szállítás:</label>
-                <input type="date" id="new-t-szallitas" name="new-t-szallitas">
                 <button onclick="saveNewRecord()">Mentés</button>
-                <button class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
                 <button onclick="closeModal('newRecordModal')">Mégsem</button>
-                <div id="email-result"></div>
             </div>
         </div>
     </div>
 
+    <!-- Szerkesztési űrlap (teljes, az összes mezővel) -->
     <div class="modal" id="editModal" style="display: none;">
         <div class="modal-content">
             <div class="edit-form" id="editForm">
                 <h2>Szerkesztés</h2>
-                <label for="edit-alkatresz-neve">Alkatrész neve:</label>
-                <input type="text" id="edit-alkatresz-neve" name="edit-alkatresz-neve">
-                <label for="edit-sorozatszam">Sorozatszám:</label>
-                <input type="text" id="edit-sorozatszam" name="edit-sorozatszam">
-                <label for="edit-helyzet">Helyzet:</label>
-                <input type="text" id="edit-helyzet" name="edit-helyzet">
-                <label for="edit-mozgas-datuma">Mozgás dátuma:</label>
-                <input type="text" id="edit-mozgas-datuma" name="edit-mozgas-datuma">
-                <label for="edit-ertek-huf">Érték (HUF):</label>
-                <input type="text" id="edit-ertek-huf" name="edit-ertek-huf">
+                <input type="hidden" id="edit-row-index">
+                <label for="edit-rendeles-tipus">Rendeléstípus:</label>
+                <select id="edit-rendeles-tipus" onchange="updateEditRaktarField(); updateEditKontirozasField();">
+                    <option value="1">Keretrendelés</option>
+                    <option value="2">Anyagszámos rendelés</option>
+                    <option value="3">Gépre kontírozott rendelés</option>
+                    <option value="4">Területre kontírozott rendelés</option>
+                    <option value="5">Beruházás</option>
+                </select>
+                <label for="edit-raktar">Raktár:</label>
+                <div id="edit-raktar-container">
+                    <select id="edit-raktar" name="edit-raktar" required>
+                        <option value="0060">0060</option>
+                        <option value="0350">0350</option>
+                        <option value="0110">0110</option>
+                        <option value="0560">0560</option>
+                    </select>
+                </div>
+                <label for="edit-kontirozas">Kontírozás:</label>
+                <div id="edit-kontirozas-container">
+                    <input type="text" id="edit-kontirozas" name="edit-kontirozas" required>
+                </div>
+                <label for="edit-megnevezes">Megnevezés:</label>
+                <input type="text" id="edit-megnevezes" name="edit-megnevezes" required>
+                <label for="edit-folyamat">Folyamat:</label>
+                <select id="edit-folyamat" name="edit-folyamat" required>
+                    <option value="Beszerzés">Beszerzés</option>
+                    <option value="Gyártás">Gyártás</option>
+                    <option value="Javítás">Javítás</option>
+                    <option value="Cserejavítás">Cserejavítás</option>
+                    <option value="Szolgáltatás">Szolgáltatás</option>
+                </select>
+                <label for="edit-szallito">Szállító:</label>
+                <input type="text" id="edit-szallito" name="edit-szallito" required>
+                <label for="edit-ajanlatszam">Ajánlatszám:</label>
+                <input type="text" id="edit-ajanlatszam" name="edit-ajanlatszam">
+                <label for="edit-mennyiseg">Mennyiség:</label>
+                <input type="text" id="edit-mennyiseg" name="edit-mennyiseg" required>
+                <label for="edit-egyseg">Egység:</label>
+                <select id="edit-egyseg" name="edit-egyseg" required>
+                    <option value="DB.">DB.</option>
+                    <option value="CSM.">CSM.</option>
+                    <option value="M.">M.</option>
+                </select>
+                <label for="edit-ar">Ár:</label>
+                <input type="text" id="edit-ar" name="edit-ar">
+                <label for="edit-eur-huf">EUR/HUF:</label>
+                <select id="edit-eur-huf" name="edit-eur-huf">
+                    <option value="EUR">EUR</option>
+                    <option value="HUF">HUF</option>
+                </select>
+                <label for="edit-bmig">BMIg.:</label>
+                <input type="text" id="edit-bmig" name="edit-bmig">
+                <label for="edit-po">PO:</label>
+                <input type="text" id="edit-po" name="edit-po">
+                <label for="edit-t-szallitas">T.Szállítás:</label>
+                <input type="date" id="edit-t-szallitas" name="edit-t-szallitas">
                 <button onclick="saveEdit()">Mentés</button>
+                <button class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
                 <button onclick="closeModal('editModal')">Mégsem</button>
+                <div id="email-result"></div>
             </div>
         </div>
     </div>
@@ -576,7 +613,7 @@
             let maxSorszam = 0;
 
             rows.forEach(row => {
-                const sorszamText = row.cells[0].textContent; // Pl. "FR25#0001"
+                const sorszamText = row.cells[1].textContent; // Sr. oszlop (Műveleti után a második oszlop)
                 const sorszam = parseInt(sorszamText.replace('FR25#', '')); // Kivesszük a számot
                 if (!isNaN(sorszam) && sorszam > maxSorszam) {
                     maxSorszam = sorszam;
@@ -816,7 +853,6 @@
                 if (terulet && gep) {
                     const selectedGep = teruletekGepek[terulet].find(g => g.nev === gep);
                     if (selectedGep) {
-                        // Ha van belső rendelési szám, azt használjuk, különben a SAP költséghely számot
                         kontirozasInput.value = selectedGep.rendelesiSzam ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
                     } else {
                         kontirozasInput.value = '';
@@ -841,14 +877,8 @@
             const megnevezes = document.getElementById('new-megnevezes').value;
             const folyamat = document.getElementById('new-folyamat').value;
             const szallito = document.getElementById('new-szallito').value;
-            const ajanlatszam = document.getElementById('new-ajanlatszam').value;
             const mennyiseg = document.getElementById('new-mennyiseg').value;
             const egyseg = document.getElementById('new-egyseg').value;
-            const ar = document.getElementById('new-ar').value;
-            const eurHuf = document.getElementById('new-eur-huf').value;
-            const bmig = document.getElementById('new-bmig').value;
-            const po = document.getElementById('new-po').value;
-            const tSzallitas = document.getElementById('new-t-szallitas').value;
 
             // Ha a rendeléstípus "Gépre kontírozott rendelés" (3), akkor kiolvassuk a gép nevét
             let kontirozasiNev = '-';
@@ -867,6 +897,7 @@
             const table = document.querySelector('#logisztikai-table tbody');
             const row = document.createElement('tr');
             row.innerHTML = `
+                <td><button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button></td>
                 <td>${formattedSorszam}</td>
                 <td>${new Date().toISOString().split('T')[0]}</td>
                 <td>${raktar}</td>
@@ -877,14 +908,14 @@
                 <td>${folyamat}</td>
                 <td>${szallito}</td>
                 <td>${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}</td>
-                <td>${ajanlatszam || '-'}</td>
+                <td>-</td>
                 <td>${mennyiseg}</td>
                 <td>${egyseg}</td>
-                <td>${ar || '-'}</td>
-                <td>${eurHuf}</td>
-                <td>${bmig || '-'}</td>
-                <td>${po || '-'}</td>
-                <td>${tSzallitas || '-'}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
             `;
             table.appendChild(row);
             closeModal('newRecordModal');
@@ -892,21 +923,226 @@
 
         function openEditModal(button) {
             const row = button.parentElement.parentElement;
-            document.getElementById('edit-alkatresz-neve').value = row.cells[0].textContent;
-            document.getElementById('edit-sorozatszam').value = row.cells[1].textContent;
-            document.getElementById('edit-helyzet').value = row.cells[2].textContent;
-            document.getElementById('edit-mozgas-datuma').value = row.cells[3].textContent;
-            document.getElementById('edit-ertek-huf').value = row.cells[4].textContent;
+            const rowIndex = Array.from(row.parentElement.children).indexOf(row);
+
+            document.getElementById('edit-row-index').value = rowIndex;
+            document.getElementById('edit-rendeles-tipus').value = row.cells[4].textContent === '-' ? '2' : '3'; // Ha kontírozási név '-', akkor Anyagszámos rendelés, különben Gépre kontírozott
+            updateEditRaktarField();
+            updateEditKontirozasField();
+            document.getElementById('edit-raktar').value = row.cells[3].textContent;
+            document.getElementById('edit-kontirozas').value = row.cells[4].textContent;
+            document.getElementById('edit-megnevezes').value = row.cells[7].textContent;
+            document.getElementById('edit-folyamat').value = row.cells[8].textContent;
+            document.getElementById('edit-szallito').value = row.cells[9].textContent;
+            document.getElementById('edit-ajanlatszam').value = row.cells[11].textContent === '-' ? '' : row.cells[11].textContent;
+            document.getElementById('edit-mennyiseg').value = row.cells[12].textContent;
+            document.getElementById('edit-egyseg').value = row.cells[13].textContent;
+            document.getElementById('edit-ar').value = row.cells[14].textContent === '-' ? '' : row.cells[14].textContent;
+            document.getElementById('edit-eur-huf').value = row.cells[15].textContent === '-' ? 'EUR' : row.cells[15].textContent;
+            document.getElementById('edit-bmig').value = row.cells[16].textContent === '-' ? '' : row.cells[16].textContent;
+            document.getElementById('edit-po').value = row.cells[17].textContent === '-' ? '' : row.cells[17].textContent;
+            document.getElementById('edit-t-szallitas').value = row.cells[18].textContent === '-' ? '' : row.cells[18].textContent;
+
             document.getElementById('editModal').style.display = 'flex';
         }
 
+        function updateEditRaktarField() {
+            const rendelesTipus = document.getElementById('edit-rendeles-tipus').value;
+            const raktarContainer = document.getElementById('edit-raktar-container');
+            raktarContainer.innerHTML = '';
+
+            let options = [];
+            if (rendelesTipus === '1') {
+                options = ['0060', '0350'];
+            } else if (rendelesTipus === '2') {
+                options = ['0060', '0350', '0110', '0560'];
+            } else if (rendelesTipus === '3') {
+                options = ['0060', '0350', '0110', '0560'];
+            } else if (rendelesTipus === '4') {
+                options = ['0060', "0350", '0110', '0560'];
+            } else if (rendelesTipus === '5') {
+                options = ['0060', '0350', '0110', '0560'];
+            }
+
+            const select = document.createElement('select');
+            select.id = 'edit-raktar';
+            select.name = 'edit-raktar';
+            select.required = true;
+            options.forEach(option => {
+                const opt = document.createElement('option');
+                opt.value = option;
+                opt.textContent = option;
+                select.appendChild(opt);
+            });
+            raktarContainer.appendChild(select);
+        }
+
+        function updateEditKontirozasField() {
+            const rendelesTipus = document.getElementById('edit-rendeles-tipus').value;
+            const kontirozasContainer = document.getElementById('edit-kontirozas-container');
+            kontirozasContainer.innerHTML = '';
+
+            if (rendelesTipus === '3') {
+                const teruletSelect = document.createElement('select');
+                teruletSelect.id = 'edit-terulet';
+                teruletSelect.name = 'edit-terulet';
+                teruletSelect.onchange = updateEditGepSelect;
+
+                const teruletOptionDefault = document.createElement('option');
+                teruletOptionDefault.value = '';
+                teruletOptionDefault.textContent = 'Válassz területet';
+                teruletSelect.appendChild(teruletOptionDefault);
+
+                Object.keys(teruletekGepek).forEach(terulet => {
+                    const option = document.createElement('option');
+                    option.value = terulet;
+                    option.textContent = terulet;
+                    teruletSelect.appendChild(option);
+                });
+
+                const gepSelect = document.createElement('select');
+                gepSelect.id = 'edit-gep';
+                gepSelect.name = 'edit-gep';
+                gepSelect.onchange = updateEditKontirozasValue;
+
+                const gepOptionDefault = document.createElement('option');
+                gepOptionDefault.value = '';
+                gepOptionDefault.textContent = 'Válassz gépet';
+                gepSelect.appendChild(gepOptionDefault);
+
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.id = 'edit-kontirozas';
+                hiddenInput.name = 'edit-kontirozas';
+
+                kontirozasContainer.appendChild(teruletSelect);
+                kontirozasContainer.appendChild(gepSelect);
+                kontirozasContainer.appendChild(hiddenInput);
+            } else if (rendelesTipus === '4') {
+                const teruletSelect = document.createElement('select');
+                teruletSelect.id = 'edit-terulet';
+                teruletSelect.name = 'edit-terulet';
+                teruletSelect.onchange = updateEditKontirozasValue;
+
+                const teruletOptionDefault = document.createElement('option');
+                teruletOptionDefault.value = '';
+                teruletOptionDefault.textContent = 'Válassz területet';
+                teruletSelect.appendChild(teruletOptionDefault);
+
+                Object.keys(teruletekGepek).forEach(terulet => {
+                    const option = document.createElement('option');
+                    option.value = terulet;
+                    option.textContent = terulet;
+                    teruletSelect.appendChild(option);
+                });
+
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.id = 'edit-kontirozas';
+                hiddenInput.name = 'edit-kontirozas';
+
+                kontirozasContainer.appendChild(teruletSelect);
+                kontirozasContainer.appendChild(hiddenInput);
+            } else {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'edit-kontirozas';
+                input.name = 'edit-kontirozas';
+                input.required = true;
+                kontirozasContainer.appendChild(input);
+            }
+        }
+
+        function updateEditGepSelect() {
+            const terulet = document.getElementById('edit-terulet').value;
+            const gepSelect = document.getElementById('edit-gep');
+            gepSelect.innerHTML = '';
+
+            const gepOptionDefault = document.createElement('option');
+            gepOptionDefault.value = '';
+            gepOptionDefault.textContent = 'Válassz gépet';
+            gepSelect.appendChild(gepOptionDefault);
+
+            if (terulet && teruletekGepek[terulet]) {
+                teruletekGepek[terulet].forEach(gep => {
+                    const option = document.createElement('option');
+                    option.value = gep.nev;
+                    option.textContent = gep.nev;
+                    gepSelect.appendChild(option);
+                });
+            }
+        }
+
+        function updateEditKontirozasValue() {
+            const rendelesTipus = document.getElementById('edit-rendeles-tipus').value;
+            const kontirozasInput = document.getElementById('edit-kontirozas');
+            const terulet = document.getElementById('edit-terulet').value;
+
+            if (rendelesTipus === '3') {
+                const gep = document.getElementById('edit-gep').value;
+                if (terulet && gep) {
+                    const selectedGep = teruletekGepek[terulet].find(g => g.nev === gep);
+                    if (selectedGep) {
+                        kontirozasInput.value = selectedGep.rendelesiSzam ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
+                    } else {
+                        kontirozasInput.value = '';
+                    }
+                } else {
+                    kontirozasInput.value = '';
+                }
+            } else if (rendelesTipus === '4') {
+                if (terulet) {
+                    const koltseghelySzam = teruletekGepek[terulet][0].koltseghelySzam;
+                    kontirozasInput.value = koltseghelySzam;
+                } else {
+                    kontirozasInput.value = '';
+                }
+            }
+        }
+
         function saveEdit() {
-            const row = document.querySelector('#nyomonkovetesi-table tbody tr');
-            row.cells[0].textContent = document.getElementById('edit-alkatresz-neve').value;
-            row.cells[1].textContent = document.getElementById('edit-sorozatszam').value;
-            row.cells[2].textContent = document.getElementById('edit-helyzet').value;
-            row.cells[3].textContent = document.getElementById('edit-mozgas-datuma').value;
-            row.cells[4].textContent = document.getElementById('edit-ertek-huf').value;
+            const rowIndex = document.getElementById('edit-row-index').value;
+            const rendelesTipus = document.getElementById('edit-rendeles-tipus').value;
+            const raktar = document.getElementById('edit-raktar').value;
+            const kontirozas = document.getElementById('edit-kontirozas').value;
+            const megnevezes = document.getElementById('edit-megnevezes').value;
+            const folyamat = document.getElementById('edit-folyamat').value;
+            const szallito = document.getElementById('edit-szallito').value;
+            const ajanlatszam = document.getElementById('edit-ajanlatszam').value;
+            const mennyiseg = document.getElementById('edit-mennyiseg').value;
+            const egyseg = document.getElementById('edit-egyseg').value;
+            const ar = document.getElementById('edit-ar').value;
+            const eurHuf = document.getElementById('edit-eur-huf').value;
+            const bmig = document.getElementById('edit-bmig').value;
+            const po = document.getElementById('edit-po').value;
+            const tSzallitas = document.getElementById('edit-t-szallitas').value;
+
+            let kontirozasiNev = '-';
+            if (rendelesTipus === '3') {
+                const terulet = document.getElementById('edit-terulet').value;
+                const gep = document.getElementById('edit-gep').value;
+                if (terulet && gep) {
+                    kontirozasiNev = gep;
+                }
+            }
+
+            const table = document.querySelector('#logisztikai-table tbody');
+            const row = table.children[rowIndex];
+            row.cells[3].textContent = raktar;
+            row.cells[4].textContent = kontirozas;
+            row.cells[5].textContent = kontirozasiNev;
+            row.cells[7].textContent = megnevezes;
+            row.cells[8].textContent = folyamat;
+            row.cells[9].textContent = szallito;
+            row.cells[11].textContent = ajanlatszam || '-';
+            row.cells[12].textContent = mennyiseg;
+            row.cells[13].textContent = egyseg;
+            row.cells[14].textContent = ar || '-';
+            row.cells[15].textContent = eurHuf || '-';
+            row.cells[16].textContent = bmig || '-';
+            row.cells[17].textContent = po || '-';
+            row.cells[18].textContent = tSzallitas || '-';
+
             closeModal('editModal');
         }
 
