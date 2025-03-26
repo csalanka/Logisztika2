@@ -1,434 +1,837 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logisztikai Adatbázis</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        .logo-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-        .logo-container img {
-            width: 150px;
-            height: auto;
-        }
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-            margin-top: 60px;
-            margin-bottom: 20px;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #e0e0e0;
-            border: 1px solid #ddd;
-            border-bottom: none;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-        }
-        .tab.active {
-            background-color: #ffffff;
-            border-bottom: 2px solid #ffffff;
-            font-weight: bold;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            color: #333;
-        }
-        tr[data-status="felvett"] { background-color: #FFFFFF !important; }
-        tr[data-status="ajanlatkikuldve"] { background-color: #FFFF00 !important; }
-        tr[data-status="belsoszam"] { background-color: #808080 !important; }
-        tr[data-status="belsoszam"] td { color: #FFFFFF !important; }
-        tr[data-status="po"] { background-color: #0000FF !important; }
-        tr[data-status="po"] td { color: #FFFFFF !important; }
-        tr[data-status="beerkezett"] { background-color: #008000 !important; }
-        tr[data-status="beerkezett"] td { color: #FFFFFF !important; }
-        tr[data-status="megszakitva"] { background-color: #000000 !important; }
-        tr[data-status="megszakitva"] td { color: #FFFFFF !important; }
-        /* Többi CSS (modális ablak, gombok stb.) változatlan */
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 800px; }
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover, .close:focus { color: black; text-decoration: none; }
-        .modal-content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .modal-column { display: flex; flex-direction: column; }
-        .modal-column label { margin-top: 10px; }
-        .modal-column input, .modal-column select { padding: 5px; margin-top: 5px; }
-        .modal-content button { margin-top: 20px; padding: 10px; cursor: pointer; }
-        .legend { margin-bottom: 20px; background-color: #f9f9f9; padding: 10px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .legend h3 { font-size: 16px; margin-bottom: 10px; color: #333; }
-        .legend p { margin: 5px 0; display: flex; align-items: center; }
-        .legend-color { display: inline-block; width: 20px; height: 20px; margin-right: 10px; border: 1px solid #e0e0e0; }
-        .edit-btn { cursor: pointer; font-size: 16px; margin-right: 10px; padding: 2px 4px; border-radius: 3px; background-color: rgba(255, 255, 255, 0.8); }
-        tr[data-status="felvett"] .edit-btn { color: #000000; }
-        tr[data-status="felvett"] .edit-btn:hover { color: #333333; }
-        tr[data-status="ajanlatkikuldve"] .edit-btn { color: #FFFF00; }
-        tr[data-status="ajanlatkikuldve"] .edit-btn:hover { color: #E0E000; }
-        tr[data-status="belsoszam"] .edit-btn { color: #808080; }
-        tr[data-status="belsoszam"] .edit-btn:hover { color: #606060; }
-        tr[data-status="po"] .edit-btn { color: #0000FF; }
-        tr[data-status="po"] .edit-btn:hover { color: #0000CC; }
-        tr[data-status="beerkezett"] .edit-btn { color: #008000; }
-        tr[data-status="beerkezett"] .edit-btn:hover { color: #006600; }
-        tr[data-status="megszakitva"] .edit-btn { color: #000000; }
-        tr[data-status="megszakitva"] .edit-btn:hover { color: #333333; }
-        .envelope-icon { color: #FFFF00; font-size: 16px; margin-left: 10px; cursor: pointer; }
-        .envelope-icon:hover { color: #E0E000; }
-        .set-cancelled-btn { padding: 10px; background-color: #000000; border: 2px solid #FFFFFF; border-radius: 5px; color: #FFFFFF; cursor: pointer; }
-        .set-cancelled-btn:hover { background-color: #333333; }
-        .request-offer-btn { padding: 10px; background-color: #FFFF00; border: none; border-radius: 5px; color: #000000; cursor: pointer; }
-        .request-offer-btn:hover { background-color: #E0E000; }
-        button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px; }
-        button:hover { background-color: #45a049; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Adatbázis Címkekezelő</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="jsQR.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f0f0f0;
+    }
+    nav {
+      margin-bottom: 20px;
+      background-color: #007BFF;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .nav-link {
+      margin-right: 15px;
+      cursor: pointer;
+      text-decoration: underline;
+      color: white;
+    }
+    .nav-link:hover {
+      color: #f0f0f0;
+    }
+    .lap-content {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    .version-info {
+      margin-bottom: 20px;
+      background-color: #e0e0e0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #version-history-popup {
+      display: none;
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #ccc;
+      max-width: 500px;
+      margin: 20px auto;
+    }
+    #version-history-popup h3 {
+      margin-top: 0;
+    }
+    #version-history-popup ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    #version-history-popup li {
+      margin-bottom: 10px;
+    }
+    .cimke {
+      width: 60mm;
+      height: 30mm;
+      padding: 3mm;
+      border: 1px solid black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 5px;
+    }
+    .qr-container {
+      width: 25mm;
+      height: 25mm;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: -3mm;
+      background-color: #f8f9fa;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .szoveg-container {
+      max-width: 60%;
+      text-align: left;
+      line-height: 1.5;
+      padding-left: 5mm;
+      padding-right: 5mm;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .szam {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .help-text {
+      font-size: 12px;
+      color: #007BFF;
+    }
+    h1 {
+      color: #007BFF;
+    }
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    input[type="text"], input[type="password"], select {
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #qr-reader {
+      width: 100%;
+      max-width: 500px;
+      margin: 10px 0;
+    }
+    #qr-reader video {
+      width: 100%;
+      max-width: 500px;
+    }
+    #qr-reader canvas {
+      display: none;
+    }
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    #foglalas-tablazat, #settings-table {
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 5px;
+      border: 1px solid #ccc;
+    }
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <!-- Siemens Energy logó -->
-    <div class="logo-container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Siemens_Energy_logo.svg/1200px-Siemens_Energy_logo.svg.png" alt="Siemens Energy Logó">
-    </div>
 
-    <!-- Tab-navigáció -->
-    <div class="tabs">
-        <div class="tab active" onclick="openTab('logisztikai-adatbazis-tab')">Logisztikai adatbázis</div>
-        <div class="tab" onclick="openTab('masik-lap-tab')">Másik lap</div>
-    </div>
+  <h1>AI Adatbázis Címkekezelő</h1>
+  
+  <div class="version-info">
+    <p>Verzió: <span id="version-number">2.5.1</span></p>
+    <button onclick="showVersionHistory()">Verzió Történet</button>
+  </div>
+  <div id="version-history-popup">
+    <h3>Verzió Történet</h3>
+    <ul>
+      <li><strong>2.5.1</strong> – Teljes géplista (222 gép) támogatása, terület kiválasztás, kivét/bevétel kódok (261, 262, 201, 202), raktárak (0060, 0350, 0560), darabszám bevitel, sorszámos foglalási lap (anyagszám, alkatrésznév, belső megrendelési szám).</li>
+      <li><strong>2.5.0</strong> – Foglalások gépekhez rendelése QR-olvasáskor, gépek kiválasztása lenyíló menüből.</li>
+      <li><strong>2.4.0</strong> – Táblázatos Foglalási Lista, admin jelszavas törlés (teljes és soronkénti), Beállítási oldal gépek kezelésére (felvétel, törlés, szerkesztés, áthelyezés), MI PAD képernyőhöz igazítás.</li>
+      <li><strong>2.3.1</strong> – QR olvasás finomhangolása jsQR-rel, helyi jsQR.min.js használata, közepes felbontás (640x480).</li>
+      <li><strong>2.3</strong> – Javítva a html5-qrcode betöltési hibája, jobb hibakezelés a kamera indításához.</li>
+      <li><strong>2.2</strong> – Kamera indítási hibák javítása, jobb hibakezelés a QR olvasáshoz.</li>
+      <li><strong>2.1</strong> – Telefon kamerás QR olvasás, foglalások dátum szerint mentése, dizájn finomhangolás.</li>
+      <li><strong>2.0</strong> – Új lapok hozzáadása (QR kód generálás, Foglalási Lista), dizájn színesítése, verzió kezelés.</li>
+      <li><strong>1.1</strong> – QR kódok testreszabása, szövegkezelés fejlesztése.</li>
+      <li><strong>1.0</strong> – Alap QR kód generálás.</li>
+    </ul>
+    <button onclick="closeVersionHistory()">Bezárás</button>
+  </div>
 
-    <!-- Tab-tartalom -->
-    <div id="logisztikai-adatbazis-tab" class="tab-content active">
-        <div class="legend">
-            <h3>Állapotok jelmagyarázata</h3>
-            <p><span class="legend-color" style="background-color: #FFFFFF;"></span> Felvett (#FFFFFF)</p>
-            <p><span class="legend-color" style="background-color: #FFFF00;"></span> Ajánlatkérés kiküldve <i class="fas fa-envelope" style="color: #FFFF00;" title="Levelezés indítása"></i> (#FFFF00)</p>
-            <p><span class="legend-color" style="background-color: #808080;"></span> Belső igényszám kitöltve (#808080)</p>
-            <p><span class="legend-color" style="background-color: #0000FF;"></span> PO szám létrehozva (#0000FF)</p>
-            <p><span class="legend-color" style="background-color: #008000;"></span> Tétel beérkezett (#008000)</p>
-            <p><span class="legend-color" style="background-color: #000000;"></span> Megszakítva (#000000)</p>
-        </div>
-        <div id="logisztikai-adatbazis">
-            <h2>Logisztikai adatbázis</h2>
-            <button onclick="openNewRecordModal()">Új rekord</button>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Sorszám</th>
-                        <th>Projekt</th>
-                        <th>Megrendelő</th>
-                        <th>Kontírozás</th>
-                        <th>Megnevezés</th>
-                        <th>Mennyiség</th>
-                        <th>Egység</th>
-                        <th>Ár</th>
-                        <th>Szállító</th>
-                        <th>PO szám</th>
-                        <th>T.Szállítás</th>
-                        <th>Műveletek</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
+  <nav>
+    <span class="nav-link" onclick="showLap(1)">QR Kód Generálás</span>
+    <span class="nav-link" onclick="showLap(2)">QR Kód Olvasás (Foglalás)</span>
+    <span class="nav-link" onclick="showLap(3)">Foglalási Lista</span>
+    <span class="nav-link" onclick="showLap(4)">Segítség</span>
+    <span class="nav-link" onclick="showLap(5)">Beállítások</span>
+  </nav>
 
-    <div id="masik-lap-tab" class="tab-content">
-        <h2>Másik lap</h2>
-        <p>Itt lesz a másik lap tartalma.</p>
+  <div id="lap1" class="lap-content active">
+    <h2>QR Kód Generálás</h2>
+    <label for="text-input">Szöveg (Anyagszám + leírás, pl. A123|Csavar M10):</label>
+    <input type="text" id="text-input" placeholder="Pl.: A123|Csavar M10" maxlength="60">
+    <div id="char-count" style="margin-top:10px;">Még <span id="remaining-chars">60</span> karakter maradt.</div>
+    <button onclick="generateQRCode()">QR Kód Generálás</button>
+    <div id="qr-error" class="error-message"></div>
+    <br><br>
+    <div class="cimke">
+      <div class="qr-container">
+        <canvas id="qrcode"></canvas>
+      </div>
+      <div class="szoveg-container">
+        <div id="szam" class="szam"></div>
+        <div id="szoveg" class="szoveg"></div>
+      </div>
     </div>
+  </div>
 
-    <!-- Modális ablakok (változatlan) -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('editModal')">×</span>
-            <h2>Rekord szerkesztése</h2>
-            <form id="editForm">
-                <input type="hidden" id="edit-row-index">
-                <div class="modal-content-grid">
-                    <div class="modal-column">
-                        <h3>Már megadott adatok</h3>
-                        <label for="edit-sorszam">Sorszám:</label>
-                        <input type="text" id="edit-sorszam" name="edit-sorszam" readonly>
-                        <label for="edit-projekt">Projekt:</label>
-                        <input type="text" id="edit-projekt" name="edit-projekt">
-                        <label for="edit-megrendelo">Megrendelő:</label>
-                        <input type="text" id="edit-megrendelo" name="edit-megrendelo">
-                        <label for="edit-kontirozas">Kontírozás:</label>
-                        <input type="text" id="edit-kontirozas" name="edit-kontirozas">
-                        <label for="edit-megnevezes">Megnevezés:</label>
-                        <input type="text" id="edit-megnevezes" name="edit-megnevezes">
-                    </div>
-                    <div class="modal-column">
-                        <h3>További adatok</h3>
-                        <label for="edit-mennyiseg">Mennyiség:</label>
-                        <input type="text" id="edit-mennyiseg" name="edit-mennyiseg">
-                        <label for="edit-egység">Egység:</label>
-                        <input type="text" id="edit-egység" name="edit-egység">
-                        <label for="edit-ar">Ár:</label>
-                        <input type="text" id="edit-ar" name="edit-ar">
-                        <label for="edit-szallito">Szállító:</label>
-                        <select id="edit-szallito" name="edit-szallito">
-                            <option value="">Válassz szállítót...</option>
-                            <option value="ceg1@pelda.hu|Cég 1">Cég 1</option>
-                            <option value="ceg2@pelda.hu|Cég 2">Cég 2</option>
-                            <option value="ceg3@pelda.hu|Cég 3">Cég 3</option>
-                        </select>
-                        <label for="edit-po-szam">PO szám:</label>
-                        <input type="text" id="edit-po-szam" name="edit-po-szam">
-                        <label for="edit-t-szallitas">T.Szállítás:</label>
-                        <input type="text" id="edit-t-szallitas" name="edit-t-szallitas">
-                        <label for="edit-allapot">Állapot:</label>
-                        <select id="edit-allapot" name="edit-allapot">
-                            <option value="felvett">Felvett</option>
-                            <option value="ajanlatkikuldve">Ajánlatkérés kiküldve</option>
-                            <option value="belsoszam">Belső igényszám kitöltve</option>
-                            <option value="po">PO szám létrehozva</option>
-                            <option value="beerkezett">Tétel beérkezett</option>
-                            <option value="megszakitva">Megszakítva</option>
-                        </select>
-                    </div>
-                </div>
-                <button onclick="saveEdit()">Mentés</button>
-                <button class="request-offer-btn" onclick="requestOffer()">Ajánlat kérése</button>
-                <button class="set-cancelled-btn" onclick="setCancelled()">Megszakítás</button>
-                <button class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
-                <button onclick="closeModal('editModal')">Mégsem</button>
-            </form>
-        </div>
+  <div id="lap2" class="lap-content">
+    <h2>QR Kód Olvasás (Foglalás)</h2>
+    <div id="qr-reader">
+      <video id="video" style="width: 100%; max-width: 500px;"></video>
+      <canvas id="canvas"></canvas>
     </div>
-
-    <div id="newRecordModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('newRecordModal')">×</span>
-            <h2>Új rekord hozzáadása</h2>
-            <form id="newRecordForm">
-                <div class="modal-content-grid">
-                    <div class="modal-column">
-                        <h3>Már megadott adatok</h3>
-                        <label for="new-sorszam">Sorszám:</label>
-                        <input type="text" id="new-sorszam" name="new-sorszam" readonly>
-                        <label for="new-projekt">Projekt:</label>
-                        <input type="text" id="new-projekt" name="new-projekt">
-                        <label for="new-megrendelo">Megrendelő:</label>
-                        <input type="text" id="new-megrendelo" name="new-megrendelo">
-                        <label for="new-kontirozas">Kontírozás:</label>
-                        <input type="text" id="new-kontirozas" name="new-kontirozas">
-                        <label for="new-megnevezes">Megnevezés:</label>
-                        <input type="text" id="new-megnevezes" name="new-megnevezes">
-                    </div>
-                    <div class="modal-column">
-                        <h3>További adatok</h3>
-                        <label for="new-mennyiseg">Mennyiség:</label>
-                        <input type="text" id="new-mennyiseg" name="new-mennyiseg">
-                        <label for="new-egység">Egység:</label>
-                        <input type="text" id="new-egység" name="new-egység">
-                        <label for="new-ar">Ár:</label>
-                        <input type="text" id="new-ar" name="new-ar">
-                        <label for="new-szallito">Szállító:</label>
-                        <select id="new-szallito" name="new-szallito">
-                            <option value="">Válassz szállítót...</option>
-                            <option value="ceg1@pelda.hu|Cég 1">Cég 1</option>
-                            <option value="ceg2@pelda.hu|Cég 2">Cég 2</option>
-                            <option value="ceg3@pelda.hu|Cég 3">Cég 3</option>
-                        </select>
-                        <label for="new-po-szam">PO szám:</label>
-                        <input type="text" id="new-po-szam" name="new-po-szam">
-                        <label for="new-t-szallitas">T.Szállítás:</label>
-                        <input type="text" id="new-t-szallitas" name="new-t-szallitas">
-                    </div>
-                </div>
-                <button onclick="saveNewRecord('logisztikai-adatbazis')">Mentés</button>
-                <button onclick="closeModal('newRecordModal')">Mégsem</button>
-            </form>
-        </div>
+    <div id="qr-reader-result" class="help-text"></div>
+    <div class="input-group">
+      <label for="select-terulet">Terület:</label>
+      <select id="select-terulet" style="margin: 10px 0; width: 100%; max-width: 500px;" onchange="updateMachineDropdown()">
+        <option value="">Válassz területet</option>
+        <option value="MFC-terület">MFC-terület</option>
+        <option value="MFS-terület">MFS-terület</option>
+        <option value="MFH-terület">MFH-terület</option>
+        <option value="M2B-terület">M2B-terület</option>
+      </select>
     </div>
+    <div class="input-group">
+      <label for="select-machine">Gép kiválasztása:</label>
+      <select id="select-machine" style="margin: 10px 0; width: 100%; max-width: 500px;">
+        <!-- Gépek dinamikusan töltődnek -->
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="kivet-bevetel">Kivét/Bevétel:</label>
+      <select id="kivet-bevetel" style="margin: 10px 0; width: 100%; max-width: 500px;">
+        <option value="">Válassz kódot</option>
+        <option value="261">261</option>
+        <option value="262">262</option>
+        <option value="201">201</option>
+        <option value="202">202</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="raktar">Raktár:</label>
+      <select id="raktar" style="margin: 10px 0; width: 100%; max-width: 500px;">
+        <option value="">Válassz raktárat</option>
+        <option value="0060">0060</option>
+        <option value="0350">0350</option>
+        <option value="0560">0560</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="darabszam">Darabszám:</label>
+      <input type="number" id="darabszam" style="margin: 10px 0; width: 100%; max-width: 500px;" min="1" value="1">
+    </div>
+    <button id="start-camera-btn" onclick="startQRReader()">Kamera Indítása</button>
+    <button id="stop-camera-btn" onclick="stopQRReader()" style="display: none;">Kamera Leállítása</button>
+    <div id="qr-reader-error" class="error-message"></div>
+  </div>
 
-    <script>
-        function openTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+  <div id="lap3" class="lap-content">
+    <h2>Foglalási Lista</h2>
+    <button id="delete-all-btn-top" style="background-color: #FF0000; color: white;">Törlés összes rekord</button>
+    <div id="foglalas-tablazat" style="overflow-x: auto; margin-top: 10px;">
+      <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+        <thead>
+          <tr style="background-color: #007BFF; color: white;">
+            <th style="padding: 5px; width: 50px;">Sorszám</th>
+            <th style="padding: 5px; width: 100px;">Anyagszám</th>
+            <th style="padding: 5px; width: 150px;">Megnevezés</th>
+            <th style="padding: 5px; width: 80px;">Terület</th>
+            <th style="padding: 5px; width: 150px;">Gép neve</th>
+            <th style="padding: 5px; width: 150px;">Belső megrendelési szám</th>
+            <th style="padding: 5px; width: 80px;">Kivét/Bevétel</th>
+            <th style="padding: 5px; width: 80px;">Raktár</th>
+            <th style="padding: 5px; width: 80px;">Darabszám</th>
+            <th style="padding: 5px; width: 150px;">QR-kód</th>
+            <th style="padding: 5px; width: 150px;">Dátum</th>
+            <th style="padding: 5px; width: 30px;"></th>
+          </tr>
+        </thead>
+        <tbody id="foglalas-body"></tbody>
+      </table>
+    </div>
+    <button id="delete-all-btn-bottom" style="background-color: #FF0000; color: white; margin-top: 10px;">Törlés összes rekord</button>
+  </div>
+
+  <div id="lap4" class="lap-content">
+    <h2>Segítség</h2>
+    <p>A program különböző funkciók használatára szolgál:</p>
+    <ul>
+      <li><b>QR Kód Generálás:</b> Kódot generál az anyagszám és leírás alapján.</li>
+      <li><b>QR Kód Olvasás (Foglalás):</b> A telefon kamerájával olvassa be a QR kódot, és rögzíti a foglalást egy kiválasztott gépre terület, kivét/bevétel, raktár és darabszámmal.</li>
+      <li><b>Foglalási Lista:</b> Megjeleníti a foglalások listáját dátummal, anyagszámmal, alkatrésznévvel, területtel stb.</li>
+      <li><b>Beállítások:</b> Gépek kezelésére szolgál (felvétel, törlés, szerkesztés, áthelyezés, belső megrendelési számok).</li>
+    </ul>
+  </div>
+
+  <div id="lap5" class="lap-content" style="display: none;">
+    <h2>Beállítások</h2>
+    <button id="add-machine-btn" style="background-color: #007BFF; color: white; padding: 10px 15px; border: none; border-radius: 5px;">Új gép hozzáadása</button>
+    <div id="settings-table" style="overflow-x: auto; margin-top: 10px;">
+      <table style="width: 100%; border-collapse: collapse; border: 1px solid #ccc;">
+        <thead>
+          <tr style="background-color: #007BFF; color: white;">
+            <th style="padding: 5px; width: 50px;">Sorszám</th>
+            <th style="padding: 5px; width: 200px;">Gép neve</th>
+            <th style="padding: 5px; width: 150px;">Terület</th>
+            <th style="padding: 5px; width: 150px;">Belső megrendelési szám</th>
+            <th style="padding: 5px; width: 100px;">Költséghely</th>
+            <th style="padding: 5px; width: 100px;">Műveletek</th>
+          </tr>
+        </thead>
+        <tbody id="machine-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="delete-password-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border: 1px solid #ccc; max-width: 300px; text-align: center;">
+    <h3>Kérlek, add meg az admin jelszót a törléshez!</h3>
+    <input type="password" id="delete-password" style="padding: 5px; width: 200px; margin-bottom: 10px;">
+    <div id="delete-password-error" style="color: red; font-size: 12px; margin-top: 5px;"></div>
+    <button onclick="checkPassword()" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">OK</button>
+    <button onclick="document.getElementById('delete-password-popup').style.display='none'; document.getElementById('delete-password').value=''; document.getElementById('delete-password-error').textContent='';" style="background-color: #ccc; color: black; padding: 10px; border: none; border-radius: 5px; margin-left: 10px;">Mégse</button>
+  </div>
+
+  <div id="settings-password-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border: 1px solid #ccc; max-width: 300px; text-align: center;">
+    <h3>Kérlek, add meg az admin jelszót a Beállítási oldalhoz!</h3>
+    <input type="password" id="settings-password" style="padding: 5px; width: 200px; margin-bottom: 10px;">
+    <div id="settings-password-error" style="color: red; font-size: 12px; margin-top: 5px;"></div>
+    <button onclick="checkSettingsPassword()" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">OK</button>
+    <button onclick="document.getElementById('settings-password-popup').style.display='none'; document.getElementById('settings-password').value=''; document.getElementById('settings-password-error').textContent='';" style="background-color: #ccc; color: black; padding: 10px; border: none; border-radius: 5px; margin-left: 10px;">Mégse</button>
+  </div>
+
+  <div id="edit-machine-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border: 1px solid #ccc; max-width: 400px; text-align: center;">
+    <h3>Gép szerkesztése</h3>
+    <input type="text" id="edit-machine-name" style="padding: 5px; width: 300px; margin-bottom: 10px;" placeholder="Gép neve">
+    <select id="edit-machine-terulet" style="padding: 5px; width: 300px; margin-bottom: 10px;">
+      <option value="MFC-terület">MFC-terület</option>
+      <option value="MFS-terület">MFS-terület</option>
+      <option value="MFH-terület">MFH-terület</option>
+      <option value="M2B-terület">M2B-terület</option>
+    </select>
+    <input type="text" id="edit-machine-belsoszam" style="padding: 5px; width: 300px; margin-bottom: 10px;" placeholder="Belső megrendelési szám">
+    <input type="text" id="edit-machine-koltseghely" style="padding: 5px; width: 300px; margin-bottom: 10px;" placeholder="Költséghely">
+    <button onclick="saveMachineEdit()" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">Mentés</button>
+    <button onclick="document.getElementById('edit-machine-popup').style.display='none'; document.getElementById('edit-machine-name').value=''; document.getElementById('edit-machine-belsoszam').value=''; document.getElementById('edit-machine-koltseghely').value='';" style="background-color: #ccc; color: black; padding: 10px; border: none; border-radius: 5px; margin-left: 10px;">Mégse</button>
+  </div>
+
+  <script>
+    // Lapváltás
+    function showLap(lap) {
+      var lapok = document.querySelectorAll('.lap-content');
+      lapok.forEach(function(lapContent) {
+        lapContent.classList.remove('active');
+      });
+      document.getElementById('lap' + lap).classList.add('active');
+      if (lap === 2) updateMachineDropdown(); // Gépek frissítése QR olvasás lapon
+    }
+
+    // Verziótörténet megjelenítése és bezárása
+    function showVersionHistory() {
+      document.getElementById("version-history-popup").style.display = "block";
+    }
+    function closeVersionHistory() {
+      document.getElementById("version-history-popup").style.display = "none";
+    }
+
+    // Karakter számláló a szövegbevitelnél
+    document.getElementById("text-input").addEventListener("input", function() {
+      var maxChars = 60;
+      var remaining = maxChars - this.value.length;
+      document.getElementById("remaining-chars").textContent = remaining;
+    });
+
+    // QR kód generálása fix mérettel
+    function generateQRCode() {
+      var text = document.getElementById("text-input").value.trim();
+      if (!text) {
+        document.getElementById("qr-error").textContent = "Kérlek, írj be valamilyen szöveget!";
+        return;
+      }
+      var parts = text.split("|");
+      var anyagszam = parts[0] || "";
+      var textPart = parts.slice(1).join("|") || "";
+      document.getElementById("szam").textContent = anyagszam;
+      document.getElementById("szoveg").textContent = textPart;
+      QRCode.toCanvas(document.getElementById("qrcode"), text, { width: 95 }, function(error) {
+        if (error) {
+          document.getElementById("qr-error").textContent = "Hiba történt a QR-kód generálása közben: " + error.message;
+          console.error("QR Kód generálási hiba:", error);
+        } else {
+          document.getElementById("qr-error").textContent = "";
+          console.log("QR kód generálva!");
         }
+      });
+    }
 
-        function openNewRecordModal() {
-            const table = document.querySelector('#logisztikai-adatbazis table tbody');
-            document.getElementById('new-sorszam').value = table.children.length + 1;
-            document.getElementById('newRecordModal').style.display = 'block';
-        }
+    // QR kód olvasás jsQR-rel
+    let videoStream = null;
+    let isScanning = false;
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+    function startQRReader() {
+      if (isScanning) {
+        document.getElementById("qr-reader-error").textContent = "A kamera már fut. Előbb állítsd le!";
+        return;
+      }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            updateEnvelopeIcons();
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        document.getElementById("qr-reader-error").textContent = "Sajnos a böngésződ nem támogatja a kamera hozzáférést.";
+        return;
+      }
+
+      navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: "environment",
+          width: { ideal: 640 }, 
+          height: { ideal: 480 }
+        } 
+      })
+        .then(stream => {
+          videoStream = stream;
+          video.srcObject = stream;
+          video.play();
+          isScanning = true;
+          document.getElementById("start-camera-btn").style.display = "none";
+          document.getElementById("stop-camera-btn").style.display = "inline";
+          document.getElementById("qr-reader-error").textContent = "";
+
+          video.onloadedmetadata = () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            console.log("Videó mérete: " + video.videoWidth + "x" + video.videoHeight);
+            scanQRCode(video, canvas, ctx);
+          };
+        })
+        .catch(err => {
+          document.getElementById("qr-reader-error").textContent = "Kamera indítási hiba: " + err.message;
+          console.error("Kamera indítási hiba:", err);
         });
+    }
 
-        document.addEventListener('fullscreenchange', () => {
-            updateEnvelopeIcons();
+    function scanQRCode(video, canvas, ctx) {
+      if (!isScanning) return;
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      console.log("Képkocka feldolgozása: " + canvas.width + "x" + canvas.height);
+      const code = jsQR(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "dontInvert"
+      });
+
+      if (code) {
+        console.log("QR kód megtalálva:", code.data);
+        document.getElementById("qr-reader-result").textContent = "QR Kód olvasva: " + code.data;
+        processFoglalas(code.data);
+        stopQRReader();
+      } else {
+        console.log("Nincs QR kód a képen");
+        document.getElementById("qr-reader-result").textContent = "QR kód keresése...";
+        requestAnimationFrame(() => scanQRCode(video, canvas, ctx));
+      }
+    }
+
+    function stopQRReader() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+        isScanning = false;
+        document.getElementById("qr-reader-result").textContent = "Kamera leállítva.";
+        document.getElementById("qr-reader-error").textContent = "";
+        document.getElementById("start-camera-btn").style.display = "inline";
+        document.getElementById("stop-camera-btn").style.display = "none";
+      }
+    }
+
+    // Gépek dropdown frissítése
+    function updateMachineDropdown() {
+      const selectTerulet = document.getElementById("select-terulet");
+      const selectMachine = document.getElementById("select-machine");
+      const terulet = selectTerulet.value;
+      selectMachine.innerHTML = "<option value=''>Válassz gépet</option>";
+      if (terulet && gepek[terulet]) {
+        gepek[terulet].forEach(gep => {
+          const gepAdatok = gepekAdatok[gep] || {};
+          const option = document.createElement("option");
+          option.value = gep;
+          option.text = `${gep} (${gepAdatok.belsoMegrendelesiSzam || ""})`;
+          selectMachine.appendChild(option);
         });
+      }
+    }
 
-        function updateEnvelopeIcons() {
-            const rows = document.querySelectorAll('#logisztikai-adatbazis table tbody tr');
-            rows.forEach(row => {
-                const status = row.getAttribute('data-status');
-                const envelopeIcon = row.querySelector('.envelope-icon');
-                if (envelopeIcon) {
-                    envelopeIcon.removeEventListener('click', sendEmailFromEnvelope);
-                    envelopeIcon.removeEventListener('touchstart', sendEmailFromEnvelope);
-                    if (status === 'ajanlatkikuldve') {
-                        envelopeIcon.style.display = 'inline';
-                        envelopeIcon.addEventListener('click', () => sendEmailFromEnvelope(row));
-                        envelopeIcon.addEventListener('touchstart', () => sendEmailFromEnvelope(row));
-                    } else {
-                        envelopeIcon.style.display = 'none';
-                    }
-                }
-            });
+    // Foglalások tárolása és listázása dátummal
+    let foglalasok = JSON.parse(localStorage.getItem('foglalasok')) || [];
+    function saveFoglalas(cimkeInput) {
+      const parts = cimkeInput.split("|");
+      const anyagszam = parts[0] || "";
+      const megnevezes = parts.slice(1).join("|") || "";
+      const selectedMachine = document.getElementById("select-machine").value;
+      const selectedTerulet = document.getElementById("select-terulet").value;
+      const kivetBevetel = document.getElementById("kivet-bevetel").value;
+      const raktar = document.getElementById("raktar").value;
+      const darabszam = parseInt(document.getElementById("darabszam").value) || 1;
+      const machineData = gepekAdatok[selectedMachine] || {};
+      const currentDate = new Date().toLocaleString('hu-HU', {
+        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+      const foglalas = {
+        sorszam: foglalasok.length + 1,
+        anyagszam: anyagszam,
+        megnevezes: megnevezes,
+        terulet: selectedTerulet,
+        gepNev: selectedMachine,
+        belsoMegrendelesiSzam: machineData.belsoMegrendelesiSzam || "",
+        kivetBevetel: kivetBevetel,
+        raktar: raktar,
+        darabszam: darabszam,
+        qrKod: cimkeInput,
+        datum: currentDate
+      };
+      foglalasok.push(foglalas);
+      localStorage.setItem('foglalasok', JSON.stringify(foglalasok));
+      updateFoglalasLista();
+    }
+
+    function processFoglalas(cimkeInput) {
+      if (cimkeInput) {
+        const parts = cimkeInput.split("|");
+        if (parts.length < 2) {
+          document.getElementById("qr-reader-error").textContent = "Hiba: Érvénytelen QR kód formátum!";
+          return;
+        }
+        const anyagszam = parts[0];
+        const megnevezes = parts.slice(1).join("|");
+        const selectedMachine = document.getElementById("select-machine").value;
+        const selectedTerulet = document.getElementById("select-terulet").value;
+        const kivetBevetel = document.getElementById("kivet-bevetel").value;
+        const raktar = document.getElementById("raktar").value;
+        const darabszam = parseInt(document.getElementById("darabszam").value) || 1;
+
+        if (!selectedTerulet || !selectedMachine || !kivetBevetel || !raktar || darabszam <= 0) {
+          document.getElementById("qr-reader-error").textContent = "Kérlek, tölts ki minden mezőt helyesen!";
+          return;
         }
 
-        function saveNewRecord(tabName) {
-            const table = document.querySelector(`#${tabName} table tbody`);
-            const sorszam = document.getElementById('new-sorszam')?.value || '';
-            const projekt = document.getElementById('new-projekt')?.value || '';
-            const megrendelo = document.getElementById('new-megrendelo')?.value || '';
-            const kontirozas = document.getElementById('new-kontirozas')?.value || '';
-            const megnevezes = document.getElementById('new-megnevezes')?.value || '';
-            const mennyiseg = document.getElementById('new-mennyiseg')?.value || '';
-            const egyseg = document.getElementById('new-egység')?.value || '';
-            const ar = document.getElementById('new-ar')?.value || '';
-            const szallito = document.getElementById('new-szallito')?.value || '';
-            const poSzam = document.getElementById('new-po-szam')?.value || '';
-            const tSzallitas = document.getElementById('new-t-szallitas')?.value || '';
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('data-status', 'felvett');
-            newRow.innerHTML = `
-                <td>${sorszam}</td>
-                <td>${projekt}</td>
-                <td>${megrendelo}</td>
-                <td>${kontirozas}</td>
-                <td>${megnevezes}</td>
-                <td>${mennyiseg}</td>
-                <td>${egyseg}</td>
-                <td>${ar}</td>
-                <td>${szallito}</td>
-                <td>${poSzam}</td>
-                <td>${tSzallitas}</td>
-                <td>
-                    <i class="fas fa-edit edit-btn" title="Szerkesztés"></i>
-                    <i class="fas fa-envelope envelope-icon" title="Levelezés indítása" style="display: none;"></i>
-                </td>
-            `;
-            table.appendChild(newRow);
-            closeModal('newRecordModal');
-            updateEnvelopeIcons();
-        }
+        document.getElementById("qr-reader-result").textContent = "Foglalás sikeresen végrehajtva: " + cimkeInput;
+        saveFoglalas(cimkeInput);
+      } else {
+        document.getElementById("qr-reader-error").textContent = "Hiba: Érvénytelen QR kód!";
+      }
+    }
 
-        function openEditModal(btn) {
-            const row = btn.closest('tr');
-            const rowIndex = Array.from(row.parentNode.children).indexOf(row);
-            document.getElementById('edit-row-index').value = rowIndex;
-            document.getElementById('edit-sorszam').value = row.cells[0]?.innerText || '';
-            document.getElementById('edit-projekt').value = row.cells[1]?.innerText || '';
-            document.getElementById('edit-megrendelo').value = row.cells[2]?.innerText || '';
-            document.getElementById('edit-kontirozas').value = row.cells[3]?.innerText || '';
-            document.getElementById('edit-megnevezes').value = row.cells[4]?.innerText || '';
-            document.getElementById('edit-mennyiseg').value = row.cells[5]?.innerText || '';
-            document.getElementById('edit-egység').value = row.cells[6]?.innerText || '';
-            document.getElementById('edit-ar').value = row.cells[7]?.innerText || '';
-            document.getElementById('edit-szallito').value = row.cells[8]?.innerText || '';
-            document.getElementById('edit-po-szam').value = row.cells[9]?.innerText || '';
-            document.getElementById('edit-t-szallitas').value = row.cells[10]?.innerText || '';
-            document.getElementById('edit-allapot').value = row.getAttribute('data-status') || 'felvett';
-            document.getElementById('editModal').style.display = 'block';
-        }
+    function updateFoglalasLista() {
+      const tbody = document.getElementById("foglalas-body");
+      if (foglalasok.length > 0) {
+        tbody.innerHTML = foglalasok.map((item, index) => `
+          <tr>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.sorszam}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.anyagszam}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.megnevezes}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.terulet}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.gepNev}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.belsoMegrendelesiSzam}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.kivetBevetel}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.raktar}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.darabszam}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.qrKod}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">${item.datum}</td>
+            <td style="padding: 5px; border: 1px solid #ccc;">
+              <button onclick="showDeletePopup(${index}, false)" style="background-color: #FF0000; color: white; width: 30px; height: 30px; border: none; border-radius: 5px;">T</button>
+            </td>
+          </tr>
+        `).join("");
+      } else {
+        tbody.innerHTML = "<tr><td colspan='12' style='padding: 10px; border: 1px solid #ccc;'>Nincs foglalás.</td></tr>";
+      }
+    }
 
-        function saveEdit() {
-            const rowIndex = document.getElementById('edit-row-index').value;
-            const row = document.querySelector(`#logisztikai-adatbazis table tbody tr:nth-child(${parseInt(rowIndex) + 1})`);
-            row.cells[0].innerText = document.getElementById('edit-sorszam').value;
-            row.cells[1].innerText = document.getElementById('edit-projekt').value;
-            row.cells[2].innerText = document.getElementById('edit-megrendelo').value;
-            row.cells[3].innerText = document.getElementById('edit-kontirozas').value;
-            row.cells[4].innerText = document.getElementById('edit-megnevezes').value;
-            row.cells[5].innerText = document.getElementById('edit-mennyiseg').value;
-            row.cells[6].innerText = document.getElementById('edit-egység').value;
-            row.cells[7].innerText = document.getElementById('edit-ar').value;
-            row.cells[8].innerText = document.getElementById('edit-szallito').value;
-            row.cells[9].innerText = document.getElementById('edit-po-szam').value;
-            row.cells[10].innerText = document.getElementById('edit-t-szallitas').value;
-            row.setAttribute('data-status', document.getElementById('edit-allapot').value);
-            updateEnvelopeIcons();
-            closeModal('editModal');
-        }
+    // Törlési popup logika
+    let deleteIndex = null;
+    let isAllDelete = false;
 
-        function requestOffer() {
-            const rowIndex = document.getElementById('edit-row-index').value;
-            const row = document.querySelector(`#logisztikai-adatbazis table tbody tr:nth-child(${parseInt(rowIndex) + 1})`);
-            row.setAttribute('data-status', 'ajanlatkikuldve');
-            document.getElementById('edit-allapot').value = 'ajanlatkikuldve';
-            updateEnvelopeIcons();
-            closeModal('editModal');
-        }
+    function showDeletePopup(index, isAll) {
+      deleteIndex = index;
+      isAllDelete = isAll;
+      document.getElementById("delete-password-popup").style.display = "block";
+    }
 
-        function sendEmail() {
-            const rowIndex = document.getElementById('edit-row-index').value;
-            const row = document.querySelector(`#logisztikai-adatbazis table tbody tr:nth-child(${parseInt(rowIndex) + 1})`);
-            row.setAttribute('data-status', 'ajanlatkikuldve');
-            updateEnvelopeIcons();
-            alert('Levél elküldve!');
-            closeModal('editModal');
-        }
+    function checkPassword() {
+      const password = document.getElementById("delete-password").value;
+      if (password === "admin") {
+        document.getElementById("delete-password-popup").style.display = "none";
+        showConfirmDelete();
+      } else {
+        document.getElementById("delete-password-error").textContent = "Helytelen jelszó, próbáld újra!";
+      }
+    }
 
-        function setCancelled() {
-            const rowIndex = document.getElementById('edit-row-index').value;
-            const row = document.querySelector(`#logisztikai-adatbazis table tbody tr:nth-child(${parseInt(rowIndex) + 1})`);
-            row.setAttribute('data-status', 'megszakitva');
-            updateEnvelopeIcons();
-            closeModal('editModal');
+    function showConfirmDelete() {
+      let message = isAllDelete ? "Biztosan törölni szeretnéd az összes rekordot?" : `Biztosan törölni szeretnéd a ${deleteIndex + 1}. rekordot?`;
+      if (confirm(message)) {
+        if (isAllDelete) {
+          foglalasok = [];
+        } else {
+          foglalasok.splice(deleteIndex, 1);
         }
+        localStorage.setItem('foglalasok', JSON.stringify(foglalasok));
+        updateFoglalasLista();
+        alert("A rekordok törölve");
+        showLap(1);
+      }
+      document.getElementById("delete-password-popup").style.display = "none";
+      document.getElementById("delete-password").value = "";
+      document.getElementById("delete-password-error").textContent = "";
+    }
 
-        function sendEmailFromEnvelope(row) {
-            const szallitoData = row.cells[8]?.innerText || '';
-            if (!szallitoData || szallitoData === '-') {
-                alert('Kérlek, válassz ki egy szállítót!');
-                return;
-            }
-            const [email, szallito] = szallitoData.split('|');
-            const belsoIgenyszam = row.cells[3]?.innerText || '';
-            const megnevezes = row.cells[4]?.innerText || '';
-            const mennyiseg = row.cells[5]?.innerText || '';
-            const egyseg = row.cells[6]?.innerText || '';
-            const subject = `Ajánlatkérés – ${belsoIgenyszam}`;
-            const body = `Tisztelt ${szallito}!\n\nKérjük, küldjön ajánlatot az alábbi tételre:\n- Megnevezés: ${megnevezes}\n- Mennyiség: ${mennyiseg} ${egyseg}\n\nÜdvözlettel,\n[Felhasználó neve]`;
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        }
-    </script>
-</body>
-</html>
+    // Gépek tárolása és kezelése
+    let gepek = JSON.parse(localStorage.getItem('gepek')) || {
+      "MFC-terület": [
+        "DMG 1", "DMG 2", "DMG 3", "DMG 4", "DMG 5", "DMG 6", "DMG CTX", "Behringer 1", "Behringer 2", "Behringer 3",
+        "Behringer 4", "Behringer 5", "Forgácsprés 1", "Forgácsprés 2", "G-mill 1", "G-mill 2", "G-mill 3", "G-mill 4",
+        "G-mill 5", "G-mill 6", "G-mill 7", "G-mill 8", "G-mill 9", "G-mill 10", "G-mill 11", "G-mill 12", "G-mill 13",
+        "G-mill 14", "G-mill 15", "G-mill 16", "G-mill 17", "G-mill 18", "G-mill 19", "G-mill 20", "G-mill 21", "G-mill 22",
+        "Heller 1", "Heller 2", "Heller 3", "Heller 4", "Heller 5", "Kaltenbach 1", "Központfúró 1", "Központfúró 2",
+        "Központfúró 3", "MCU 1", "HEC 1", "HEC 2", "LX 1", "LX 2", "LX 3", "LX 4", "LX 5", "LX 6", "LX 7", "LX 8",
+        "LX 9", "LX 10", "LX 11", "LX 12", "LX 13", "LX 14", "LX 15", "SX 1", "SX 2", "SX 3", "SX 4", "SX 5", "SX 6",
+        "SX 7", "SX 8", "SX 9", "SX 10", "SX 11", "SX 12", "SX 13", "SX 14", "SX 15", "SX 16", "TM 13", "TM 14", "TM 15",
+        "TM 16", "TM 17", "TM 18", "TM 19", "TM 20", "TM 21", "TM 22", "TMg 1", "TMg 2", "TMg 3", "TMg 4", "TMg 5",
+        "TMg 6", "TMg 7", "TMg 8", "TMg 9", "TMg 10", "TMg 11", "TMg 12", "TMg 13", "TMg 14", "TMg 15", "TMg 16",
+        "TMg 17", "TMg 18", "TMg 19", "TMg 20", "TMg 21", "TMg 22", "Szalagvágó 1", "Szalagvágó 2", "Koptató 1",
+        "Koptató 2", "Stahl", "Ferrari 1", "BW 1", "BW 2"
+      ],
+      "MFS-terület": ["Union 1", "Acra 1", "Kikinda 1", "Schiess Froriep 1", "Schiess Wotan", "TOS 1"],
+      "MFH-terület": [
+        "Blohm 30/299", "Blohm 30/300", "Blohm 30/335", "Mägerle Tandem 30/336", "Mägerle 29/51", "Mägerle 29/52",
+        "Mägerle 30/320", "Mägerle 30/321", "Mägerle 30/323", "Mägerle 30/341", "Mägerle 30/348", "Mägerle 30/351",
+        "Mägerle 30/352", "Heller 10/41", "Heller 10/45", "Heller 10/48", "Heller 10/49", "Heller 10/50", "Heller 10/51",
+        "Hermle 10/52", "Hüller Hille 10/54", "TMg 10/55", "TMg 10/56", "Senk-EDM Elotherm 75/25", "Senk-EDM Elotherm 75/26",
+        "Senk-EDM Elotherm 75/27", "Senk-EDM Elotherm 75/28", "EDM Ingersoll 75/45", "EDM Ingersoll 75/46", "EDM Ingersoll 75/47",
+        "EDM Ingersoll 75/48", "EDM Ingersoll 75/49", "EDM Ingersoll 75/50", "EDM Ingersoll 75/51", "EDM Ingersoll 75/52",
+        "EDM Ingersoll 75/53", "Draht-EDM Agie 75/39", "Draht-EDM Agie 75/40", "Drahterodieren Robofil 440cc", "Brown&Sharp 30/300",
+        "Brown&Sharp 30/317", "H60", "ELB 30/290", "ELB 30/291"
+      ],
+      "M2B-terület": [
+        "Böhringer DUS 001/175", "DMG DMU 014/105", "DMG DMU 014/106", "DMG DMU014/112", "DMG DMU 14/116", "DMG NEF 001/158",
+        "DMG NEF 005/035", "Böhringer VDF 003/042", "DMG MF 003/043", "DMG CTX 003/045", "DMG CTX 005/031", "DMG CTX 005/037",
+        "DMG CTX 005/038", "WFL Millturn 005/028", "DMG TWIN 65 005/029", "DMG DMC 014/104", "DMG GMX 005/036", "AXA 002/031",
+        "Matthes 086/098", "Teijo Viverk 086/102", "Polysoude 046/009", "Polysoude 046/010", "Polysoude 046/011",
+        "Polysoude 046/046", "Polysoude 046/794", "Polysoude 046/945", "Fronius 046/035", "Fronius 046/101",
+        "Alzmetall 006/143", "Alzmetall 006/134", "Alzmetall 014/107", "Alzmetall 014/108", "Alzmetall 014/109",
+        "Alzmetall 014/110", "NABERTHERM 082/094", "SCHELD 071/066", "AUER 070/057", "Orbitalum 046/980",
+        "Orbitalum 046/102", "Ehrler Prüftechnik 075/082", "Ehrler Prüftechnik 091/100", "Ehrler Prüftechnik 091/101",
+        "INDEX-Werke 005/033", "INDEX-Werke 005/034", "OPS Ingersoll 075/051", "OPS Ingersoll 075/052", "OPS Ingersoll 075/073",
+        "INDEX-Werke 14/115", "Polysoude 46/100", "INDEX-Werke 80/135", "HEMO 86/120", "Mitutoyo 90/", "DMG Haimer"
+      ]
+    };
+    let gepekAdatok = JSON.parse(localStorage.getItem('gepekAdatok')) || {
+      "DMG 1": { belsoMegrendelesiSzam: "U00980000101", koltseghely: "15009126" },
+      "DMG 2": { belsoMegrendelesiSzam: "U00980000102", koltseghely: "15009126" },
+      "DMG 3": { belsoMegrendelesiSzam: "U00980000103", koltseghely: "15009126" },
+      "DMG 4": { belsoMegrendelesiSzam: "U00980000104", koltseghely: "15009126" },
+      "DMG 5": { belsoMegrendelesiSzam: "U00980000115", koltseghely: "15009126" },
+      "DMG 6": { belsoMegrendelesiSzam: "U00980000116", koltseghely: "15009126" },
+      "DMG CTX": { belsoMegrendelesiSzam: "270009", koltseghely: "15009126" },
+      "Behringer 1": { belsoMegrendelesiSzam: "U00980000126", koltseghely: "15009126" },
+      "Behringer 2": { belsoMegrendelesiSzam: "U00980000127", koltseghely: "15009126" },
+      "Behringer 3": { belsoMegrendelesiSzam: "U00980000128", koltseghely: "15009126" },
+      "Behringer 4": { belsoMegrendelesiSzam: "U00980000129", koltseghely: "15009126" },
+      "Behringer 5": { belsoMegrendelesiSzam: "U00980000130", koltseghely: "15009126" },
+      "Forgácsprés 1": { belsoMegrendelesiSzam: "U00980000117", koltseghely: "15009126" },
+      "Forgácsprés 2": { belsoMegrendelesiSzam: "U00980000183", koltseghely: "15009126" },
+      "G-mill 1": { belsoMegrendelesiSzam: "U00980000069", koltseghely: "15009126" },
+      "G-mill 2": { belsoMegrendelesiSzam: "U00980000070", koltseghely: "15009126" },
+      "G-mill 3": { belsoMegrendelesiSzam: "U00980000071", koltseghely: "15009126" },
+      "G-mill 4": { belsoMegrendelesiSzam: "U00980000072", koltseghely: "15009126" },
+      "G-mill 5": { belsoMegrendelesiSzam: "U00980000073", koltseghely: "15009126" },
+      "G-mill 6": { belsoMegrendelesiSzam: "U00980000074", koltseghely: "15009126" },
+      "G-mill 7": { belsoMegrendelesiSzam: "U00980000075", koltseghely: "15009126" },
+      "G-mill 8": { belsoMegrendelesiSzam: "U00980000076", koltseghely: "15009126" },
+      "G-mill 9": { belsoMegrendelesiSzam: "U00980000088", koltseghely: "15009126" },
+      "G-mill 10": { belsoMegrendelesiSzam: "U00980000094", koltseghely: "15009126" },
+      "G-mill 11": { belsoMegrendelesiSzam: "U00980000095", koltseghely: "15009126" },
+      "G-mill 12": { belsoMegrendelesiSzam: "U00980000096", koltseghely: "15009126" },
+      "G-mill 13": { belsoMegrendelesiSzam: "U00980000097", koltseghely: "15009126" },
+      "G-mill 14": { belsoMegrendelesiSzam: "U00980000098", koltseghely: "15009126" },
+      "G-mill 15": { belsoMegrendelesiSzam: "U00980000099", koltseghely: "15009126" },
+      "G-mill 16": { belsoMegrendelesiSzam: "U00980000100", koltseghely: "15009126" },
+      "G-mill 17": { belsoMegrendelesiSzam: "U00980000107", koltseghely: "15009126" },
+      "G-mill 18": { belsoMegrendelesiSzam: "U00980000108", koltseghely: "15009126" },
+      "G-mill 19": { belsoMegrendelesiSzam: "U00980000123", koltseghely: "15009126" },
+      "G-mill 20": { belsoMegrendelesiSzam: "U00980000124", koltseghely: "15009126" },
+      "G-mill 21": { belsoMegrendelesiSzam: "U00980000120", koltseghely: "15009126" },
+      "G-mill 22": { belsoMegrendelesiSzam: "U00980000121", koltseghely: "15009126" },
+      "Heller 1": { belsoMegrendelesiSzam: "U00980000032", koltseghely: "15009126" },
+      "Heller 2": { belsoMegrendelesiSzam: "U00980000033", koltseghely: "15009126" },
+      "Heller 3": { belsoMegrendelesiSzam: "U00980000034", koltseghely: "15009126" },
+      "Heller 4": { belsoMegrendelesiSzam: "U00980000035", koltseghely: "15009126" },
+      "Heller 5": { belsoMegrendelesiSzam: "U00980000151", koltseghely: "15009126" },
+      "Kaltenbach 1": { belsoMegrendelesiSzam: "U00980000155", koltseghely: "15009126" },
+      "Központfúró 1": { belsoMegrendelesiSzam: "U00980000131", koltseghely: "15009126" },
+      "Központfúró 2": { belsoMegrendelesiSzam: "U00980000132", koltseghely: "15009126" },
+      "Központfúró 3": { belsoMegrendelesiSzam: "U00980000133", koltseghely: "15009126" },
+      "MCU 1": { belsoMegrendelesiSzam: "U00980000176", koltseghely: "15009126" },
+      "HEC 1": { belsoMegrendelesiSzam: "U00980000166", koltseghely: "15009126" },
+      "HEC 2": { belsoMegrendelesiSzam: "U00980000175", koltseghely: "15009126" },
+      "LX 1": { belsoMegrendelesiSzam: "U00980000105", koltseghely: "15009126" },
+      "LX 2": { belsoMegrendelesiSzam: "U00980000106", koltseghely: "15009126" },
+      "LX 3": { belsoMegrendelesiSzam: "U00980000118", koltseghely: "15009126" },
+      "LX 4": { belsoMegrendelesiSzam: "U00980000119", koltseghely: "15009126" },
+      "LX 5": { belsoMegrendelesiSzam: "270005", koltseghely: "15009126" },
+      "LX 6": { belsoMegrendelesiSzam: "270006", koltseghely: "15009126" },
+      "LX 7": { belsoMegrendelesiSzam: "U00980000153", koltseghely: "15009126" },
+      "LX 8": { belsoMegrendelesiSzam: "U00980000161", koltseghely: "15009126" },
+      "LX 9": { belsoMegrendelesiSzam: "U00980000162", koltseghely: "15009126" },
+      "LX 10": { belsoMegrendelesiSzam: "U00980000163", koltseghely: "15009126" },
+      "LX 11": { belsoMegrendelesiSzam: "U00980000159", koltseghely: "15009126" },
+      "LX 12": { belsoMegrendelesiSzam: "U00980000158", koltseghely: "15009126" },
+      "LX 13": { belsoMegrendelesiSzam: "U00980000160", koltseghely: "15009126" },
+      "LX 14": { belsoMegrendelesiSzam: "U00980000165", koltseghely: "15009126" },
+      "LX 15": { belsoMegrendelesiSzam: "U00980000173", koltseghely: "15009126" },
+      "SX 1": { belsoMegrendelesiSzam: "U00980000018", koltseghely: "15009126" },
+      "SX 2": { belsoMegrendelesiSzam: "U00980000019", koltseghely: "15009126" },
+      "SX 3": { belsoMegrendelesiSzam: "U00980000020", koltseghely: "15009126" },
+      "SX 4": { belsoMegrendelesiSzam: "U00980000021", koltseghely: "15009126" },
+      "SX 5": { belsoMegrendelesiSzam: "U00980000024", koltseghely: "15009126" },
+      "SX 6": { belsoMegrendelesiSzam: "U00980000022", koltseghely: "15009126" },
+      "SX 7": { belsoMegrendelesiSzam: "U00980000023", koltseghely: "15009126" },
+      "SX 8": { belsoMegrendelesiSzam: "U00980000025", koltseghely: "15009126" },
+      "SX 9": { belsoMegrendelesiSzam: "U00980000148", koltseghely: "15009126" },
+      "SX 10": { belsoMegrendelesiSzam: "U00980000149", koltseghely: "15009126" },
+      "SX 11": { belsoMegrendelesiSzam: "U00980000150", koltseghely: "15009126" },
+      "SX 12": { belsoMegrendelesiSzam: "U00980000152", koltseghely: "15009126" },
+      "SX 13": { belsoMegrendelesiSzam: "U00980000168", koltseghely: "15009126" },
+      "SX 14": { belsoMegrendelesiSzam: "U00980000167", koltseghely: "15009126" },
+      "SX 15": { belsoMegrendelesiSzam: "U00980000169", koltseghely: "15009126" },
+      "SX 16": { belsoMegrendelesiSzam: "U00980000172", koltseghely: "15009126" },
+      "TM 13": { belsoMegrendelesiSzam: "U00980000081", koltseghely: "15009126" },
+      "TM 14": { belsoMegrendelesiSzam: "U00980000082", koltseghely: "15009126" },
+      "TM 15": { belsoMegrendelesiSzam: "U00980000083", koltseghely: "15009126" },
+      "TM 16": { belsoMegrendelesiSzam: "U00980000084", koltseghely: "15009126" },
+      "TM 17": { belsoMegrendelesiSzam: "U00980000085", koltseghely: "15009126" },
+      "TM 18": { belsoMegrendelesiSzam: "U00980000086", koltseghely: "15009126" },
+      "TM 19": { belsoMegrendelesiSzam: "U00980000087", koltseghely: "15009126" },
+      "TM 20": { belsoMegrendelesiSzam: "U00980000089", koltseghely: "15009126" },
+      "TM 21": { belsoMegrendelesiSzam: "U00980000156", koltseghely: "15009126" },
+      "TM 22": { belsoMegrendelesiSzam: "U00980000157", koltseghely: "15009126" },
+      "TMg 1": { belsoMegrendelesiSzam: "U00980000113", koltseghely: "15009126" },
+      "TMg 2": { belsoMegrendelesiSzam: "U00980000114", koltseghely: "15009126" },
+      "TMg 3": { belsoMegrendelesiSzam: "270000", koltseghely: "15009126" },
+      "TMg 4": { belsoMegrendelesiSzam: "270001", koltseghely: "15009126" },
+      "TMg 5": { belsoMegrendelesiSzam: "270007", koltseghely: "15009126" },
+      "TMg 6": { belsoMegrendelesiSzam: "270008", koltseghely: "15009126" },
+      "TMg 7": { belsoMegrendelesiSzam: "U00980000147", koltseghely: "15009126" },
+      "TMg 8": { belsoMegrendelesiSzam: "U00980000145", koltseghely: "15009126" },
+      "TMg 9": { belsoMegrendelesiSzam: "U00980000146", koltseghely: "15009126" },
+      "TMg 10": { belsoMegrendelesiSzam: "U00980000170", koltseghely: "15009126" },
+      "TMg 11": { belsoMegrendelesiSzam: "U00980000171", koltseghely: "15009126" },
+      "TMg 12": { belsoMegrendelesiSzam: "U00980000180", koltseghely: "15009126" },
+      "TMg 13": { belsoMegrendelesiSzam: "U00980000177", koltseghely: "15009126" },
+      "TMg 14": { belsoMegrendelesiSzam: "U00980000178", koltseghely: "15009126" },
+      "TMg 15": { belsoMegrendelesiSzam: "U00980000179", koltseghely: "15009126" },
+      "TMg 16": { belsoMegrendelesiSzam: "U00980000184", koltseghely: "15009126" },
+      "TMg 17": { belsoMegrendelesiSzam: "U00980000185", koltseghely: "15009126" },
+      "TMg 18": { belsoMegrendelesiSzam: "U00980000188", koltseghely: "15009126" },
+      "TMg 19": { belsoMegrendelesiSzam: "U00980000190", koltseghely: "15009126" },
+      "TMg 20": { belsoMegrendelesiSzam: "U00980000191", koltseghely: "15009126" },
+      "TMg 21": { belsoMegrendelesiSzam: "U00980000192", koltseghely: "15009126" },
+      "TMg 22": { belsoMegrendelesiSzam: "", koltseghely: "15009126" },
+      "Szalagvágó 1": { belsoMegrendelesiSzam: "", koltseghely: "15009126" },
+      "Szalagvágó 2": { belsoMegrendelesiSzam: "", koltseghely: "15009126" },
+      "Koptató 1": { belsoMegrendelesiSzam: "", koltseghely: "15009126" },
+      "Koptató 2": { belsoMegrendelesiSzam: "", koltseghely: "15009126" },
+      "Stahl": { belsoMegrendelesiSzam: "", koltseghely: "15009126" },
+      "Ferrari 1": { belsoMegrendelesiSzam: "U00980000187", koltseghely: "15009126" },
+      "BW 1": { belsoMegrendelesiSzam: "U00980000181", koltseghely: "15009126" },
+      "BW 2": { belsoMegrendelesiSzam: "U00980000186", koltseghely: "15009126" },
+      "Union 1": { belsoMegrendelesiSzam: "935118", koltseghely: "15009115" },
+      "Acra 1": { belsoMegrendelesiSzam: "935043", koltseghely: "15009115" },
+      "Kikinda 1": { belsoMegrendelesiSzam: "935042", koltseghely: "15009115" },
+      "Schiess Froriep 1": { belsoMegrendelesiSzam: "935041", koltseghely: "15009115" },
+      "Schiess Wotan": { belsoMegrendelesiSzam: "935049", koltseghely: "15009115" },
+      "TOS 1": { belsoMegrendelesiSzam: "935036", koltseghely: "15009115" },
+      "Blohm 30/299": { belsoMegrendelesiSzam: "U941030_299", koltseghely: "15009450" },
+      "Blohm 30/300": { belsoMegrendelesiSzam: "U941030_300", koltseghely: "15009450" },
+      "Blohm 30/335": { belsoMegrendelesiSzam: "U941030_335", koltseghely: "15009450" },
+      "Mägerle Tandem 30/336": { belsoMegrendelesiSzam: "U941030_336", koltseghely: "15009450" },
+      "Mägerle 29/51": { belsoMegrendelesiSzam: "U941029_51", koltseghely: "15009450" },
+      "Mägerle 29/52": { belsoMegrendelesiSzam: "U941029_52", koltseghely: "15009450" },
+      "Mägerle 30/320": { belsoMegrendelesiSzam: "U941030_320", koltseghely: "15009450" },
+      "Mägerle 30/321": { belsoMegrendelesiSzam: "U941030_351", koltseghely: "15009450" },
+      "Mägerle 30/323": { belsoMegrendelesiSzam: "U941030_323", koltseghely: "15009450" },
+      "Mägerle 30/341": { belsoMegrendelesiSzam: "U941030_341", koltseghely: "15009450" },
+      "Mägerle 30/348": { belsoMegrendelesiSzam: "U941030_348", koltseghely: "15009450" },
+      "Mägerle 30/351": { belsoMegrendelesiSzam: "U941030_351", koltseghely: "15009450" },
+      "Mägerle 30/352": { belsoMegrendelesiSzam: "U941030_352", koltseghely: "15009450" },
+      "Heller 10/41": { belsoMegrendelesiSzam: "U941010_41", koltseghely: "15009450" },
+      "Heller 10/45": { belsoMegrendelesiSzam: "U941010_45", koltseghely: "15009450" },
+      "Heller 10/48": { belsoMegrendelesiSzam: "U941010_48", koltseghely: "15009450" },
+      "Heller 10/49": { belsoMegrendelesiSzam: "U941010_49", koltseghely: "15009450" },
+      "Heller 10/50": { belsoMegrendelesiSzam: "U941010_50", koltseghely: "15009450" },
+      "Heller 10/51": { belsoMegrendelesiSzam: "U941010_51", koltseghely: "15009450" },
+      "Hermle 10/52": { belsoMegrendelesiSzam: "U941010_52", koltseghely: "15009450" },
+      "Hüller Hille 10/54": { belsoMegrendelesiSzam: "U941010_54", koltseghely: "15009450" },
+      "TMg 10/55": { belsoMegrendelesiSzam: "U941010_55", koltseghely: "15009450" },
+      "TMg 10/56": { belsoMegrendelesiSzam: "U941010_56", koltseghely: "15009450" },
+      "Senk-EDM Elotherm 75/25": { belsoMegrendelesiSzam: "U941075_25", koltseghely: "15009450" },
+      "Senk-EDM Elotherm 75/26": { belsoMegrendelesiSzam: "U941075_26", koltseghely: "15009450" },
+      "Senk-EDM Elotherm 75/27": { belsoMegrendelesiSzam: "U941075_27", koltseghely: "15009450" },
+      "Senk-EDM Elotherm 75/28": { belsoMegrendelesiSzam: "U941075_28", koltseghely: "15009450" },
+      "EDM Ingersoll 75/45": { belsoMegrendelesiSzam: "U941075_45", koltseghely: "15009450" },
+      "EDM Ingersoll 75/46": { belsoMegrendelesiSzam: "U941075_46", koltseghely: "15009450" },
+      "EDM Ingersoll 75/47": { belsoMegrendelesiSzam: "U941075_47", koltseghely: "15009450" },
+      "EDM Ingersoll 75/48": { belsoMegrendelesiSzam: "U941075_48", koltseghely: "15009450" },
+      "EDM Ingersoll 75/49": { belsoMegrendelesiSzam: "U941075_49", koltseghely: "15009450" },
+      "EDM Ingersoll 75/50": { belsoMegrendelesiSzam: "U941075_50", koltseghely: "15009450" },
+      "EDM Ingersoll 75/51": { belsoMegrendelesiSzam: "U941075_51", koltseghely: "15009450" },
+      "EDM Ingersoll 75/52": { belsoMegrendelesiSzam: "U941075_52", koltseghely: "15009450" },
+      "EDM Ingersoll 75/53": { belsoMegrendelesiSzam: "U941075_53", koltseghely: "15009450" },
+      "Draht-EDM Agie 75/39": { belsoMegrendelesiSzam: "U941075_39", koltseghely: "15009450" },
+      "Draht-EDM Agie 75/40": { belsoMegrendelesiSzam: "U941075_40", koltseghely: "15009450" },
+      "Drahterodieren Robofil 440cc": { belsoMegrendelesiSzam: "U9410931103", koltseghely: "15009450" },
+      "Brown&Sharp 30/300": { belsoMegrendelesiSzam: "U942030_300", koltseghely: "15009450" },
+      "Brown&Sharp 30/317": { belsoMegrendelesiSzam: "U942030_317", koltseghely: "15009450" },
+      "H60": { belsoMegrendelesiSzam: "U9420KESZ", koltseghely: "15009450"
