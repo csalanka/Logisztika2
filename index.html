@@ -11,11 +11,14 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f5f5f5; /* Halvány szürke háttér az egész oldalnak */
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background-color: #ffffff; /* Fehér háttér a táblázatnak */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Árnyék a táblázat körül */
         }
         th, td {
             border: 1px solid #ddd;
@@ -24,6 +27,34 @@
         }
         th {
             background-color: #f2f2f2;
+            color: #333;
+        }
+
+        /* Tab-navigáció stílusa */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #ffffff;
+            border-bottom: 2px solid #ffffff;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
 
         /* Modális ablak stílusa */
@@ -84,10 +115,15 @@
         /* Jelmagyarázat stílusa */
         .legend {
             margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .legend h3 {
             font-size: 16px;
             margin-bottom: 10px;
+            color: #333;
         }
         .legend p {
             margin: 5px 0;
@@ -104,34 +140,34 @@
 
         /* Állapotok színei */
         tr[data-status="felvett"] {
-            background-color: #FFFFFF;
+            background-color: #FFFFFF !important;
         }
         tr[data-status="ajanlatkikuldve"] {
-            background-color: #FFFF00;
+            background-color: #FFFF00 !important;
         }
         tr[data-status="belsoszam"] {
-            background-color: #808080;
+            background-color: #808080 !important;
         }
         tr[data-status="belsoszam"] td {
-            color: #FFFFFF; /* Fehér betűszín a szürke háttéren */
+            color: #FFFFFF !important; /* Fehér betűszín a szürke háttéren */
         }
         tr[data-status="po"] {
-            background-color: #0000FF;
+            background-color: #0000FF !important;
         }
         tr[data-status="po"] td {
-            color: #FFFFFF; /* Fehér betűszín a kék háttéren */
+            color: #FFFFFF !important; /* Fehér betűszín a kék háttéren */
         }
         tr[data-status="beerkezett"] {
-            background-color: #008000;
+            background-color: #008000 !important;
         }
         tr[data-status="beerkezett"] td {
-            color: #FFFFFF; /* Fehér betűszín a zöld háttéren */
+            color: #FFFFFF !important; /* Fehér betűszín a zöld háttéren */
         }
         tr[data-status="megszakitva"] {
-            background-color: #000000;
+            background-color: #000000 !important;
         }
         tr[data-status="megszakitva"] td {
-            color: #FFFFFF; /* Fehér betűszín a fekete háttéren */
+            color: #FFFFFF !important; /* Fehér betűszín a fekete háttéren */
         }
 
         /* Szerkesztés gomb stílusa */
@@ -144,10 +180,10 @@
             background-color: rgba(255, 255, 255, 0.8); /* Halvány fehér háttér a láthatóságért */
         }
         tr[data-status="felvett"] .edit-btn {
-            color: #FFFFFF; /* Fehér */
+            color: #000000; /* Fekete, hogy látható legyen a fehér háttéren */
         }
         tr[data-status="felvett"] .edit-btn:hover {
-            color: #E0E0E0; /* Halványabb fehér */
+            color: #333333; /* Sötétebb szürke */
         }
         tr[data-status="ajanlatkikuldve"] .edit-btn {
             color: #FFFF00; /* Sárga */
@@ -216,45 +252,73 @@
         .request-offer-btn:hover {
             background-color: #E0E000; /* Sötétebb sárga a hover hatásnál */
         }
+
+        /* Új rekord gomb stílusa */
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
-    <!-- Jelmagyarázat -->
-    <div class="legend">
-        <h3>Állapotok jelmagyarázata</h3>
-        <p><span class="legend-color" style="background-color: #FFFFFF;"></span> Felvett (#FFFFFF)</p>
-        <p><span class="legend-color" style="background-color: #FFFF00;"></span> Ajánlatkérés kiküldve <i class="fas fa-envelope" style="color: #FFFF00;" title="Levelezés indítása"></i> (#FFFF00)</p>
-        <p><span class="legend-color" style="background-color: #808080;"></span> Belső igényszám kitöltve (#808080)</p>
-        <p><span class="legend-color" style="background-color: #0000FF;"></span> PO szám létrehozva (#0000FF)</p>
-        <p><span class="legend-color" style="background-color: #008000;"></span> Tétel beérkezett (#008000)</p>
-        <p><span class="legend-color" style="background-color: #000000;"></span> Megszakítva (#000000)</p>
+    <!-- Tab-navigáció -->
+    <div class="tabs">
+        <div class="tab active" onclick="openTab('logisztikai-adatbazis-tab')">Logisztikai adatbázis</div>
+        <div class="tab" onclick="openTab('masik-lap-tab')">Másik lap</div>
     </div>
 
-    <!-- Táblázat -->
-    <div id="logisztikai-adatbazis">
-        <h2>Logisztikai adatbázis</h2>
-        <button onclick="openNewRecordModal()">Új rekord</button>
-        <table>
-            <thead>
-                <tr>
-                    <th>Sorszám</th>
-                    <th>Projekt</th>
-                    <th>Megrendelő</th>
-                    <th>Kontírozás</th>
-                    <th>Megnevezés</th>
-                    <th>Mennyiség</th>
-                    <th>Egység</th>
-                    <th>Ár</th>
-                    <th>Szállító</th>
-                    <th>PO szám</th>
-                    <th>T.Szállítás</th>
-                    <th>Műveletek</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- A sorok dinamikusan töltődnek JavaScripttel -->
-            </tbody>
-        </table>
+    <!-- Tab-tartalom -->
+    <div id="logisztikai-adatbazis-tab" class="tab-content active">
+        <!-- Jelmagyarázat -->
+        <div class="legend">
+            <h3>Állapotok jelmagyarázata</h3>
+            <p><span class="legend-color" style="background-color: #FFFFFF;"></span> Felvett (#FFFFFF)</p>
+            <p><span class="legend-color" style="background-color: #FFFF00;"></span> Ajánlatkérés kiküldve <i class="fas fa-envelope" style="color: #FFFF00;" title="Levelezés indítása"></i> (#FFFF00)</p>
+            <p><span class="legend-color" style="background-color: #808080;"></span> Belső igényszám kitöltve (#808080)</p>
+            <p><span class="legend-color" style="background-color: #0000FF;"></span> PO szám létrehozva (#0000FF)</p>
+            <p><span class="legend-color" style="background-color: #008000;"></span> Tétel beérkezett (#008000)</p>
+            <p><span class="legend-color" style="background-color: #000000;"></span> Megszakítva (#000000)</p>
+        </div>
+
+        <!-- Táblázat -->
+        <div id="logisztikai-adatbazis">
+            <h2>Logisztikai adatbázis</h2>
+            <button onclick="openNewRecordModal()">Új rekord</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sorszám</th>
+                        <th>Projekt</th>
+                        <th>Megrendelő</th>
+                        <th>Kontírozás</th>
+                        <th>Megnevezés</th>
+                        <th>Mennyiség</th>
+                        <th>Egység</th>
+                        <th>Ár</th>
+                        <th>Szállító</th>
+                        <th>PO szám</th>
+                        <th>T.Szállítás</th>
+                        <th>Műveletek</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- A sorok dinamikusan töltődnek JavaScripttel -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="masik-lap-tab" class="tab-content">
+        <h2>Másik lap</h2>
+        <p>Itt lesz a másik lap tartalma. Ha van konkrét tartalom, amit ide szeretnél, írd meg!</p>
     </div>
 
     <!-- Szerkesztési űrlap -->
@@ -372,6 +436,25 @@
     </div>
 
     <script>
+        // Tab-navigáció kezelése
+        function openTab(tabId) {
+            // Elrejtjük az összes tab-tartalmat
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Inaktiváljuk az összes tabot
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Aktiváljuk a kiválasztott tabot és tartalmat
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
         // Modális ablak megnyitása új rekordhoz
         function openNewRecordModal() {
             try {
@@ -427,7 +510,7 @@
             updateEnvelopeIcons();
         });
 
-        // Boríték ikonok frissítése
+                // Boríték ikonok frissítése
         function updateEnvelopeIcons() {
             const rows = document.querySelectorAll('#logisztikai-adatbazis table tbody tr');
             rows.forEach(row => {
@@ -490,13 +573,14 @@
                 `;
                 table.appendChild(newRow);
                 closeModal('newRecordModal');
+                updateEnvelopeIcons(); // Frissítjük a boríték ikonokat az új sor hozzáadása után
             } catch (error) {
                 console.error('Hiba az új rekord mentése közben:', error);
                 alert('Hiba történt az új rekord mentése közben. Kérlek, ellenőrizd a konzolt a részletekért.');
             }
         }
 
-        // Szerkesztési űrlap megnyitása
+        // Szerkesztési űrl  megnyitása
         function openEditModal(btn) {
             try {
                 const row = btn.closest('tr');
@@ -633,5 +717,3 @@
             }
         }
     </script>
-</body>
-</html>
