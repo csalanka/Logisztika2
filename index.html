@@ -8,8 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            --table-container-padding-top: 0px; /* Végleges érték a .table-container padding-top-hoz */
-            --th-top: 0px; /* Végleges érték a th elemek top-hoz */
+            --table-container-padding-top: 0px;
+            --th-top: 0px;
         }
         body {
             background-color: #000000;
@@ -21,7 +21,7 @@
             align-items: center;
             color: #e0e0e0;
             font-family: Arial, sans-serif;
-            overflow: hidden; /* Az egész oldal görgetésének letiltása */
+            overflow: hidden;
         }
         .container {
             width: 100%;
@@ -34,8 +34,8 @@
             align-items: flex-start;
             padding: 10px;
             box-sizing: border-box;
-            padding-top: 180px; /* Hely a fix fejléc, elválasztó és lapfülek számára */
-            overflow: hidden; /* Az egész container görgetésének letiltása */
+            padding-top: 180px;
+            overflow: hidden;
         }
         .header {
             width: 100%;
@@ -44,10 +44,10 @@
             justify-content: space-between;
             padding: 10px;
             box-sizing: border-box;
-            position: fixed; /* Fix pozíció a fejlécnek */
+            position: fixed;
             top: 0;
-            background-color: #000000; /* Háttérszín, hogy ne legyen átlátszó */
-            z-index: 10; /* Előrébb hozzuk, hogy ne takarja a tartalom */
+            background-color: #000000;
+            z-index: 10;
         }
         .header-left {
             display: flex;
@@ -78,7 +78,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-right: 20px; /* Ikonok balra mozgatása */
+            margin-right: 20px;
         }
         .header-right span, .header-right i {
             font-size: 14px;
@@ -98,8 +98,8 @@
             height: 2px;
             background-color: #621d8a;
             margin: 0;
-            position: fixed; /* Fix pozíció az elválasztónak */
-            top: 110px; /* A fejléc magassága után */
+            position: fixed;
+            top: 110px;
             z-index: 9;
         }
         .tabs {
@@ -109,10 +109,10 @@
             margin-bottom: 20px;
             overflow-x: auto;
             white-space: nowrap;
-            position: fixed; /* Fix pozíció a lapfüleknek */
-            top: 112px; /* A fejléc és az elválasztó után */
-            background-color: #000000; /* Háttérszín, hogy ne legyen átlátszó */
-            z-index: 9; /* Előrébb hozzuk, hogy ne takarja a tartalom */
+            position: fixed;
+            top: 112px;
+            background-color: #000000;
+            z-index: 9;
             padding: 5px 0;
         }
         .tab {
@@ -137,7 +137,7 @@
             background-color: #1a1a1a;
             border-radius: 5px;
             display: none;
-            height: calc(100vh - 160px); /* Korrigált magasság a táblázat számára */
+            height: calc(100vh - 160px);
             box-sizing: border-box;
         }
         .tab-content.active {
@@ -145,32 +145,31 @@
         }
         .table-container {
             width: 100%;
-            max-height: calc(100vh - 200px); /* Több hely a táblázatnak, hogy a csúszka mérete megfelelő legyen */
-            min-height: calc(100vh - 200px); /* Biztosítjuk, hogy a görgetősáv mindig látható legyen */
+            max-height: calc(100vh - 200px);
+            min-height: calc(100vh - 200px);
             overflow-x: auto;
-            overflow-y: auto; /* Függőleges görgetés a táblázaton belül */
-            scroll-behavior: smooth; /* Simább görgetés */
-            will-change: transform; /* Optimalizálja a görgetést a böngészőben */
-            padding-top: var(--table-container-padding-top); /* Végleges padding-top */
-            padding-right: 17px; /* A csúszka szélességének megfelelő padding, hogy a tartalom ne kerüljön alá */
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            will-change: transform;
+            padding-top: var(--table-container-padding-top);
+            padding-right: 17px;
         }
-        /* Csúszka testreszabása */
         .table-container::-webkit-scrollbar {
-            width: 10px; /* Csúszka szélessége */
+            width: 10px;
         }
         .table-container::-webkit-scrollbar-thumb {
-            background-color: #621d8a; /* Csúszka fogantyújának színe */
+            background-color: #621d8a;
             border-radius: 5px;
-            min-height: 20px; /* Minimális magasság a csúszka fogantyújának */
+            min-height: 20px;
         }
         .table-container::-webkit-scrollbar-track {
-            background-color: #2a2a2a; /* Csúszka sínjének színe */
+            background-color: #2a2a2a;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            margin-top: -2px; /* Negatív eltolás a táblázat tartalmának felfelé húzásához */
+            margin-top: -2px;
         }
         th, td {
             padding: 10px;
@@ -181,21 +180,20 @@
         th {
             background-color: #2a2a2a;
             position: sticky;
-            top: var(--th-top); /* Végleges top érték */
-            z-inde
-x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
-            height: 40px; /* Magasabb fejléc a jobb takarás érdekében */
-            line-height: 40px; /* Szöveg vertikális középre igazítása */
+            top: var(--th-top);
+            z-index: 3;
+            height: 40px;
+            line-height: 40px;
         }
         tr:nth-child(even) {
             background-color: #222222;
         }
-        #logisztikai-table th:nth-child(1), #logisztikai-table td:nth-child(1) { width: 100px; } /* Műveleti oszlop */
-        #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 50px; } /* Sr. */
+        #logisztikai-table th:nth-child(1), #logisztikai-table td:nth-child(1) { width: 100px; }
+        #logisztikai-table th:nth-child(2), #logisztikai-table td:nth-child(2) { width: 50px; }
         #logisztikai-table th:nth-child(3), #logisztikai-table td:nth-child(3) { width: 100px; }
         #logisztikai-table th:nth-child(4), #logisztikai-table td:nth-child(4) { width: 100px; }
         #logisztikai-table th:nth-child(5), #logisztikai-table td:nth-child(5) { width: 100px; }
-        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 150px; } /* Kontírozási név */
+        #logisztikai-table th:nth-child(6), #logisztikai-table td:nth-child(6) { width: 150px; }
         #logisztikai-table th:nth-child(7), #logisztikai-table td:nth-child(7) { width: 80px; }
         #logisztikai-table th:nth-child(8), #logisztikai-table td:nth-child(8) { width: 150px; }
         #logisztikai-table th:nth-child(9), #logisztikai-table td:nth-child(9) { width: 100px; }
@@ -211,11 +209,11 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         #logisztikai-table th:nth-child(19), #logisztikai-table td:nth-child(19) { width: 100px; }
         #logisztikai-table th {
             position: sticky;
-            top: var(--th-top); /* Végleges top érték */
-            background-color: #2a2a2a; /* Biztosítjuk, hogy a háttér átlátszatlan legyen */
-            z-index: 3; /* Magasabb z-index a tartalom elrejtéséhez */
-            height: 40px; /* Magasabb fejléc a jobb takarás érdekében */
-            line-height: 40px; /* Szöveg vertikális középre igazítása */
+            top: var(--th-top);
+            background-color: #2a2a2a;
+            z-index: 3;
+            height: 40px;
+            line-height: 40px;
         }
         #nyomonkovetesi-table th:nth-child(1), #nyomonkovetesi-table td:nth-child(1) { width: 150px; }
         #nyomonkovetesi-table th:nth-child(2), #nyomonkovetesi-table td:nth-child(2) { width: 100px; }
@@ -229,11 +227,11 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         #belső-megrendelési-table th:nth-child(4), #belső-megrendelési-table td:nth-child(4) { width: 150px; }
         #belső-megrendelési-table th {
             position: sticky;
-            top: var(--th-top); /* Végleges top érték */
-            background-color: #2a2a2a; /* Biztosítjuk, hogy a háttér átlátszatlan legyen */
-            z-index: 3; /* Magasabb z-index a tartalom elrejtéséhez */
-            height: 40px; /* Magasabb fejléc a jobb takarás érdekében */
-            line-height: 40px; /* Szöveg vertikális középre igazítása */
+            top: var(--th-top);
+            background-color: #2a2a2a;
+            z-index: 3;
+            height: 40px;
+            line-height: 40px;
         }
         .edit-btn, .new-record-btn {
             padding: 5px 10px;
@@ -244,7 +242,7 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             cursor: pointer;
             margin: 2px;
             position: relative;
-            z-index: 10001; /* Magasabb z-index a gombok számára */
+            z-index: 10001;
         }
         .modal {
             display: block;
@@ -257,16 +255,16 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000; /* Magas z-index a modális ablak számára */
+            z-index: 10000;
         }
         .modal-content {
             background-color: #1a1a1a;
             padding: 20px;
             border-radius: 10px;
             width: 90%;
-            max-width: 800px; /* Szélesebb modális ablak a két oszlophoz */
-            max-height: 80vh; /* Maximális magasság a képernyő 80%-a */
-            overflow-y: auto; /* Görgethető, ha a tartalom túl hosszú */
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
             text-align: center;
             border: 1px solid #621d8a;
             box-sizing: border-box;
@@ -279,12 +277,12 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         }
         .edit-form {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Két oszlop egyenlő szélességgel */
-            gap: 20px; /* Oszlopok közötti távolság */
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             width: 100%;
         }
         .edit-form h3 {
-            grid-column: 1 / 3; /* A címsorok mindkét oszlopot elfoglalják */
+            grid-column: 1 / 3;
             margin-top: 10px;
             border-bottom: 1px solid #621d8a;
             padding-bottom: 5px;
@@ -294,7 +292,7 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             width: 100%;
         }
         .edit-form button {
-            grid-column: 1 / 3; /* A gombok mindkét oszlopot elfoglalják */
+            grid-column: 1 / 3;
         }
         .new-record-form label, .edit-form label {
             font-weight: bold;
@@ -321,6 +319,25 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         #email-result {
             margin-top: 10px;
             color: #4CAF50;
+        }
+        .status-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .status-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 11px;
+            cursor: default;
+            opacity: 0.8;
+            white-space: nowrap;
+        }
+        .status-btn:hover {
+            opacity: 1;
         }
     </style>
 </head>
@@ -357,6 +374,14 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         <div id="logisztikai-adatbazis" class="tab-content active">
             <h2>Logisztikai adatbázis</h2>
             <button class="new-record-btn" onclick="openNewRecordModal('logisztikai-adatbazis')">Új rekord</button>
+            <div class="status-buttons">
+                <button class="status-btn" data-status="felvett" style="background-color: #FFFFFF; color: #000000;">Felvett (#FFFFFF)</button>
+                <button class="status-btn" data-status="ajanlatkikuldve" style="background-color: #FFFF00; color: #000000;">Ajánlatkérés kiküldve (#FFFF00)</button>
+                <button class="status-btn" data-status="belsoszam" style="background-color: #808080; color: #FFFFFF;">Belső igényszám kitöltve (#808080)</button>
+                <button class="status-btn" data-status="po" style="background-color: #0000FF; color: #FFFFFF;">PO szám létrehozva (#0000FF)</button>
+                <button class="status-btn" data-status="beerkezett" style="background-color: #008000; color: #FFFFFF;">Tétel beérkezett (#008000)</button>
+                <button class="status-btn" data-status="megszakitva" style="background-color: #000000; color: #FFFFFF;">Megszakítva (#000000)</button>
+            </div>
             <div class="table-container">
                 <table id="logisztikai-table">
                     <thead>
@@ -384,7 +409,10 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
                     </thead>
                     <tbody>
                         <tr>
-                            <td><button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button></td>
+                            <td>
+                                <button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button>
+                                <i class="fas fa-envelope" title="Levél küldése" style="margin-left: 10px; cursor: pointer;"></i>
+                            </td>
                             <td>FR25#0001</td>
                             <td>2025.03.01</td>
                             <td>0060</td>
@@ -405,7 +433,10 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
                             <td>2025.03.15</td>
                         </tr>
                         <tr>
-                            <td><button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button></td>
+                            <td>
+                                <button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button>
+                                <i class="fas fa-envelope" title="Levél küldése" style="margin-left: 10px; cursor: pointer;"></i>
+                            </td>
                             <td>FR25#0002</td>
                             <td>2025.03.02</td>
                             <td>0350</td>
@@ -636,26 +667,24 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
 
     <script>
         let teruletekGepek = {};
-        let sorszamCounter = 0; // Globális számláló a sorszámokhoz
+        let sorszamCounter = 0;
 
-        // Sorszám számláló inicializálása az oldal betöltésekor
         function initializeSorszamCounter() {
             const table = document.querySelector('#logisztikai-table tbody');
             const rows = table.querySelectorAll('tr');
             let maxSorszam = 0;
 
             rows.forEach(row => {
-                const sorszamText = row.cells[1].textContent; // Sr. oszlop (Műveleti után a második oszlop)
-                const sorszam = parseInt(sorszamText.replace('FR25#', '')); // Kivesszük a számot
+                const sorszamText = row.cells[1].textContent;
+                const sorszam = parseInt(sorszamText.replace('FR25#', ''));
                 if (!isNaN(sorszam) && sorszam > maxSorszam) {
                     maxSorszam = sorszam;
                 }
             });
 
-            sorszamCounter = maxSorszam; // A legnagyobb sorszám alapján állítjuk be a számlálót
+            sorszamCounter = maxSorszam;
         }
 
-        // Területek és gépek betöltése a CSV fájlból
         Papa.parse('data/belső_megrendelések_adatbazis.csv', {
             download: true,
             header: true,
@@ -675,7 +704,6 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
                     });
                 });
 
-                // A betöltés után frissítjük a táblázatot
                 loadBelsőMegrendelésiSzámok();
             },
             error: function(error) {
@@ -685,9 +713,8 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
 
         function loadBelsőMegrendelésiSzámok() {
             const tbody = document.getElementById('belső-megrendelési-tbody');
-            tbody.innerHTML = ''; // Töröljük a korábbi tartalmat, ha van
+            tbody.innerHTML = '';
 
-            // Végigiterálunk a teruletekGepek objektumon
             for (const terulet in teruletekGepek) {
                 teruletekGepek[terulet].forEach(gep => {
                     const row = document.createElement('tr');
@@ -701,7 +728,6 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
                 });
             }
 
-            // Tesztadatok hozzáadása a csúszka méretének növeléséhez
             for (let i = 1; i <= 20; i++) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -724,20 +750,19 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
                 document.exitFullscreen();
             }
 
-            // Eseménykezelők újraregisztrálása a teljes képernyős mód váltása után
             setTimeout(() => {
                 const newRecordBtn = document.querySelector('.new-record-btn');
                 if (newRecordBtn) {
-                    newRecordBtn.removeEventListener('click', openNewRecordModal); // Előző eseménykezelő eltávolítása
-                    newRecordBtn.addEventListener('click', () => openNewRecordModal('logisztikai-adatbazis')); // Új eseménykezelő hozzáadása
+                    newRecordBtn.removeEventListener('click', openNewRecordModal);
+                    newRecordBtn.addEventListener('click', () => openNewRecordModal('logisztikai-adatbazis'));
                 }
 
                 const editButtons = document.querySelectorAll('.edit-btn');
                 editButtons.forEach(btn => {
-                    btn.removeEventListener('click', openEditModal); // Előző eseménykezelő eltávolítása
-                    btn.addEventListener('click', () => openEditModal(btn)); // Új eseménykezelő hozzáadása
+                    btn.removeEventListener('click', openEditModal);
+                    btn.addEventListener('click', () => openEditModal(btn));
                 });
-            }, 100); // Kis késleltetés, hogy a teljes képernyős mód biztosan aktiválódjon
+            }, 100);
         }
 
         function openTab(tabName) {
@@ -756,7 +781,7 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
         function openNewRecordModal(tabName) {
             document.getElementById('newRecordModal').style.display = 'flex';
             updateKontirozasField();
-            updateRaktarField(); // Biztosítjuk, hogy a Raktár mező is frissüljön az alapértelmezett "Anyagszámos rendelés" alapján
+            updateRaktarField();
         }
 
         function closeModal(modalId) {
@@ -927,24 +952,25 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             const mennyiseg = document.getElementById('new-mennyiseg').value;
             const egyseg = document.getElementById('new-egyseg').value;
 
-            // Ha a rendeléstípus "Gépre kontírozott rendelés" (3), akkor kiolvassuk a gép nevét
             let kontirozasiNev = '-';
             if (rendelesTipus === '3') {
                 const terulet = document.getElementById('new-terulet').value;
                 const gep = document.getElementById('new-gep').value;
                 if (terulet && gep) {
-                    kontirozasiNev = gep; // A kiválasztott gép neve
+                    kontirozasiNev = gep;
                 }
             }
 
-            // Sorszám növelése és formázása
             sorszamCounter++;
-            const formattedSorszam = `FR25#${sorszamCounter.toString().padStart(4, '0')}`; // Pl. FR25#0003
+            const formattedSorszam = `FR25#${sorszamCounter.toString().padStart(4, '0')}`;
 
             const table = document.querySelector('#logisztikai-table tbody');
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button></td>
+                <td>
+                    <button class="edit-btn" onclick="openEditModal(this)">Szerkesztés</button>
+                    <i class="fas fa-envelope" title="Levél küldése" style="margin-left: 10px; cursor: pointer;"></i>
+                </td>
                 <td>${formattedSorszam}</td>
                 <td>${new Date().toISOString().split('T')[0]}</td>
                 <td>${raktar}</td>
@@ -973,7 +999,7 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             const rowIndex = Array.from(row.parentElement.children).indexOf(row);
 
             document.getElementById('edit-row-index').value = rowIndex;
-            document.getElementById('edit-rendeles-tipus').value = row.cells[4].textContent === '-' ? '2' : '3'; // Ha kontírozási név '-', akkor Anyagszámos rendelés, különben Gépre kontírozott
+            document.getElementById('edit-rendeles-tipus').value = row.cells[4].textContent === '-' ? '2' : '3';
             updateEditRaktarField();
             updateEditKontirozasField();
             document.getElementById('edit-raktar').value = row.cells[3].textContent;
@@ -1164,13 +1190,12 @@ x: 3; /* Magasabb z-index, hogy a tartalom ne látszódjon felette */
             const po = document.getElementById('edit-po').value || '-';
             const tSzallitas = document.getElementById('edit-t-szallitas').value || '-';
 
-            // Ha a rendeléstípus "Gépre kontírozott rendelés" (3), akkor kiolvassuk a gép nevét
             let kontirozasiNev = '-';
             if (rendelesTipus === '3') {
                 const terulet = document.getElementById('edit-terulet').value;
                 const gep = document.getElementById('edit-gep').value;
                 if (terulet && gep) {
-                    kontirozasiNev = gep; // A kiválasztott gép neve
+                    kontirozasiNev = gep;
                 }
             }
 
