@@ -235,9 +235,6 @@
         }
         #szallitoi-cimjegyzek-table th:nth-child(1), #szallitoi-cimjegyzek-table td:nth-child(1) { width: 150px; }
         #szallitoi-cimjegyzek-table th:nth-child(2), #szallitoi-cimjegyzek-table td:nth-child(2) { width: 200px; }
-        #szallitoi-cimjegyzek-table th:nth-child(3), #szallitoi-cimjegyzek-table td:nth-child(3) { width: 150px; }
-        #szallitoi-cimjegyzek-table th:nth-child(4), #szallitoi-cimjegyzek-table td:nth-child(4) { width: 120px; }
-        #szallitoi-cimjegyzek-table th:nth-child(5), #szallitoi-cimjegyzek-table td:nth-child(5) { width: 150px; }
         #szallitoi-cimjegyzek-table th {
             position: sticky;
             top: var(--th-top);
@@ -367,7 +364,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.29</span>
+                <span>v1.2.28</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -536,9 +533,6 @@
                     <thead>
                         <tr>
                             <th>Szállító neve</th>
-                            <th>Cím</th>
-                            <th>Kapcsolattartó</th>
-                            <th>Telefonszám</th>
                             <th>Email</th>
                         </tr>
                     </thead>
@@ -602,9 +596,7 @@
                     <option value="Szolgáltatás">Szolgáltatás</option>
                 </select>
                 <label for="new-szallito">Szállító:</label>
-                <div id="szallito-container">
-                    <!-- A szállítók listája dinamikusan töltődik be -->
-                </div>
+                <input type="text" id="new-szallito" name="new-szallito" required>
                 <label for="new-mennyiseg">Mennyiség:</label>
                 <input type="text" id="new-mennyiseg" name="new-mennyiseg" required>
                 <label for="new-egyseg">Egység:</label>
@@ -699,7 +691,6 @@
     <script>
         let teruletekGepek = {};
         let szallitok = [];
-        let szallitokLoaded = false;
         let sorszamCounter = 0;
 
         function initializeSorszamCounter() {
@@ -723,19 +714,11 @@
             header: true,
             complete: function(results) {
                 szallitok = results.data;
-                szallitokLoaded = true;
                 console.log('Szállítók betöltve:', szallitok);
-                if (document.getElementById('newRecordModal').style.display === 'flex') {
-                    updateSzallitoField();
-                }
                 loadSzallitoiCimjegyzek();
             },
             error: function(error) {
                 console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
-                szallitokLoaded = true;
-                if (document.getElementById('newRecordModal').style.display === 'flex') {
-                    updateSzallitoField();
-                }
                 loadSzallitoiCimjegyzek();
             }
         });
@@ -774,6 +757,7 @@
             },
             error: function(error) {
                 console.error('Hiba a belső megrendelések adatbázis betöltésekor:', error);
+                loadBelsőMegrendelésiSzámok();
             }
         });
 
@@ -808,17 +792,11 @@
 
             szallitok.forEach(szallito => {
                 const szallitoNeve = szallito['Szállító neve'] && szallito['Szállító neve'] !== 'undefined' ? szallito['Szállító neve'] : '-';
-                const cim = szallito['Cím'] && szallito['Cím'] !== 'undefined' ? szallito['Cím'] : '-';
-                const kapcsolattarto = szallito['Kapcsolattartó'] && szallito['Kapcsolattartó'] !== 'undefined' ? szallito['Kapcsolattartó'] : '-';
-                const telefonszam = szallito['Telefonszám'] && szallito['Telefonszám'] !== 'undefined' ? szallito['Telefonszám'] : '-';
                 const email = szallito['Email'] && szallito['Email'] !== 'undefined' ? szallito['Email'] : '-';
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${szallitoNeve}</td>
-                    <td>${cim}</td>
-                    <td>${kapcsolattarto}</td>
-                    <td>${telefonszam}</td>
                     <td>${email}</td>
                 `;
                 tbody.appendChild(row);
@@ -869,7 +847,6 @@
 
             updateRaktarField();
             updateKontirozasField();
-            updateSzallitoField();
         }
 
         function closeModal(modalId) {
@@ -981,42 +958,6 @@
                 input.required = true;
                 kontirozasContainer.appendChild(input);
             }
-        }
-
-        function updateSzallitoField() {
-            const szallitoContainer = document.getElementById('szallito-container');
-            szallitoContainer.innerHTML = '';
-
-            if (!szallitokLoaded) {
-                szallitoContainer.innerHTML = '<p>Szállítók betöltése folyamatban...</p>';
-                return;
-            }
-
-            if (szallitok.length === 0) {
-                szallitoContainer.innerHTML = '<p>Hiba: A szállítók betöltése nem sikerült.</p>';
-                return;
-            }
-
-            const select = document.createElement('select');
-            select.id = 'new-szallito';
-            select.name = 'new-szallito';
-            select.required = true;
-
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = 'Válassz szállítót';
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            select.appendChild(defaultOption);
-
-            szallitok.forEach(szallito => {
-                const option = document.createElement('option');
-                option.value = szallito['Szállító neve'];
-                option.textContent = szallito['Szállító neve'];
-                select.appendChild(option);
-            });
-
-            szallitoContainer.appendChild(select);
         }
 
         function updateGepSelect() {
