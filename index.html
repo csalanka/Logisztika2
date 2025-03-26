@@ -233,6 +233,19 @@
             height: 40px;
             line-height: 40px;
         }
+        #szallitoi-cimjegyzek-table th:nth-child(1), #szallitoi-cimjegyzek-table td:nth-child(1) { width: 150px; }
+        #szallitoi-cimjegyzek-table th:nth-child(2), #szallitoi-cimjegyzek-table td:nth-child(2) { width: 200px; }
+        #szallitoi-cimjegyzek-table th:nth-child(3), #szallitoi-cimjegyzek-table td:nth-child(3) { width: 150px; }
+        #szallitoi-cimjegyzek-table th:nth-child(4), #szallitoi-cimjegyzek-table td:nth-child(4) { width: 120px; }
+        #szallitoi-cimjegyzek-table th:nth-child(5), #szallitoi-cimjegyzek-table td:nth-child(5) { width: 150px; }
+        #szallitoi-cimjegyzek-table th {
+            position: sticky;
+            top: var(--th-top);
+            background-color: #2a2a2a;
+            z-index: 3;
+            height: 40px;
+            line-height: 40px;
+        }
         .edit-btn, .new-record-btn {
             padding: 5px 10px;
             background-color: #621d8a;
@@ -341,7 +354,7 @@
         }
     </style>
 </head>
-<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis'); loadBelsőMegrendelésiSzámok(); initializeSorszamCounter();">
+<body onload="toggleFullscreen(); openTab('logisztikai-adatbazis'); loadBelsőMegrendelésiSzámok(); initializeSorszamCounter(); loadSzallitoiCimjegyzek();">
     <div class="container" id="container">
         <div class="header">
             <div class="header-left">
@@ -354,7 +367,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.27</span>
+                <span>v1.2.29</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -518,6 +531,22 @@
         </div>
         <div id="szállítói-címjegyzék" class="tab-content">
             <h2>Szállítói címjegyzék</h2>
+            <div class="table-container">
+                <table id="szallitoi-cimjegyzek-table">
+                    <thead>
+                        <tr>
+                            <th>Szállító neve</th>
+                            <th>Cím</th>
+                            <th>Kapcsolattartó</th>
+                            <th>Telefonszám</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="szallitoi-cimjegyzek-tbody">
+                        <!-- A sorok dinamikusan töltődnek be JavaScripttel -->
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div id="foglalások" class="tab-content">
             <h2>Foglalások</h2>
@@ -696,10 +725,18 @@
                 szallitok = results.data;
                 szallitokLoaded = true;
                 console.log('Szállítók betöltve:', szallitok);
+                if (document.getElementById('newRecordModal').style.display === 'flex') {
+                    updateSzallitoField();
+                }
+                loadSzallitoiCimjegyzek();
             },
             error: function(error) {
                 console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
                 szallitokLoaded = true;
+                if (document.getElementById('newRecordModal').style.display === 'flex') {
+                    updateSzallitoField();
+                }
+                loadSzallitoiCimjegyzek();
             }
         });
 
@@ -765,6 +802,29 @@
             }
         }
 
+        function loadSzallitoiCimjegyzek() {
+            const tbody = document.getElementById('szallitoi-cimjegyzek-tbody');
+            tbody.innerHTML = '';
+
+            szallitok.forEach(szallito => {
+                const szallitoNeve = szallito['Szállító neve'] && szallito['Szállító neve'] !== 'undefined' ? szallito['Szállító neve'] : '-';
+                const cim = szallito['Cím'] && szallito['Cím'] !== 'undefined' ? szallito['Cím'] : '-';
+                const kapcsolattarto = szallito['Kapcsolattartó'] && szallito['Kapcsolattartó'] !== 'undefined' ? szallito['Kapcsolattartó'] : '-';
+                const telefonszam = szallito['Telefonszám'] && szallito['Telefonszám'] !== 'undefined' ? szallito['Telefonszám'] : '-';
+                const email = szallito['Email'] && szallito['Email'] !== 'undefined' ? szallito['Email'] : '-';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${szallitoNeve}</td>
+                    <td>${cim}</td>
+                    <td>${kapcsolattarto}</td>
+                    <td>${telefonszam}</td>
+                    <td>${email}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
         function toggleFullscreen() {
             const container = document.getElementById('container');
             if (!document.fullscreenElement) {
@@ -804,22 +864,12 @@
         }
 
         function openNewRecordModal(tabName) {
-            document.getElementById('newRecordModal').style.display = 'flex';
+            const modal = document.getElementById('newRecordModal');
+            modal.style.display = 'flex';
+
             updateRaktarField();
             updateKontirozasField();
-            if (szallitokLoaded) {
-                updateSzallitoField();
-            } else {
-                setTimeout(() => {
-                    if (szallitokLoaded) {
-                        updateSzallitoField();
-                    } else {
-                        console.error('A szállítók betöltése nem sikerült időben.');
-                        const szallitoContainer = document.getElementById('szallito-container');
-                        szallitoContainer.innerHTML = '<p>Hiba: A szállítók betöltése nem sikerült.</p>';
-                    }
-                }, 1000);
-            }
+            updateSzallitoField();
         }
 
         function closeModal(modalId) {
@@ -936,6 +986,16 @@
         function updateSzallitoField() {
             const szallitoContainer = document.getElementById('szallito-container');
             szallitoContainer.innerHTML = '';
+
+            if (!szallitokLoaded) {
+                szallitoContainer.innerHTML = '<p>Szállítók betöltése folyamatban...</p>';
+                return;
+            }
+
+            if (szallitok.length === 0) {
+                szallitoContainer.innerHTML = '<p>Hiba: A szállítók betöltése nem sikerült.</p>';
+                return;
+            }
 
             const select = document.createElement('select');
             select.id = 'new-szallito';
