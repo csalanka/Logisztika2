@@ -354,7 +354,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.26</span>
+                <span>v1.2.27</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -670,6 +670,7 @@
     <script>
         let teruletekGepek = {};
         let szallitok = [];
+        let szallitokLoaded = false;
         let sorszamCounter = 0;
 
         function initializeSorszamCounter() {
@@ -693,10 +694,12 @@
             header: true,
             complete: function(results) {
                 szallitok = results.data;
+                szallitokLoaded = true;
                 console.log('Szállítók betöltve:', szallitok);
             },
             error: function(error) {
                 console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
+                szallitokLoaded = true;
             }
         });
 
@@ -802,9 +805,21 @@
 
         function openNewRecordModal(tabName) {
             document.getElementById('newRecordModal').style.display = 'flex';
-            updateKontirozasField();
             updateRaktarField();
-            updateSzallitoField();
+            updateKontirozasField();
+            if (szallitokLoaded) {
+                updateSzallitoField();
+            } else {
+                setTimeout(() => {
+                    if (szallitokLoaded) {
+                        updateSzallitoField();
+                    } else {
+                        console.error('A szállítók betöltése nem sikerült időben.');
+                        const szallitoContainer = document.getElementById('szallito-container');
+                        szallitoContainer.innerHTML = '<p>Hiba: A szállítók betöltése nem sikerült.</p>';
+                    }
+                }, 1000);
+            }
         }
 
         function closeModal(modalId) {
