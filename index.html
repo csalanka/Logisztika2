@@ -354,7 +354,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek" onclick="openTab('chat-lista')"></i>
                 <i class="fas fa-question-circle" title="Segítség" onclick="openTab('felhasználó-kezelés')"></i>
-                <span>v1.2.24</span>
+                <span>v1.2.26</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -536,7 +536,7 @@
         </div>
     </div>
 
-    <!-- Új rekord űrlap (egyszerűsített) -->
+    <!-- Új rekord űrlap -->
     <div class="modal" id="newRecordModal" style="display: none;">
         <div class="modal-content">
             <div class="new-record-form" id="newRecordForm">
@@ -573,7 +573,9 @@
                     <option value="Szolgáltatás">Szolgáltatás</option>
                 </select>
                 <label for="new-szallito">Szállító:</label>
-                <input type="text" id="new-szallito" name="new-szallito" required>
+                <div id="szallito-container">
+                    <!-- A szállítók listája dinamikusan töltődik be -->
+                </div>
                 <label for="new-mennyiseg">Mennyiség:</label>
                 <input type="text" id="new-mennyiseg" name="new-mennyiseg" required>
                 <label for="new-egyseg">Egység:</label>
@@ -667,6 +669,7 @@
 
     <script>
         let teruletekGepek = {};
+        let szallitok = [];
         let sorszamCounter = 0;
 
         function initializeSorszamCounter() {
@@ -685,7 +688,19 @@
             sorszamCounter = maxSorszam;
         }
 
-        Papa.parse('data/belső_megrendelések_adatbazis.csv', {
+        Papa.parse('adat/szallitoi_cimjegyzek.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                szallitok = results.data;
+                console.log('Szállítók betöltve:', szallitok);
+            },
+            error: function(error) {
+                console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
+            }
+        });
+
+        Papa.parse('adat/belső_megrendelések_adatbazis.csv', {
             download: true,
             header: true,
             complete: function(results) {
@@ -694,14 +709,25 @@
 
                 data.forEach(item => {
                     const terulet = item['Terület'];
-                    if (!teruletekGepek[terulet]) {
-                        teruletekGepek[terulet] = [];
+                    const gepNev = item['Gép neve'];
+                    const rendelesiSzam = item['Belső rendelési szám'];
+                    const koltseghelySzam = item['SAP költséghely szám'];
+
+                    if (
+                        terulet && terulet !== 'undefined' &&
+                        gepNev && gepNev !== 'undefined' &&
+                        rendelesiSzam && rendelesiSzam !== 'undefined' &&
+                        koltseghelySzam && koltseghelySzam !== 'undefined'
+                    ) {
+                        if (!teruletekGepek[terulet]) {
+                            teruletekGepek[terulet] = [];
+                        }
+                        teruletekGepek[terulet].push({
+                            nev: gepNev,
+                            rendelesiSzam: rendelesiSzam,
+                            koltseghelySzam: koltseghelySzam
+                        });
                     }
-                    teruletekGepek[terulet].push({
-                        nev: item['Gép neve'],
-                        rendelesiSzam: item['Belső rendelési szám'],
-                        koltseghelySzam: item['SAP költséghely szám']
-                    });
                 });
 
                 loadBelsőMegrendelésiSzámok();
@@ -717,26 +743,22 @@
 
             for (const terulet in teruletekGepek) {
                 teruletekGepek[terulet].forEach(gep => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${terulet}</td>
-                        <td>${gep.nev}</td>
-                        <td>${gep.rendelesiSzam}</td>
-                        <td>${gep.koltseghelySzam}</td>
-                    `;
-                    tbody.appendChild(row);
+                    if (
+                        terulet && terulet !== 'undefined' &&
+                        gep.nev && gep.nev !== 'undefined' &&
+                        gep.rendelesiSzam && gep.rendelesiSzam !== 'undefined' &&
+                        gep.koltseghelySzam && gep.koltseghelySzam !== 'undefined'
+                    ) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${terulet}</td>
+                            <td>${gep.nev}</td>
+                            <td>${gep.rendelesiSzam}</td>
+                            <td>${gep.koltseghelySzam}</td>
+                        `;
+                        tbody.appendChild(row);
+                    }
                 });
-            }
-
-            for (let i = 1; i <= 20; i++) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>Teszt Terület ${i}</td>
-                    <td>Teszt Gép ${i}</td>
-                    <td>TESZT${i.toString().padStart(4, '0')}</td>
-                    <td>15000${i.toString().padStart(3, '0')}</td>
-                `;
-                tbody.appendChild(row);
             }
         }
 
@@ -782,6 +804,7 @@
             document.getElementById('newRecordModal').style.display = 'flex';
             updateKontirozasField();
             updateRaktarField();
+            updateSzallitoField();
         }
 
         function closeModal(modalId) {
@@ -893,6 +916,32 @@
                 input.required = true;
                 kontirozasContainer.appendChild(input);
             }
+        }
+
+        function updateSzallitoField() {
+            const szallitoContainer = document.getElementById('szallito-container');
+            szallitoContainer.innerHTML = '';
+
+            const select = document.createElement('select');
+            select.id = 'new-szallito';
+            select.name = 'new-szallito';
+            select.required = true;
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Válassz szállítót';
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            select.appendChild(defaultOption);
+
+            szallitok.forEach(szallito => {
+                const option = document.createElement('option');
+                option.value = szallito['Szállító neve'];
+                option.textContent = szallito['Szállító neve'];
+                select.appendChild(option);
+            });
+
+            szallitoContainer.appendChild(select);
         }
 
         function updateGepSelect() {
