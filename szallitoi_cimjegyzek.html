@@ -92,4 +92,92 @@
             font-size: 16px;
             color: #e0e0e0;
             cursor: pointer;
-       
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #621d8a;
+            padding: 8px;
+            text-align: left;
+            color: #e0e0e0;
+        }
+        th {
+            background-color: #621d8a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-left-logo">
+                    <img src="logo.png" alt="Siemens Energy Ikon Logo">
+                    <span>Szállítói címjegyzék</span>
+                </div>
+                <div class="logo-note">Siemens Energy Ikon</div>
+                <div class="copyright-note">© 2025 Siemens Energy</div>
+            </div>
+            <div class="header-right">
+                <span>Kijelentkezés</span>
+                <i class="fas fa-sign-out-alt"></i>
+                <i class="fas fa-expand fullscreen-icon"></i>
+            </div>
+        </div>
+
+        <!-- Táblázat a szállítói címjegyzékhez -->
+        <table id="szallitoi-cimjegyzek-table">
+            <thead>
+                <tr>
+                    <th>Szállító neve</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Az adatok ide kerülnek a JavaScript segítségével -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let szallitoiCimjegyzek = [];
+
+        // Adatok betöltése CSV-ből (ez a rész hiányzott)
+        Papa.parse('data/szallitoi_cimjegyzek.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                console.log('Szállítói címjegyzék betöltve:', results.data);
+                szallitoiCimjegyzek = results.data;
+                loadSzallitoiCimjegyzek();
+            },
+            error: function(error) {
+                console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
+                loadSzallitoiCimjegyzek();
+            }
+        });
+
+        // Adatok megjelenítése a táblázatban
+        function loadSzallitoiCimjegyzek() {
+            const tableBody = document.querySelector('#szallitoi-cimjegyzek-table tbody');
+            if (!tableBody) {
+                console.error('A szállítói címjegyzék táblázat nem található!');
+                return;
+            }
+
+            tableBody.innerHTML = ''; // Töröljük a korábbi tartalmat
+
+            szallitoiCimjegyzek.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item['Szállító neve'] || ''}</td>
+                    <td>${item['Email'] || ''}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
