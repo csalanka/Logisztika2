@@ -132,7 +132,7 @@
             <thead>
                 <tr>
                     <th>Szállító neve</th>
-                    <th>Email</th>
+                    <th>Ajánlat email cím</th>
                 </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@
     <script>
         let szallitoiCimjegyzek = [];
 
-        // Adatok betöltése CSV-ből (ez a rész hiányzott, most hozzáadjuk)
+        // Adatok betöltése CSV-ből
         Papa.parse('data/szallitoi_cimjegyzek.csv', {
             download: true,
             header: true,
@@ -173,13 +173,13 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${item['Szállító neve'] || ''}</td>
-                    <td>${item['Email'] || ''}</td>
+                    <td>${item['Ajánlat email cím'] || ''}</td>
                 `;
                 tableBody.appendChild(row);
             });
         }
 
-        // Teljes képernyő mód kezelése (ez a rész az eredeti index.html-ből van)
+        // Teljes képernyő mód kezelése
         document.querySelector('.fullscreen-icon').addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
