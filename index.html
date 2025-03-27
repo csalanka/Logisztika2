@@ -678,7 +678,7 @@
             sorszamCounter = maxSorszam;
         }
 
-        Papa.parse('adat/belső_megrendelések_adatbazis.csv', {
+        Papa.parse('data/belső_megrendelések_adatbazis.csv', {
             download: true,
             header: true,
             complete: function(results) {
@@ -716,7 +716,7 @@
             }
         });
 
-        Papa.parse('adat/szallitoi_cimjegyzek.csv', {
+        Papa.parse('data/szallitoi_cimjegyzek.csv', {
             download: true,
             header: true,
             complete: function(results) {
