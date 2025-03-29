@@ -488,7 +488,7 @@
                     <thead>
                         <tr>
                             <th>Szállító neve</th>
-                            <th>Email</th>
+                            <th>Ajánlat email cím</th>
                         </tr>
                     </thead>
                     <tbody id="szallitoi-cimjegyzek-tbody">
@@ -760,7 +760,7 @@
 
             szallitoiCimjegyzek.forEach(item => {
                 const szallitoNeve = item['Szállító neve'];
-                const email = item['Email'];
+                const email = item['Ajánlat email cím'];
 
                 if (szallitoNeve && email) {
                     const row = document.createElement('tr');
