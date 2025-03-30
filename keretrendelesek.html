@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keretrendelések</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h2>Keretrendelések</h2>
+    <div class="table-container">
+        <table id="keretrendelesek-table">
+            <thead>
+                <tr>
+                    <th>Szállító</th>
+                    <th>Kontírozás/Költséghely</th>
+                    <th>Raktár</th>
+                    <th>Terület</th>
+                    <th>BMIg.</th>
+                    <th>BMIg./Poz</th>
+                    <th>PO</th>
+                </tr>
+            </thead>
+            <tbody id="keretrendelesek-tbody">
+                <!-- A sorok dinamikusan töltődnek be JavaScripttel -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let keretrendelesek = [];
+
+        // Keretrendelések betöltése
+        Papa.parse('https://raw.githubusercontent.com/csalanka/Logisztika2/main/data/keretrendelesek.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                keretrendelesek = results.data;
+                loadKeretrendelesek();
+            },
+            error: function(error) {
+                console.error('Hiba a keretrendelések betöltésekor:', error);
+                loadKeretrendelesek();
+            }
+        });
+
+        // Keretrendelések táblázatának betöltése
+        function loadKeretrendelesek() {
+            const tbody = document.getElementById('keretrendelesek-tbody');
+            tbody.innerHTML = '';
+
+            keretrendelesek.forEach(item => {
+                const szallito = item['Szállító'] || '-';
+                const kontirozas = item['Kontírozás/Költséghely'] || '-';
+                const raktar = item['Raktár'] || '-';
+                const terulet = item['Terület'] || '-';
+                const bmig = item['BMIg.'] || '-';
+                const bmigPoz = item['BMIg./Poz'] || '-';
+                const po = item['PO'] || '-';
+
+                if (szallito !== '-') {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${szallito}</td>
+                        <td>${kontirozas}</td>
+                        <td>${raktar}</td>
+                        <td>${terulet}</td>
+                        <td>${bmig}</td>
+                        <td>${bmigPoz}</td>
+                        <td>${po}</td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
