@@ -222,7 +222,14 @@
         #belső-megrendelési-table th:nth-child(4), #belső-megrendelési-table td:nth-child(4) { width: 150px; }
         #szallitoi-cimjegyzek-table th:nth-child(1), #szallitoi-cimjegyzek-table td:nth-child(1) { width: 200px; }
         #szallitoi-cimjegyzek-table th:nth-child(2), #szallitoi-cimjegyzek-table td:nth-child(2) { width: 200px; }
-        #logisztikai-table th, #belső-megrendelési-table th, #szallitoi-cimjegyzek-table th {
+        #keretrendelesek-table th:nth-child(1), #keretrendelesek-table td:nth-child(1) { width: 150px; }
+        #keretrendelesek-table th:nth-child(2), #keretrendelesek-table td:nth-child(2) { width: 150px; }
+        #keretrendelesek-table th:nth-child(3), #keretrendelesek-table td:nth-child(3) { width: 100px; }
+        #keretrendelesek-table th:nth-child(4), #keretrendelesek-table td:nth-child(4) { width: 100px; }
+        #keretrendelesek-table th:nth-child(5), #keretrendelesek-table td:nth-child(5) { width: 100px; }
+        #keretrendelesek-table th:nth-child(6), #keretrendelesek-table td:nth-child(6) { width: 100px; }
+        #keretrendelesek-table th:nth-child(7), #keretrendelesek-table td:nth-child(7) { width: 150px; }
+        #logisztikai-table th, #belső-megrendelési-table th, #szallitoi-cimjegyzek-table th, #keretrendelesek-table th {
             position: sticky;
             top: var(--th-top);
             background-color: #2a2a2a;
@@ -289,7 +296,7 @@
             width: 100%;
         }
         .edit-form button {
-            grid-column: 1 / 3;
+            grid-column: 1 /3;
         }
         .new-record-form label, .edit-form label {
             font-weight: bold;
@@ -338,7 +345,7 @@
         }
     </style>
 </head>
-<body onload="toggleFullscreen(); initializeSorszamCounter(); loadBelsőMegrendelésiSzámok(); loadSzallitoiCimjegyzek();">
+<body onload="toggleFullscreen(); initializeSorszamCounter(); loadBelsőMegrendelésiSzámok(); loadSzallitoiCimjegyzek(); loadKeretrendelesek();">
     <div class="container" id="container">
         <div class="header">
             <div class="header-left">
@@ -351,7 +358,7 @@
             <div class="header-right">
                 <i class="fas fa-envelope" title="Üzenetek"></i>
                 <i class="fas fa-question-circle" title="Segítség"></i>
-                <span>v1.2.28</span>
+                <span>v1.2.29</span>
                 <i class="fas fa-expand fullscreen-icon" onclick="toggleFullscreen()" title="Teljes képernyő"></i>
             </div>
         </div>
@@ -359,6 +366,7 @@
         <div class="tabs">
             <div class="tab active" onclick="openTab('logisztikai-adatbazis')">Logisztikai adatbázis</div>
             <div class="tab" onclick="openTab('belső-megrendelési-szamok')">Belső megrendelési számok</div>
+            <div class="tab" onclick="openTab('keretrendelesek')">Keretrendelések</div>
             <div class="tab" onclick="openTab('szallitoi-cimjegyzek')">Szállítói címjegyzék</div>
             <div class="tab" onclick="openTab('anyagtörzs')">Anyagtörzs</div>
             <div class="tab" onclick="openTab('nyomonkövetési-listák')">Nyomonkövetési listák</div>
@@ -374,12 +382,12 @@
             <h2>Logisztikai adatbázis</h2>
             <button class="new-record-btn" onclick="openNewRecordModal()">Új rekord</button>
             <div class="status-buttons">
-                <button class="status-btn" data-status="felvett" style="background-color: #FFFFFF; color: #000000;">Felvett (#FFFFFF)</button>
-                <button class="status-btn" data-status="ajanlatkikuldve" style="background-color: #FFFF00; color: #000000;">Ajánlatkérés kiküldve (#FFFF00)</button>
-                <button class="status-btn" data-status="belsoszam" style="background-color: #808080; color: #FFFFFF;">Belső igényszám kitöltve (#808080)</button>
-                <button class="status-btn" data-status="po" style="background-color: #0000FF; color: #FFFFFF;">PO szám létrehozva (#0000FF)</button>
-                <button class="status-btn" data-status="beerkezett" style="background-color: #008000; color: #FFFFFF;">Tétel beérkezett (#008000)</button>
-                <button class="status-btn" data-status="megszakitva" style="background-color: #000000; color: #FFFFFF;">Megszakítva (#000000)</button>
+                <button class="status-btn" data-status="felvett" style="background-color: #FFFFFF; color: #000000;">Felvett</button>
+                <button class="status-btn" data-status="ajanlatkikuldve" style="background-color: #FFFF00; color: #000000;">Ajánlatkérés kiküldve</button>
+                <button class="status-btn" data-status="belsoszam" style="background-color: #808080; color: #FFFFFF;">Belső igényszám kitöltve</button>
+                <button class="status-btn" data-status="po" style="background-color: #0000FF; color: #FFFFFF;">PO szám létrehozva</button>
+                <button class="status-btn" data-status="beerkezett" style="background-color: #008000; color: #FFFFFF;">Tétel beérkezett</button>
+                <button class="status-btn" data-status="megszakitva" style="background-color: #000000; color: #FFFFFF;">Megszakítva</button>
             </div>
             <div class="table-container">
                 <table id="logisztikai-table">
@@ -474,6 +482,29 @@
                         </tr>
                     </thead>
                     <tbody id="belső-megrendelési-tbody">
+                        <!-- A sorok dinamikusan töltődnek be JavaScripttel -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Keretrendelések tab -->
+        <div class="tab-content" id="keretrendelesek">
+            <h2>Keretrendelések</h2>
+            <div class="table-container">
+                <table id="keretrendelesek-table">
+                    <thead>
+                        <tr>
+                            <th>Szállító</th>
+                            <th>Kontírozás/Költséghely</th>
+                            <th>Raktár</th>
+                            <th>Terület</th>
+                            <th>BMIg.</th>
+                            <th>BMIg./Poz</th>
+                            <th>PO</th>
+                        </tr>
+                    </thead>
+                    <tbody id="keretrendelesek-tbody">
                         <!-- A sorok dinamikusan töltődnek be JavaScripttel -->
                     </tbody>
                 </table>
@@ -657,9 +688,10 @@
             </div>
         </div>
     </div>
-        <script>
+    <script>
         let teruletekGepek = {};
         let szallitoiCimjegyzek = [];
+        let keretrendelesek = [];
         let sorszamCounter = 0;
 
         function initializeSorszamCounter() {
@@ -678,7 +710,7 @@
             sorszamCounter = maxSorszam;
         }
 
-        Papa.parse('data/belső_megrendelések_adatbazis.csv', {
+        Papa.parse('https://raw.githubusercontent.com/csalanka/Logisztika2/main/data/belső_megrendelések_adatbazis.csv', {
             download: true,
             header: true,
             complete: function(results) {
@@ -716,7 +748,7 @@
             }
         });
 
-        Papa.parse('data/szallitoi_cimjegyzek.csv', {
+        Papa.parse('https://raw.githubusercontent.com/csalanka/Logisztika2/main/data/szallitoi_cimjegyzek.csv', {
             download: true,
             header: true,
             complete: function(results) {
@@ -726,6 +758,19 @@
             error: function(error) {
                 console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
                 loadSzallitoiCimjegyzek();
+            }
+        });
+
+        Papa.parse('https://raw.githubusercontent.com/csalanka/Logisztika2/main/data/keretrendelesek.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                keretrendelesek = results.data;
+                loadKeretrendelesek();
+            },
+            error: function(error) {
+                console.error('Hiba a keretrendelések betöltésekor:', error);
+                loadKeretrendelesek();
             }
         });
 
@@ -767,6 +812,35 @@
                     row.innerHTML = `
                         <td>${szallitoNeve}</td>
                         <td>${email}</td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            });
+        }
+
+        function loadKeretrendelesek() {
+            const tbody = document.getElementById('keretrendelesek-tbody');
+            tbody.innerHTML = '';
+
+            keretrendelesek.forEach(item => {
+                const szallito = item['Szállító'] || '-';
+                const kontirozas = item['Kontírozás/Költséghely'] || '-';
+                const raktar = item['Raktár'] || '-';
+                const terulet = item['Terület'] || '-';
+                const bmig = item['BMIg.'] || '-';
+                const bmigPoz = item['BMIg./Poz'] || '-';
+                const po = item['PO'] || '-';
+
+                if (szallito !== '-') {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${szallito}</td>
+                        <td>${kontirozas}</td>
+                        <td>${raktar}</td>
+                        <td>${terulet}</td>
+                        <td>${bmig}</td>
+                        <td>${bmigPoz}</td>
+                        <td>${po}</td>
                     `;
                     tbody.appendChild(row);
                 }
@@ -828,7 +902,7 @@
 
             let options = [];
             if (rendelesTipus === '1') {
-                options = ['0060', '0350'];
+                options = ['0060', '0350', '0560', '0110'];
             } else if (rendelesTipus === '2') {
                 options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '3') {
@@ -1059,7 +1133,7 @@
 
             let options = [];
             if (rendelesTipus === '1') {
-                options = ['0060', '0350'];
+                options = ['0060', '0350', '0560', '0110'];
             } else if (rendelesTipus === '2') {
                 options = ['0060', '0350', '0110', '0560'];
             } else if (rendelesTipus === '3') {
