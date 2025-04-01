@@ -249,8 +249,8 @@
             z-index: 10001;
         }
         .modal {
-            display: block;
-            position: fixed;
+            display: none;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -259,7 +259,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
+            z-index: 100;
         }
         .modal-content {
             background-color: #1a1a1a;
@@ -296,7 +296,7 @@
             width: 100%;
         }
         .edit-form button {
-            grid-column: 1 /3;
+            grid-column: 1 / 3;
         }
         .new-record-form label, .edit-form label {
             font-weight: bold;
@@ -558,136 +558,105 @@
             <h2>Hibajelentés Fejlesztési javaslat</h2>
             <p>Itt lesz a Hibajelentés és Fejlesztési javaslat tartalma.</p>
         </div>
-    </div>
 
-    <!-- Új rekord űrlap -->
-    <div class="modal" id="newRecordModal" style="display: none;">
-        <div class="modal-content">
-            <div class="new-record-form" id="newRecordForm">
-                <h2>Új rekord</h2>
-                <label for="rendeles-tipus">Rendeléstípus:</label>
-                <select id="rendeles-tipus" onchange="updateRaktarField(); updateKontirozasField();">
-                    <option value="1">Keretrendelés</option>
-                    <option value="2" selected>Anyagszámos rendelés</option>
-                    <option value="3">Gépre kontírozott rendelés</option>
-                    <option value="4">Területre kontírozott rendelés</option>
-                    <option value="5">Beruházás</option>
-                </select>
-                <label for="new-raktar">Raktár:</label>
-                <div id="raktar-container">
-                    <select id="new-raktar" name="new-raktar" required>
-                        <option value="0060">0060</option>
-                        <option value="0350">0350</option>
-                        <option value="0110">0110</option>
-                        <option value="0560">0560</option>
+        <!-- Modalok a containerben -->
+        <div class="modal" id="newRecordModal" style="display: none;">
+            <div class="modal-content">
+                <div class="new-record-form" id="newRecordForm">
+                    <h2>Új rekord</h2>
+                    <label for="rendeles-tipus">Rendeléstípus:</label>
+                    <select id="rendeles-tipus" onchange="updateRaktarField(); updateKontirozasField();">
+                        <option value="1">Keretrendelés</option>
+                        <option value="2" selected>Anyagszámos rendelés</option>
+                        <option value="3">Gépre kontírozott rendelés</option>
+                        <option value="4">Területre kontírozott rendelés</option>
+                        <option value="5">Beruházás</option>
                     </select>
+                    <label for="new-raktar">Raktár:</label>
+                    <div id="raktar-container"></div>
+                    <label for="new-kontirozas">Kontírozás:</label>
+                    <div id="kontirozas-container"></div>
+                    <label for="new-megnevezes">Megnevezés:</label>
+                    <input type="text" id="new-megnevezes" required>
+                    <label for="new-folyamat">Folyamat:</label>
+                    <select id="new-folyamat">
+                        <option value="Beszerzés">Beszerzés</option>
+                        <option value="Gyártás">Gyártás</option>
+                    </select>
+                    <label for="new-szallito">Szállító:</label>
+                    <input type="text" id="new-szallito" required>
+                    <label for="new-mennyiseg">Mennyiség:</label>
+                    <input type="number" id="new-mennyiseg" required>
+                    <label for="new-egyseg">Egység:</label>
+                    <select id="new-egyseg">
+                        <option value="DB.">DB.</option>
+                        <option value="KG">KG</option>
+                        <option value="M">M</option>
+                    </select>
+                    <button type="button" onclick="saveNewRecord()">Mentés</button>
+                    <button type="button" onclick="closeModal('newRecordModal')">Bezárás</button>
                 </div>
-                <label for="new-kontirozas">Kontírozás:</label>
-                <div id="kontirozas-container">
-                    <input type="text" id="new-kontirozas" name="new-kontirozas" required>
+            </div>
+        </div>
+
+        <div class="modal" id="editModal" style="display: none;">
+            <div class="modal-content">
+                <div class="edit-form" id="editForm">
+                    <h2 style="grid-column: 1 / 3;">Szerkesztés</h2>
+                    <input type="hidden" id="edit-row-index">
+                    <label for="edit-rendeles-tipus">Rendeléstípus:</label>
+                    <select id="edit-rendeles-tipus" onchange="updateEditRaktarField(); updateEditKontirozasField();">
+                        <option value="1">Keretrendelés</option>
+                        <option value="2">Anyagszámos rendelés</option>
+                        <option value="3">Gépre kontírozott rendelés</option>
+                        <option value="4">Területre kontírozott rendelés</option>
+                        <option value="5">Beruházás</option>
+                    </select>
+                    <label for="edit-raktar">Raktár:</label>
+                    <div id="edit-raktar-container"></div>
+                    <label for="edit-kontirozas">Kontírozás:</label>
+                    <div id="edit-kontirozas-container"></div>
+                    <label for="edit-megnevezes">Megnevezés:</label>
+                    <input type="text" id="edit-megnevezes" required>
+                    <label for="edit-folyamat">Folyamat:</label>
+                    <select id="edit-folyamat">
+                        <option value="Beszerzés">Beszerzés</option>
+                        <option value="Gyártás">Gyártás</option>
+                    </select>
+                    <label for="edit-szallito">Szállító:</label>
+                    <input type="text" id="edit-szallito" required>
+                    <label for="edit-ajanlatszam">Ajánlatszám:</label>
+                    <input type="text" id="edit-ajanlatszam">
+                    <label for="edit-mennyiseg">Mennyiség:</label>
+                    <input type="number" id="edit-mennyiseg" required>
+                    <label for="edit-egyseg">Egység:</label>
+                    <select id="edit-egyseg">
+                        <option value="DB.">DB.</option>
+                        <option value="KG">KG</option>
+                        <option value="M">M</option>
+                    </select>
+                    <label for="edit-ar">Ár:</label>
+                    <input type="number" id="edit-ar">
+                    <label for="edit-eur-huf">EUR/HUF:</label>
+                    <select id="edit-eur-huf">
+                        <option value="EUR">EUR</option>
+                        <option value="HUF">HUF</option>
+                    </select>
+                    <label for="edit-bmig">BMIg.:</label>
+                    <input type="text" id="edit-bmig">
+                    <label for="edit-po">PO:</label>
+                    <input type="text" id="edit-po">
+                    <label for="edit-t-szallitas">T.Szállítás:</label>
+                    <input type="date" id="edit-t-szallitas">
+                    <button type="button" onclick="saveEdit()">Mentés</button>
+                    <button type="button" onclick="closeModal('editModal')">Bezárás</button>
+                    <button type="button" class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
+                    <div id="email-result"></div>
                 </div>
-                <label for="new-megnevezes">Megnevezés:</label>
-                <input type="text" id="new-megnevezes" name="new-megnevezes" required>
-                <label for="new-folyamat">Folyamat:</label>
-                <select id="new-folyamat" name="new-folyamat" required>
-                    <option value="Beszerzés" selected>Beszerzés</option>
-                    <option value="Gyártás">Gyártás</option>
-                    <option value="Javítás">Javítás</option>
-                    <option value="Cserejavítás">Cserejavítás</option>
-                    <option value="Szolgáltatás">Szolgáltatás</option>
-                </select>
-                <label for="new-szallito">Szállító:</label>
-                <input type="text" id="new-szallito" name="new-szallito" required>
-                <label for="new-mennyiseg">Mennyiség:</label>
-                <input type="text" id="new-mennyiseg" name="new-mennyiseg" required>
-                <label for="new-egyseg">Egység:</label>
-                <select id="new-egyseg" name="new-egyseg" required>
-                    <option value="DB.">DB.</option>
-                    <option value="CSM.">CSM.</option>
-                    <option value="M.">M.</option>
-                </select>
-                <button onclick="saveNewRecord()">Mentés</button>
-                <button onclick="closeModal('newRecordModal')">Mégsem</button>
             </div>
         </div>
     </div>
 
-    <!-- Szerkesztési űrlap (két oszlopra bontva) -->
-    <div class="modal" id="editModal" style="display: none;">
-        <div class="modal-content">
-            <div class="edit-form" id="editForm">
-                <h2 style="grid-column: 1 / 3;">Szerkesztés</h2>
-                <input type="hidden" id="edit-row-index">
-                
-                <!-- Már megadott adatok csoport (bal oszlop) -->
-                <h3>Már megadott adatok</h3>
-                <label for="edit-rendeles-tipus">Rendeléstípus:</label>
-                <select id="edit-rendeles-tipus" onchange="updateEditRaktarField(); updateEditKontirozasField();">
-                    <option value="1">Keretrendelés</option>
-                    <option value="2">Anyagszámos rendelés</option>
-                    <option value="3">Gépre kontírozott rendelés</option>
-                    <option value="4">Területre kontírozott rendelés</option>
-                    <option value="5">Beruházás</option>
-                </select>
-                <label for="edit-raktar">Raktár:</label>
-                <div id="edit-raktar-container">
-                    <select id="edit-raktar" name="edit-raktar" required>
-                        <option value="0060">0060</option>
-                        <option value="0350">0350</option>
-                        <option value="0110">0110</option>
-                        <option value="0560">0560</option>
-                    </select>
-                </div>
-                <label for="edit-kontirozas">Kontírozás:</label>
-                <div id="edit-kontirozas-container">
-                    <input type="text" id="edit-kontirozas" name="edit-kontirozas" required>
-                </div>
-                <label for="edit-megnevezes">Megnevezés:</label>
-                <input type="text" id="edit-megnevezes" name="edit-megnevezes" required>
-                <label for="edit-folyamat">Folyamat:</label>
-                <select id="edit-folyamat" name="edit-folyamat" required>
-                    <option value="Beszerzés">Beszerzés</option>
-                    <option value="Gyártás">Gyártás</option>
-                    <option value="Javítás">Javítás</option>
-                    <option value="Cserejavítás">Cserejavítás</option>
-                    <option value="Szolgáltatás">Szolgáltatás</option>
-                </select>
-                <label for="edit-szallito">Szállító:</label>
-                <input type="text" id="edit-szallito" name="edit-szallito" required>
-                <label for="edit-mennyiseg">Mennyiség:</label>
-                <input type="text" id="edit-mennyiseg" name="edit-mennyiseg" required>
-                <label for="edit-egyseg">Egység:</label>
-                <select id="edit-egyseg" name="edit-egyseg" required>
-                    <option value="DB.">DB.</option>
-                    <option value="CSM.">CSM.</option>
-                    <option value="M.">M.</option>
-                </select>
-
-                <!-- További adatok csoport (jobb oszlop) -->
-                <h3>További adatok</h3>
-                <label for="edit-ajanlatszam">Ajánlatszám:</label>
-                <input type="text" id="edit-ajanlatszam" name="edit-ajanlatszam">
-                <label for="edit-ar">Ár:</label>
-                <input type="text" id="edit-ar" name="edit-ar">
-                <label for="edit-eur-huf">EUR/HUF:</label>
-                <select id="edit-eur-huf" name="edit-eur-huf">
-                    <option value="EUR">EUR</option>
-                    <option value="HUF">HUF</option>
-                </select>
-                <label for="edit-bmig">BMIg.:</label>
-                <input type="text" id="edit-bmig" name="edit-bmig">
-                <label for="edit-po">PO:</label>
-                <input type="text" id="edit-po" name="edit-po">
-                <label for="edit-t-szallitas">T.Szállítás:</label>
-                <input type="date" id="edit-t-szallitas" name="edit-t-szallitas">
-                
-                <button onclick="saveEdit()">Mentés</button>
-                <button class="send-email-btn" onclick="sendEmail()">Levél küldése</button>
-                <button onclick="closeModal('editModal')">Mégsem</button>
-                <div id="email-result"></div>
-            </div>
-        </div>
-    </div>
     <script>
         let teruletekGepek = {};
         let szallitoiCimjegyzek = [];
@@ -718,17 +687,12 @@
                 teruletekGepek = {};
 
                 data.forEach(item => {
-                    const terulet = item['Terület'];
-                    const gepNev = item['Gép neve'];
-                    const rendelesiSzam = item['Belső rendelési szám'];
-                    const koltseghelySzam = item['SAP költséghely szám'];
+                    const terulet = item['Terület'] && item['Terület'] !== 'undefined' ? item['Terület'] : '-';
+                    const gepNev = item['Gép neve'] && item['Gép neve'] !== 'undefined' ? item['Gép neve'] : '-';
+                    const rendelesiSzam = item['Belső rendelési szám'] && item['Belső rendelési szám'] !== 'undefined' ? item['Belső rendelési szám'] : '-';
+                    const koltseghelySzam = item['SAP költséghely szám'] && item['SAP költséghely szám'] !== 'undefined' ? item['SAP költséghely szám'] : '-';
 
-                    if (
-                        terulet && terulet !== 'undefined' &&
-                        gepNev && gepNev !== 'undefined' &&
-                        rendelesiSzam && rendelesiSzam !== 'undefined' &&
-                        koltseghelySzam && koltseghelySzam !== 'undefined'
-                    ) {
+                    if (terulet && terulet !== '-') {
                         if (!teruletekGepek[terulet]) {
                             teruletekGepek[terulet] = [];
                         }
@@ -744,6 +708,7 @@
             },
             error: function(error) {
                 console.error('Hiba a belső megrendelések adatbázis betöltésekor:', error);
+                teruletekGepek = {};
                 loadBelsőMegrendelésiSzámok();
             }
         });
@@ -780,21 +745,14 @@
 
             for (const terulet in teruletekGepek) {
                 teruletekGepek[terulet].forEach(gep => {
-                    if (
-                        terulet && terulet !== 'undefined' &&
-                        gep.nev && gep.nev !== 'undefined' &&
-                        gep.rendelesiSzam && gep.rendelesiSzam !== 'undefined' &&
-                        gep.koltseghelySzam && gep.koltseghelySzam !== 'undefined'
-                    ) {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${terulet}</td>
-                            <td>${gep.nev}</td>
-                            <td>${gep.rendelesiSzam}</td>
-                            <td>${gep.koltseghelySzam}</td>
-                        `;
-                        tbody.appendChild(row);
-                    }
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${terulet}</td>
+                        <td>${gep.nev}</td>
+                        <td>${gep.rendelesiSzam}</td>
+                        <td>${gep.koltseghelySzam}</td>
+                    `;
+                    tbody.appendChild(row);
                 });
             }
         }
@@ -868,7 +826,7 @@
                 document.exitFullscreen();
             }
 
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 const newRecordBtn = document.querySelector('.new-record-btn');
                 if (newRecordBtn) {
                     newRecordBtn.removeEventListener('click', openNewRecordModal);
@@ -880,13 +838,12 @@
                     btn.removeEventListener('click', openEditModal);
                     btn.addEventListener('click', () => openEditModal(btn));
                 });
-            }, 100);
+            });
         }
 
         function openNewRecordModal() {
             const modal = document.getElementById('newRecordModal');
             modal.style.display = 'flex';
-
             updateRaktarField();
             updateKontirozasField();
         }
@@ -1032,7 +989,7 @@
                 if (terulet && gep) {
                     const selectedGep = teruletekGepek[terulet].find(g => g.nev === gep);
                     if (selectedGep) {
-                        kontirozasInput.value = selectedGep.rendelesiSzam ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
+                        kontirozasInput.value = selectedGep.rendelesiSzam && selectedGep.rendelesiSzam !== '-' ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
                     } else {
                         kontirozasInput.value = '';
                     }
@@ -1263,7 +1220,7 @@
                 if (terulet && gep) {
                     const selectedGep = teruletekGepek[terulet].find(g => g.nev === gep);
                     if (selectedGep) {
-                        kontirozasInput.value = selectedGep.rendelesiSzam ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
+                        kontirozasInput.value = selectedGep.rendelesiSzam && selectedGep.rendelesiSzam !== '-' ? selectedGep.rendelesiSzam : selectedGep.koltseghelySzam;
                     } else {
                         kontirozasInput.value = '';
                     }
@@ -1327,11 +1284,16 @@
         }
 
         function sendEmail() {
+            const szallito = document.getElementById('edit-szallito').value;
             const emailResult = document.getElementById('email-result');
-            emailResult.textContent = 'Levél elküldve!';
-            setTimeout(() => {
-                emailResult.textContent = '';
-            }, 3000);
+            const szallitoData = szallitoiCimjegyzek.find(s => s['Szállító neve'] === szallito);
+
+            if (szallitoData && szallitoData['Ajánlat email cím']) {
+                emailResult.textContent = `Levél elküldve a következő címre: ${szallitoData['Ajánlat email cím']}`;
+            } else {
+                emailResult.textContent = 'Hiba: A szállító email címe nem található!';
+                emailResult.style.color = 'red';
+            }
         }
     </script>
 </body>
