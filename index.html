@@ -356,6 +356,11 @@
         .fa-envelope.not-sent {
             color: #808080;
         }
+        .error-message {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body onload="toggleFullscreen(); initializeSorszamCounter(); loadBelsőMegrendelésiSzámok(); loadSzallitoiCimjegyzek(); loadKeretrendelesek();">
@@ -423,6 +428,7 @@
                             <th>Ajánlatszám</th>
                             <th>Mennyiség</th>
                             <th>Egység</th>
+
                             <th>Ár</th>
                             <th>EUR/HUF</th>
                             <th>BMIg.</th>
@@ -487,6 +493,7 @@
         <!-- Belső megrendelési számok tab -->
         <div class="tab-content" id="belső-megrendelési-szamok">
             <h2>Belső megrendelési számok</h2>
+            <div id="belső-megrendelési-error" class="error-message"></div>
             <div class="table-container">
                 <table id="belső-megrendelési-table">
                     <thead>
@@ -497,7 +504,6 @@
                             <th>SAP költséghely szám</th>
                         </tr>
                     </thead>
-                    <tbody id
                     <tbody id="belső-megrendelési-tbody">
                         <!-- A belső megrendelési számok dinamikusan töltődnek be -->
                     </tbody>
@@ -508,6 +514,7 @@
         <!-- Keretrendelések tab -->
         <div class="tab-content" id="keretrendelesek">
             <h2>Keretrendelések</h2>
+            <div id="keretrendelesek-error" class="error-message"></div>
             <div class="table-container">
                 <table id="keretrendelesek-table">
                     <thead>
@@ -531,6 +538,7 @@
         <!-- Szállítói címjegyzék tab -->
         <div class="tab-content" id="szallitoi-cimjegyzek">
             <h2>Szállítói címjegyzék</h2>
+            <div id="szallitoi-cimjegyzek-error" class="error-message"></div>
             <div class="table-container">
                 <table id="szallitoi-cimjegyzek-table">
                     <thead>
@@ -607,10 +615,7 @@
                     <div id="kontirozasi-nev-container" style="display: none;">
                         <label for="new-terulet">Válassz területet:</label>
                         <select id="new-terulet" onchange="updateKeretrendelesFields()">
-                            <option value="MFC-terület">MFC-terület</option>
-                            <option value="MFS-terület">MFS-terület</option>
-                            <option value="MFH-terület">MFH-terület</option>
-                            <option value="M2B-terület">M2B-terület</option>
+                            <!-- Dinamikusan töltődik -->
                         </select>
                     </div>
 
@@ -705,10 +710,7 @@
                     <div id="edit-kontirozasi-nev-container" style="display: none;">
                         <label for="edit-terulet">Válassz területet:</label>
                         <select id="edit-terulet" onchange="updateEditKeretrendelesFields()">
-                            <option value="MFC-terület">MFC-terület</option>
-                            <option value="MFS-terület">MFS-terület</option>
-                            <option value="MFH-terület">MFH-terület</option>
-                            <option value="M2B-terület">M2B-terület</option>
+                            <!-- Dinamikusan töltődik -->
                         </select>
                     </div>
 
@@ -781,6 +783,14 @@
         let szallitoiCimjegyzek = [];
         let keretrendelesek = [];
 
+        // Ideiglenes statikus keretrendelesek adat, ha a CSV betöltés nem sikerül
+        const fallbackKeretrendelesek = [
+            { Terület: "MFC-terület", Szállító: "Szállító 1", BMIg: "BMIg123", PO: "PO123", "Érvényesség kezdete": "2025.01.01", "Érvényesség vége": "2025.12.31", Megjegyzés: "Teszt 1" },
+            { Terület: "MFS-terület", Szállító: "Szállító 2", BMIg: "BMIg456", PO: "PO456", "Érvényesség kezdete": "2025.01.01", "Érvényesség vége": "2025.12.31", Megjegyzés: "Teszt 2" },
+            { Terület: "MFH-terület", Szállító: "Szállító 3", BMIg: "BMIg789", PO: "PO789", "Érvényesség kezdete": "2025.01.01", "Érvényesség vége": "2025.12.31", Megjegyzés: "Teszt 3" },
+            { Terület: "M2B-terület", Szállító: "Szállító 4", BMIg: "BMIg012", PO: "PO012", "Érvényesség kezdete": "2025.01.01", "Érvényesség vége": "2025.12.31", Megjegyzés: "Teszt 4" }
+        ];
+
         function initializeSorszamCounter() {
             const rows = document.querySelectorAll('#logisztikai-table tbody tr');
             rows.forEach((row, index) => {
@@ -792,7 +802,12 @@
 
         function loadBelsőMegrendelésiSzámok() {
             fetch('belső_megrendelési_számok.csv')
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Nem sikerült betölteni a belső_megrendelési_számok.csv fájlt.');
+                    }
+                    return response.text();
+                })
                 .then(data => {
                     Papa.parse(data, {
                         header: true,
@@ -813,12 +828,20 @@
                         }
                     });
                 })
-                .catch(error => console.error('Hiba a belső megrendelési számok betöltésekor:', error));
+                .catch(error => {
+                    console.error('Hiba a belső megrendelési számok betöltésekor:', error);
+                    document.getElementById('belső-megrendelési-error').textContent = 'Hiba: Nem sikerült betölteni a belső megrendelési számokat. Kérlek, ellenőrizd a CSV fájlt és a szerver beállításokat.';
+                });
         }
 
         function loadSzallitoiCimjegyzek() {
             fetch('szallitoi_cimjegyzek.csv')
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Nem sikerült betölteni a szallitoi_cimjegyzek.csv fájlt.');
+                    }
+                    return response.text();
+                })
                 .then(data => {
                     Papa.parse(data, {
                         header: true,
@@ -837,40 +860,58 @@
                         }
                     });
                 })
-                .catch(error => console.error('Hiba a szállítói címjegyzék betöltésekor:', error));
+                .catch(error => {
+                    console.error('Hiba a szállítói címjegyzék betöltésekor:', error);
+                    document.getElementById('szallitoi-cimjegyzek-error').textContent = 'Hiba: Nem sikerült betölteni a szállítói címjegyzéket. Kérlek, ellenőrizd a CSV fájlt és a szerver beállításokat.';
+                });
         }
 
         function loadKeretrendelesek() {
             fetch('keretrendelesek.csv')
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Nem sikerült betölteni a keretrendelesek.csv fájlt.');
+                    }
+                    return response.text();
+                })
                 .then(data => {
                     Papa.parse(data, {
                         header: true,
                         skipEmptyLines: true,
                         complete: function(results) {
                             keretrendelesek = results.data;
-                            const tbody = document.getElementById('keretrendelesek-tbody');
-                            keretrendelesek.forEach(row => {
-                                const tr = document.createElement('tr');
-                                tr.innerHTML = `
-                                    <td>${row.Terület || '-'}</td>
-                                    <td>${row.Szállító || '-'}</td>
-                                    <td>${row.BMIg || '-'}</td>
-                                    <td>${row.PO || '-'}</td>
-                                    <td>${row['Érvényesség kezdete'] || '-'}</td>
-                                    <td>${row['Érvényesség vége'] || '-'}</td>
-                                    <td>${row.Megjegyzés || '-'}</td>
-                                `;
-                                tbody.appendChild(tr);
-                            });
-
-                            // Szállítók és területek betöltése a legördülő menükbe
+                            populateKeretrendelesekTable();
                             populateSzallitoSelect();
                             populateTeruletSelect();
                         }
                     });
                 })
-                .catch(error => console.error('Hiba a keretrendelések betöltésekor:', error));
+                .catch(error => {
+                    console.error('Hiba a keretrendelések betöltésekor:', error);
+                    document.getElementById('keretrendelesek-error').textContent = 'Hiba: Nem sikerült betölteni a keretrendeléseket. Ideiglenes adatok használata.';
+                    keretrendelesek = fallbackKeretrendelesek;
+                    populateKeretrendelesekTable();
+                    populateSzallitoSelect();
+                    populateTeruletSelect();
+                });
+        }
+
+        function populateKeretrendelesekTable() {
+            const tbody = document.getElementById('keretrendelesek-tbody');
+            tbody.innerHTML = ''; // Töröljük a korábbi tartalmat
+            keretrendelesek.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.Terület || '-'}</td>
+                    <td>${row.Szállító || '-'}</td>
+                    <td>${row.BMIg || '-'}</td>
+                    <td>${row.PO || '-'}</td>
+                    <td>${row['Érvényesség kezdete'] || '-'}</td>
+                    <td>${row['Érvényesség vége'] || '-'}</td>
+                    <td>${row.Megjegyzés || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         function populateSzallitoSelect() {
@@ -930,8 +971,7 @@
             }
         }
 
-        function openNewRecordModal() {
-            document.getElementById('newRecordModal').style.display = 'flex';
+       function openNewRecordModal() { document.getElementById('newRecordModal').style.display = 'flex';
             updateFolyamatField();
             updatePriceFields();
             updateSzallitoField();
@@ -1091,7 +1131,7 @@
             const szallito = document.getElementById('new-szallito-select').value;
             const terulet = document.getElementById('new-terulet').value;
 
-            if (szallito && terulet) {
+            if (szallito && terulet && keretrendelesek.length > 0) {
                 const match = keretrendelesek.find(row => row.Szállító === szallito && row.Terület === terulet);
                 if (match) {
                     document.getElementById('new-bmig').value = match.BMIg || '-';
@@ -1100,6 +1140,9 @@
                     document.getElementById('new-bmig').value = '';
                     document.getElementById('new-po').value = '';
                 }
+            } else {
+                document.getElementById('new-bmig').value = '';
+                document.getElementById('new-po').value = '';
             }
         }
 
@@ -1110,7 +1153,7 @@
             const szallito = document.getElementById('edit-szallito-select').value;
             const terulet = document.getElementById('edit-terulet').value;
 
-            if (szallito && terulet) {
+            if (szallito && terulet && keretrendelesek.length > 0) {
                 const match = keretrendelesek.find(row => row.Szállító === szallito && row.Terület === terulet);
                 if (match) {
                     document.getElementById('edit-bmig').value = match.BMIg || '-';
@@ -1119,6 +1162,9 @@
                     document.getElementById('edit-bmig').value = '';
                     document.getElementById('edit-po').value = '';
                 }
+            } else {
+                document.getElementById('edit-bmig').value = '';
+                document.getElementById('edit-po').value = '';
             }
         }
 
@@ -1240,7 +1286,7 @@
             const rendelesTipus = document.getElementById('edit-rendeles-tipus').value;
             const kontirozas = rendelesTipus === '3' || rendelesTipus === '4' ? document.getElementById('edit-kontirozas').value : '-';
             const terulet = rendelesTipus === '4' || rendelesTipus === '1' ? document.getElementById('edit-terulet').value : '-';
-            const kontirozasiNev = rendelesTipus === '4' || rendelesTipus === '1' ? terulet : '-';
+            const kontirozasiNem = rendelesTipus === '4' || rendelesTipus === '1' ? terulet : '-';
             const megnevezes = document.getElementById('edit-megnevezes').value;
             const folyamat = document.getElementById('edit-folyamat').value;
             const szallito = rendelesTipus === '1' ? document.getElementById('edit-szallito-select').value : document.getElementById('edit-szallito').value;
@@ -1262,7 +1308,7 @@
             currentRow.cells[3].textContent = felveve;
             currentRow.cells[4].textContent = raktar;
             currentRow.cells[5].textContent = kontirozas;
-            currentRow.cells[6].textContent = kontirozasiNev;
+            currentRow.cells[6].textContent = kontirozasiNem;
             currentRow.cells[8].textContent = megnevezes;
             currentRow.cells[9].textContent = folyamat;
             currentRow.cells[10].textContent = szallito;
