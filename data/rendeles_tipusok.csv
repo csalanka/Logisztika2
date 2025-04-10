@@ -1,0 +1,7 @@
+rendeles_tipus,rendeles_tipus_kod,raktarak,folyamatok,kontirozas_tipus,teruletek,gepek
+Meglévő keretrendelés kiválasztása,1,0060,0350,0560,0110,Beszerzés,Gyártás,szabadszöveges,MFC,MFS,MFH,LOG,TMK/KAR,LEAN,SRE,MFQ,
+Keretrendelés létrehozása,2,0060,0350,0560,0110,Beszerzés,Gyártás,szabadszöveges,MFC,MFS,MFH,LOG,TMK/KAR,LEAN,SRE,MFQ,
+Anyagszámos rendelés,3,0060,0350,0560,0110,Beszerzés,Gyártás,Cserélés,Javítás,Szolgáltatás,Karbantartás,szabadszöveges,MFC,MFS,MFH,LOG,TMK/KAR,MFQ,
+Gépre kontírozott rendelés,4,0060,0350,Beszerzés,Javítás,Gyártás,Cserélés,Szolgáltatás,Karbantartás,Gépek,terület_gép,MFC,MFS,MFH,LOG,TMK/KAR,MFQ,DMG 1,DMG 2,DMG 3,DMG 4,DMG 5,DMG 6,DMG CTX|DMG 1,DMG 2,DMG 3,DMG 4,DMG 5,DMG 6,DMG CTX|Behinger 1,Behinger 2,Behinger 3,Behinger 4,Behinger 5|G-M 1,G-M 2,G-M 3,G-M 4,G-M 5,G-M 6,G-M 7,G-M 8,G-M 9,G-M 10|DMG 1,DMG 2,DMG 3,DMG 4,DMG 5,DMG 6,DMG CTX|DMG 1,DMG 2,DMG 3,DMG 4,DMG 5,DMG 6,DMG CTX
+Területre kontírozott rendelés,5,0060,0350,Beszerzés,Gyártás,terület,MFC,MFS,MFH,LOG,TMK/KAR,MFQ,
+Beruházás,6,0060,0350,0560,0110,Beruházás,szabadszöveges,MFC,MFS,MFH,LOG,TMK/KAR,MFQ,
