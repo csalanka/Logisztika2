@@ -1,0 +1,7 @@
+Sr,Rendeléstípusok,Raktárak
+1,Anyagszámos rendelés,"0060,0350,560,0110"
+2,Gépre kontírozott rendelés,"0060,0350,560"
+3,Területre kontírozott rendelés,"0060,0350,560"
+4,Meglévő keretrendelés kiválasztása,"0060,0350,560"
+5,Szabad rendelés,"0060,0350,560"
+6,Beruházás,"0060,0350,560"
