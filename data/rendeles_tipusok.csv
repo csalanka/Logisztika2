@@ -1,7 +1,0 @@
-"Sr","Rendeléstípusok","Raktárak","Folyamatok"
-"1","Anyagszámos rendelés","0060,0350,0560,110","Beszerzés,Gyártás"
-"2","Gépre kontírozott rendelés","0060,0350,0560","Beszerzés,Javítás,Gyártás,Cserejavítás,Szolgáltatás,Karbantartás, Garancia érv."
-"3","Területre kontírozott rendelés","0060,0350,0560","Beszerzés,Javítás,Gyártás,Cserejavítás,Szolgáltatás,Garancia érv."
-"4","Meglévő keretrendelés kiválasztása","0060,0350,0560","Beszerzés"
-"5","Szabad rendelés","0060,0350,0560","Beszerzés,Javítás,Gyártás,Cserejavítás,Szolgáltatás,Karbantartás, Garancia érv.,Beruházás"
-"6","Beruházás","0060,0350,0560","Beruházás"
